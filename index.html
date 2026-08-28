@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10月度シフト申請書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap">
+
+<style>
+:root{
+  --paper:#f7f5f0;
+  --surface:#ffffff;
+  --sunk:#efece5;
+  --ink:#16191c;
+  --muted:#6b665e;
+  --line:#ddd7cc;
+  --line-strong:#c4bcae;
+  --ok:#16624f;
+  --ok-soft:#e2efea;
+  --mid:#a8781a;
+  --mid-soft:#f6eddb;
+  --no:#b0451c;
+  --no-soft:#f8e6de;
+  --bar-bg:#16191c;
+  --bar-fg:#f7f5f0;
+  --focus:#16624f;
+  --shadow:0 1px 2px rgba(22,25,28,.06),0 8px 24px rgba(22,25,28,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#131619;
+    --surface:#1b1f24;
+    --sunk:#23282e;
+    --ink:#eceae5;
+    --muted:#9b968d;
+    --line:#2f353c;
+    --line-strong:#434b54;
+    --ok:#54c3a1;
+    --ok-soft:#16302a;
+    --mid:#d9a441;
+    --mid-soft:#332a17;
+    --no:#e2805a;
+    --no-soft:#382019;
+    --bar-bg:#eceae5;
+    --bar-fg:#131619;
+    --focus:#54c3a1;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131619;
+  --surface:#1b1f24;
+  --sunk:#23282e;
+  --ink:#eceae5;
+  --muted:#9b968d;
+  --line:#2f353c;
+  --line-strong:#434b54;
+  --ok:#54c3a1;
+  --ok-soft:#16302a;
+  --mid:#d9a441;
+  --mid-soft:#332a17;
+  --no:#e2805a;
+  --no-soft:#382019;
+  --bar-bg:#eceae5;
+  --bar-fg:#131619;
+  --focus:#54c3a1;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:15px;
+  line-height:1.7;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px 128px}
+
+/* ---- masthead: mirrors the reversed header bar on the paper form ---- */
+.mast{padding:28px 0 20px}
+.mast-bar{
+  background:var(--bar-bg);color:var(--bar-fg);
+  padding:14px 18px;border-radius:2px;
+  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+}
+.mast-bar h1{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;
+  font-size:22px;letter-spacing:.06em;margin:0;line-height:1.25;
+}
+.mast-bar .co{
+  font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.14em;
+  opacity:.72;text-transform:uppercase;
+}
+.meta{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;
+}
+.meta span{
+  font-family:"Roboto Mono",monospace;font-size:12px;
+  border:1px solid var(--line-strong);border-radius:2px;
+  padding:5px 9px;color:var(--muted);background:var(--surface);
+  font-variant-numeric:tabular-nums;
+}
+.meta span b{color:var(--no);font-weight:700}
+
+/* ---- mode switch ---- */
+.modes{display:flex;gap:0;margin-top:16px;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.modes button{
+  flex:1;appearance:none;border:0;background:var(--surface);color:var(--muted);
+  font-family:inherit;font-size:14px;font-weight:500;padding:11px 8px;cursor:pointer;
+}
+.modes button+button{border-left:1px solid var(--line-strong)}
+.modes button[aria-pressed="true"]{background:var(--bar-bg);color:var(--bar-fg);font-weight:700}
+.modes button:focus-visible{outline:2px solid var(--focus);outline-offset:-4px}
+
+/* ---- sections ---- */
+section{margin-top:26px}
+.sec-bar{
+  background:var(--bar-bg);color:var(--bar-fg);
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;
+  font-size:14px;letter-spacing:.08em;padding:8px 14px;border-radius:2px 2px 0 0;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.sec-bar .hint{font-family:"Noto Sans JP",sans-serif;font-weight:400;font-size:11px;letter-spacing:0;opacity:.75}
+.card{
+  background:var(--surface);border:1px solid var(--line);border-top:0;
+  border-radius:0 0 2px 2px;padding:16px 14px;box-shadow:var(--shadow);
+}
+.note{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+
+label.fld{display:block;margin-bottom:14px}
+label.fld:last-child{margin-bottom:0}
+.fld-l{
+  display:block;font-size:12px;font-weight:700;letter-spacing:.04em;
+  color:var(--muted);margin-bottom:5px;
+}
+input[type=text],input[type=number],select,textarea{
+  width:100%;font-family:inherit;font-size:15px;color:var(--ink);
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:2px;
+  padding:9px 10px;line-height:1.5;
+}
+textarea{resize:vertical;min-height:76px}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.65}
+
+/* ---- weekday rows ---- */
+.drow{
+  display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:start;
+  padding:10px 0;border-top:1px solid var(--line);
+}
+.drow:first-of-type{border-top:0;padding-top:0}
+.dname{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:17px;
+  text-align:center;padding-top:5px;
+}
+.dname.sat{color:#2f6fa8}
+.dname.sun{color:var(--no)}
+:root[data-theme="dark"] .dname.sat,:root:not([data-theme="light"]) .dname.sat{color:#79b2e0}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .dname.sat{color:#2f6fa8}}
+
+.seg{display:flex;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.seg button{
+  flex:1;appearance:none;border:0;background:var(--surface);color:var(--muted);
+  font-family:inherit;font-size:13px;font-weight:500;padding:8px 4px;cursor:pointer;white-space:nowrap;
+}
+.seg button+button{border-left:1px solid var(--line-strong)}
+.seg button:focus-visible{outline:2px solid var(--focus);outline-offset:-3px}
+.seg button[aria-pressed="true"]{font-weight:700}
+.seg button[aria-pressed="true"][data-v="all"]{background:var(--ok);color:#fff}
+.seg button[aria-pressed="true"][data-v="range"]{background:var(--sunk);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.seg button[aria-pressed="true"][data-v="off"]{background:var(--no);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"][data-v="all"],
+:root[data-theme="dark"] .seg button[aria-pressed="true"][data-v="off"]{color:#131619}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .seg button[aria-pressed="true"][data-v="all"],
+  :root:not([data-theme="light"]) .seg button[aria-pressed="true"][data-v="off"]{color:#131619}
+}
+
+.ranges{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.ranges[hidden]{display:none}
+.times{display:flex;align-items:center;gap:7px}
+.times select{flex:1;font-family:"Roboto Mono",monospace;font-size:14px;padding:7px 6px;font-variant-numeric:tabular-nums}
+.times .tilde{color:var(--muted);font-family:"Roboto Mono",monospace}
+.xbtn{
+  appearance:none;flex:0 0 auto;width:32px;height:32px;cursor:pointer;
+  border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);
+  color:var(--no);font-family:inherit;font-size:16px;font-weight:700;line-height:1;padding:0;
+}
+.xbtn:hover{border-color:var(--no);background:var(--no-soft)}
+.xbtn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.addbtn{
+  appearance:none;align-self:flex-start;cursor:pointer;
+  border:1px dashed var(--line-strong);border-radius:2px;background:transparent;
+  color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:500;padding:6px 12px;
+}
+.addbtn:hover{border-color:var(--ok);color:var(--ok)}
+.addbtn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.night{
+  margin-top:7px;font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.night[hidden]{display:none}
+
+/* ---- calendar ---- */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-h{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:11px;
+  text-align:center;color:var(--muted);padding-bottom:2px;
+}
+.cal-h.sat{color:#2f6fa8}.cal-h.sun{color:var(--no)}
+.day{
+  appearance:none;border:1px solid var(--line);background:var(--surface);
+  border-radius:2px;padding:5px 2px 4px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:1px;min-height:52px;
+  font-family:inherit;color:var(--ink);
+}
+.day:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.day .d{font-family:"Roboto Mono",monospace;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+.day .m{font-family:"Roboto Mono",monospace;font-size:9px;color:var(--muted);letter-spacing:-.02em}
+.day .mk{font-size:15px;font-weight:700;line-height:1.1}
+.day[data-s="all"]{background:var(--ok-soft);border-color:var(--ok)}
+.day[data-s="all"] .mk{color:var(--ok)}
+.day[data-s="off"]{background:var(--no-soft);border-color:var(--no)}
+.day[data-s="off"] .mk{color:var(--no)}
+.day[data-s="range"]{background:var(--mid-soft);border-color:var(--mid)}
+.day[data-s="range"] .m{color:var(--mid);font-weight:700}
+.day[aria-current="true"]{box-shadow:0 0 0 2px var(--focus)}
+.day .hol{font-size:8px;color:var(--no);line-height:1}
+.day .busy{font-size:8px;color:var(--mid);font-weight:700;line-height:1}
+
+.dayedit{
+  margin-top:12px;border:1px solid var(--line-strong);border-radius:2px;
+  background:var(--sunk);padding:12px;
+}
+.dayedit[hidden]{display:none}
+.dayedit h4{
+  margin:0 0 9px;font-family:"Roboto Mono",monospace;font-size:14px;font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.seg4{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.seg4 button{
+  appearance:none;border:0;background:var(--surface);color:var(--muted);
+  font-family:inherit;font-size:12.5px;font-weight:500;padding:9px 2px;cursor:pointer;
+}
+.seg4 button+button{border-left:1px solid var(--line-strong)}
+.seg4 button[aria-pressed="true"]{background:var(--bar-bg);color:var(--bar-fg);font-weight:700}
+.seg4 button:focus-visible{outline:2px solid var(--focus);outline-offset:-3px}
+
+/* ---- hybrid ---- */
+.hy{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.hy:first-of-type{border-top:0;padding-top:0}
+.hy .sname{font-size:14px;font-weight:500}
+.seg3{display:flex;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.seg3 button{
+  appearance:none;border:0;background:var(--surface);color:var(--muted);
+  font-size:16px;font-weight:700;width:46px;padding:7px 0;cursor:pointer;font-family:inherit;
+}
+.seg3 button+button{border-left:1px solid var(--line-strong)}
+.seg3 button:focus-visible{outline:2px solid var(--focus);outline-offset:-3px}
+.seg3 button[aria-pressed="true"][data-v="○"]{background:var(--ok);color:#fff}
+.seg3 button[aria-pressed="true"][data-v="▲"]{background:var(--mid);color:#fff}
+.seg3 button[aria-pressed="true"][data-v="×"]{background:var(--no);color:#fff}
+:root[data-theme="dark"] .seg3 button[aria-pressed="true"]{color:#131619}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg3 button[aria-pressed="true"]{color:#131619}}
+
+.wishrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.wishrow .fld-l{white-space:nowrap}
+
+/* ---- action bar ---- */
+.actions{
+  position:fixed;left:0;right:0;bottom:0;background:var(--surface);
+  border-top:1px solid var(--line-strong);padding:11px 16px;
+  box-shadow:0 -6px 20px rgba(22,25,28,.08);z-index:20;
+}
+.actions-in{max-width:640px;margin:0 auto;display:flex;gap:9px}
+.btn{
+  appearance:none;font-family:inherit;font-size:15px;font-weight:700;
+  border-radius:2px;padding:12px 14px;cursor:pointer;border:1px solid var(--line-strong);
+  background:var(--surface);color:var(--ink);
+}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.btn-main{flex:1;background:var(--ok);color:#fff;border-color:var(--ok)}
+:root[data-theme="dark"] .btn-main{color:#131619}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-main{color:#131619}}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+.out{margin-top:14px}
+.out[hidden]{display:none}
+.out textarea{
+  font-family:"Roboto Mono",monospace;font-size:12px;line-height:1.6;
+  min-height:220px;background:var(--sunk);
+}
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:80px;
+  background:var(--bar-bg);color:var(--bar-fg);padding:10px 18px;border-radius:2px;
+  font-size:13.5px;font-weight:500;z-index:40;box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transition:opacity .18s ease;
+}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+
+/* ---- aggregate view ---- */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:2px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left;white-space:nowrap;vertical-align:top}
+th{background:var(--sunk);font-weight:700;font-size:11.5px;color:var(--muted);letter-spacing:.03em;position:sticky;top:0}
+td.mono{font-family:"Roboto Mono",monospace;font-variant-numeric:tabular-nums;font-size:12px}
+tr:last-child td{border-bottom:0}
+.pending{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pending span,.pending button{
+  font-family:inherit;font-size:12.5px;line-height:1.6;
+  border:1px solid var(--no);color:var(--no);background:var(--no-soft);
+  padding:3px 9px;border-radius:2px;
+}
+.pending button{cursor:pointer;appearance:none}
+.pending button:hover{border-color:var(--ink);color:var(--ink)}
+.pending button:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.pending button.paper{border-color:var(--mid);color:var(--mid);background:var(--mid-soft)}
+.pending button.paper:hover{border-color:var(--ink);color:var(--ink)}
+.pending .empty{border-color:var(--line-strong);color:var(--muted);background:transparent}
+.count{
+  font-family:"Roboto Mono",monospace;font-size:13px;font-variant-numeric:tabular-nums;
+  color:var(--muted);margin:0 0 10px;
+}
+.count b{color:var(--ink);font-size:17px;font-weight:700}
+.hidden{display:none !important}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <div class="mast">
+    <div class="mast-bar">
+      <h1 id="mTitle">10月度シフト申請書</h1>
+      <span class="co" id="mYm">2026 / 10</span>
+    </div>
+    <div class="meta">
+      <span id="mStore">横須賀大矢部三丁目店</span>
+      <span id="mRange">申請期間 2026.10.05 — 11.01</span>
+      <span id="mDue">提出期限 <b>9月15日</b></span>
+    </div>
+    <div class="modes" role="group" aria-label="表示モード">
+      <button type="button" id="mApply" aria-pressed="true">申請する</button>
+      <button type="button" id="mAgg" aria-pressed="false">店長用 集計</button>
+    </div>
+  </div>
+
+  <!-- ============ APPLY ============ -->
+  <div id="viewApply">
+    <section>
+      <div class="sec-bar">申請者</div>
+      <div class="card">
+        <label class="fld">
+          <span class="fld-l">氏名</span>
+          <input type="text" id="name" list="rosterList" autocomplete="name" placeholder="山田 太郎">
+          <datalist id="rosterList"></datalist>
+        </label>
+        <p class="note" style="margin:-8px 0 14px">シフト表に載っているとおりに書いてください。</p>
+        <label class="fld">
+          <span class="fld-l">所属店舗</span>
+          <select id="store"></select>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">基本シフト申請<span class="hint">毎週の勤務できる曜日・時間</span></div>
+      <div class="card">
+        <p class="note">勤務できる時間帯をなるべく広く入れてください。深夜（22時以降）に働ける方は「時間帯」を選んで翌朝までの時刻を入れてください。<b>朝と夜など1日に2回入れる方は「＋ 時間帯を追加」で分けて記入できます。</b></p>
+        <div id="days"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">週の希望</div>
+      <div class="card">
+        <div class="wishrow">
+          <label class="fld"><span class="fld-l">週 何日</span><input type="number" id="wDays" min="0" max="7" inputmode="numeric" placeholder="5"></label>
+          <label class="fld"><span class="fld-l">週 何時間</span><input type="number" id="wHours" min="0" max="60" inputmode="numeric" placeholder="30"></label>
+          <label class="fld"><span class="fld-l">給与 万円/月</span><input type="number" id="wPay" min="0" max="99" inputmode="numeric" placeholder="10"></label>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">イレギュラー申請<span class="hint">日付をタップ</span></div>
+      <div class="card">
+        <p class="note">基本シフトと違う日だけ指定してください。指定のない日は基本シフトどおりで組みます。「繁忙」の日は特に人手が要ります。</p>
+        <div class="cal" id="calHead"></div>
+        <div class="cal" id="cal" style="margin-top:3px"></div>
+        <div class="dayedit" id="dayEdit" hidden>
+          <h4 id="deTitle"></h4>
+          <div class="seg4" id="deSeg">
+            <button type="button" data-v="" aria-pressed="true">未指定</button>
+            <button type="button" data-v="all" aria-pressed="false">終日OK</button>
+            <button type="button" data-v="range" aria-pressed="false">時間指定</button>
+            <button type="button" data-v="off" aria-pressed="false">休み希望</button>
+          </div>
+          <div class="ranges" id="deRanges" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">ハイブリッド申請<span class="hint">勤務できる店舗</span></div>
+      <div class="card">
+        <p class="note">○＝勤務希望　▲＝可能だがなるべく希望店舗　×＝勤務不可</p>
+        <div id="hybrid"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">備考</div>
+      <div class="card">
+        <textarea id="note" placeholder="テスト期間で中旬は入れません／連勤は3日までにしてください　など"></textarea>
+      </div>
+    </section>
+
+    <div class="out" id="out">
+      <section>
+        <div class="sec-bar">送信用テキスト<span class="hint">店長へLINE等で送ってください</span></div>
+        <div class="card">
+          <textarea id="outText" readonly></textarea>
+          <div style="display:flex;gap:9px;margin-top:10px">
+            <button class="btn btn-main" type="button" id="copyBtn">この内容をコピー</button>
+            <button class="btn" type="button" id="saveBtn">ファイルで保存</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============ AGGREGATE ============ -->
+  <div id="viewAgg" class="hidden">
+    <section>
+      <div class="sec-bar">スタッフ名簿<span class="hint">この端末にだけ保存されます</span></div>
+      <div class="card">
+        <p class="note">未提出者を出すために使います。1行に1名で入力してください。<b>このページには保存されず、店長のブラウザの中だけに残ります。</b>一度登録すれば翌月以降も引き継がれます。</p>
+        <textarea id="rosterBox" placeholder="山田太郎&#10;鈴木花子&#10;佐藤一郎" style="min-height:110px"></textarea>
+        <div style="display:flex;gap:9px;margin-top:10px;align-items:center">
+          <button class="btn btn-main" type="button" id="rosterSave">名簿を保存</button>
+          <span class="count" style="margin:0" id="rosterCount">未登録</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">申請の取り込み</div>
+      <div class="card">
+        <p class="note">スタッフから届いた申請テキストを、まとめてここに貼り付けてください。何人分でも一度に読み込めます。</p>
+        <textarea id="pasteBox" placeholder="受け取った申請テキストを貼り付け" style="min-height:120px;font-family:'Roboto Mono',monospace;font-size:12px"></textarea>
+        <div style="display:flex;gap:9px;margin-top:10px">
+          <button class="btn btn-main" type="button" id="loadBtn">読み込む</button>
+          <button class="btn" type="button" id="clearBtn">全消去</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">提出状況</div>
+      <div class="card">
+        <p class="count">アプリ <b id="cDone">0</b> 名 ／ 紙 <b id="cPaper">0</b> 名 ／ 未提出 <b id="cLeft">0</b> 名</p>
+        <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+        <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)" id="unknownLabel">名簿にない名前<span style="font-weight:400;color:var(--muted)">　— 表記ゆれの可能性があります</span></p>
+        <div class="pending" id="unknownList"></div>
+        <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)">未提出<span style="font-weight:400;color:var(--muted)">　— 紙で受け取った人はタップしてください</span></p>
+        <div class="pending" id="pending"></div>
+        <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)">紙で受領<span style="font-weight:400;color:var(--muted)">　— タップで取り消し</span></p>
+        <div class="pending" id="paperList"></div>
+        <div style="display:flex;gap:9px;margin-top:16px">
+          <button class="btn btn-main" type="button" id="csvBtn">CSVで保存</button>
+          <button class="btn" type="button" id="csvCopyBtn">CSVを表示・コピー</button>
+        </div>
+        <div class="out" id="csvOut" hidden style="margin-top:12px">
+          <p class="note" style="margin-bottom:6px">コピーできない場合は、下の枠内を選択してコピーしてください。</p>
+          <textarea id="csvText" readonly style="min-height:160px"></textarea>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="actions" id="actionBar">
+  <div class="actions-in">
+    <button class="btn" type="button" id="resetBtn">クリア</button>
+    <button class="btn btn-main" type="button" id="doneBtn">記入おわり</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* 名簿はこのファイルに持ちません。店長が集計画面で登録し、その端末にだけ保存されます。 */
+var ROSTER = [];
+var LS_ROSTER = "shift_roster_v1";
+function loadRoster(){
+  try{
+    var raw = localStorage.getItem(LS_ROSTER);
+    ROSTER = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(ROSTER)) ROSTER = [];
+  }catch(e){ ROSTER = []; }
+}
+function saveRoster(){ try{ localStorage.setItem(LS_ROSTER, JSON.stringify(ROSTER)); }catch(e){} }
+/* 表記ゆれを吸収して照合する（全角半角・空白の違いを無視） */
+function norm(s){
+  s = String(s == null ? "" : s);
+  if (String.prototype.normalize) s = s.normalize("NFKC");
+  return s.replace(/\s+/g, "");
+}
+function inRoster(n){
+  var k = norm(n);
+  for (var i=0;i<ROSTER.length;i++) if (norm(ROSTER[i]) === k) return ROSTER[i];
+  return null;
+}
+
+var STORES =["横浜釜利谷東二丁目店","寺前一丁目店","横須賀久里浜四丁目店","横須賀久比里店","横須賀大矢部三丁目店"];
+var SHORT = {"横浜釜利谷東二丁目店":"釜利谷","寺前一丁目店":"寺前","横須賀久里浜四丁目店":"久里浜","横須賀久比里店":"久比里","横須賀大矢部三丁目店":"大矢部"};
+var DOW = ["月","火","水","木","金","土","日"];
+
+/* ===== 対象月の設定 — 翌月分を作るときはこのブロックだけ直せば全体が切り替わります =====
+   期間の決め方: 月初の最初の月曜 〜 末日を含む週の日曜（統合設定シート 01_全体ルール より） */
+var CFG = {
+  label:    "10月度",
+  ym:       "2026-10",
+  start:    [2026, 10, 5],           // 2026/10/05(月)
+  days:     28,                       // .. 2026/11/01(日)
+  deadline: "9月15日",
+  store:    "横須賀大矢部三丁目店",   // 試験運用はこの店舗のみ
+  holidays: {"10/12":"スポーツの日"},
+  busy:     {"10/31":"ハロウィン"}    // 祝日ではないが人手が要る日
+};
+
+var START = new Date(CFG.start[0], CFG.start[1]-1, CFG.start[2]);
+var NDAYS = CFG.days;
+var HOLIDAYS = CFG.holidays;
+var BUSY = CFG.busy;
+var LS = "shiftapply_" + CFG.ym.replace("-","_") + "_v1";
+
+/* ---------- time options ---------- */
+var TIMES = [];
+for (var h=0; h<=24; h++){
+  for (var m=0; m<60; m+=15){
+    if (h===24 && m>0) break;
+    TIMES.push((h<10?"0":"")+h+":"+(m<10?"0":"")+m);
+  }
+}
+function timeOpts(sel){
+  return TIMES.map(function(t){
+    return '<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>';
+  }).join("");
+}
+var MAX_RANGES = 3;   // 1日あたりに入れられる時間帯の数
+
+/* 時間帯の行を組み立てる。基本シフトとイレギュラーで同じものを使う */
+function rangeRowsHTML(ranges){
+  var h = "";
+  for (var i=0;i<ranges.length;i++){
+    h += '<div class="times" data-i="'+i+'">' +
+           '<select data-t="s" aria-label="開始時刻">'+timeOpts(ranges[i].s)+'</select>' +
+           '<span class="tilde">〜</span>' +
+           '<select data-t="e" aria-label="終了時刻">'+timeOpts(ranges[i].e)+'</select>' +
+           (ranges.length > 1
+             ? '<button type="button" class="xbtn" data-act="del" aria-label="この時間帯を削除">×</button>'
+             : '') +
+         '</div>';
+  }
+  if (ranges.length < MAX_RANGES)
+    h += '<button type="button" class="addbtn" data-act="add">＋ 時間帯を追加</button>';
+  return h;
+}
+/* 同じ日に2回勤務できる方向け。9:00-15:00 と 20:00-24:00 のような入れ方を想定 */
+function nextRange(ranges){
+  var last = ranges[ranges.length-1];
+  return last && last.e !== "24:00" ? {s:last.e, e:"24:00"} : {s:"09:00", e:"17:00"};
+}
+function hasOvernight(ranges){
+  for (var i=0;i<ranges.length;i++) if (ranges[i].e <= ranges[i].s) return true;
+  return false;
+}
+
+/* ---------- state ---------- */
+/* 旧形式 {mode,s,e} を {mode,ranges:[{s,e}]} に揃える。
+   保存済みの書きかけや、旧版で送られた申請テキストも読めるようにするため。 */
+function fixEntry(v){
+  if (!v || typeof v !== "object") return {mode:"", ranges:[{s:"09:00", e:"17:00"}]};
+  if (!Array.isArray(v.ranges) || !v.ranges.length)
+    v.ranges = [{s: v.s || "09:00", e: v.e || "17:00"}];
+  delete v.s; delete v.e;
+  if (v.ranges.length > MAX_RANGES) v.ranges.length = MAX_RANGES;
+  return v;
+}
+function migrate(o){
+  if (!o) return o;
+  DOW.forEach(function(d){ o.base[d] = fixEntry(o.base && o.base[d]); });
+  if (!o.irr) o.irr = {};
+  for (var k in o.irr) if (Object.prototype.hasOwnProperty.call(o.irr, k)) o.irr[k] = fixEntry(o.irr[k]);
+  return o;
+}
+
+function blank(){
+  var base = {};
+  DOW.forEach(function(d){ base[d] = {mode:"", ranges:[{s:"09:00", e:"17:00"}]}; });
+  var hy = {};
+  STORES.forEach(function(s){ hy[s] = ""; });
+  return {v:1, period:CFG.ym, name:"", store:CFG.store, base:base, wish:{days:"",hours:"",pay:""}, irr:{}, hybrid:hy, note:""};
+}
+var S = blank();
+var subs = [];      // アプリで届いた申請
+var paper = [];     // 紙で受け取った人の氏名
+var selDay = null;
+
+function dateOf(i){ var d = new Date(START.getTime()); d.setDate(d.getDate()+i); return d; }
+function keyOf(d){ return (d.getMonth()+1)+"/"+d.getDate(); }
+function pad2(n){ return (n<10?"0":"")+n; }
+
+/* masthead reflects CFG so a new month needs no HTML edits */
+(function(){
+  var end = dateOf(NDAYS-1);
+  document.getElementById("mTitle").textContent = CFG.label + "シフト申請書";
+  document.getElementById("mYm").textContent = CFG.ym.replace("-", " / ");
+  document.getElementById("mRange").textContent =
+    "申請期間 " + START.getFullYear() + "." + pad2(START.getMonth()+1) + "." + pad2(START.getDate()) +
+    " — " + pad2(end.getMonth()+1) + "." + pad2(end.getDate());
+  document.getElementById("mDue").innerHTML = "提出期限 <b>" + CFG.deadline + "</b>";
+  document.getElementById("mStore").textContent = CFG.store;
+  document.title = CFG.label + "シフト申請書";
+})();
+
+/* ---------- persistence ---------- */
+function save(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
+function load(){
+  try{
+    var raw = localStorage.getItem(LS);
+    if(!raw) return;
+    var o = JSON.parse(raw);
+    if(o && o.v===1){ S = migrate(o); if(!S.store) S.store = CFG.store; }
+  }catch(e){}
+}
+/* 店長側は9/15までの数日かけて集めるので、読み込んだ分も保存しておく */
+function saveAgg(){ try{ localStorage.setItem(LS+"_agg", JSON.stringify({subs:subs, paper:paper})); }catch(e){} }
+function loadAgg(){
+  try{
+    var raw = localStorage.getItem(LS+"_agg");
+    if(!raw) return;
+    var o = JSON.parse(raw);
+    if(o){ subs = o.subs || []; paper = o.paper || []; }
+  }catch(e){}
+}
+
+/* ---------- base64 (utf-8 safe) ---------- */
+function b64enc(str){
+  var bytes = new TextEncoder().encode(str), bin = "";
+  for (var i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+function b64dec(b64){
+  var bin = atob(b64), bytes = new Uint8Array(bin.length);
+  for (var i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+/* ---------- build UI ---------- */
+var elName = document.getElementById("name");
+function fillRosterHints(){
+  document.getElementById("rosterList").innerHTML =
+    ROSTER.map(function(n){ return '<option value="'+n.replace(/"/g,"&quot;")+'"></option>'; }).join("");
+}
+
+var elStore = document.getElementById("store");
+elStore.innerHTML = '<option value="">選んでください</option>' +
+  STORES.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join("");
+
+var daysBox = document.getElementById("days");
+DOW.forEach(function(d,i){
+  var row = document.createElement("div");
+  row.className = "drow";
+  var cls = i===5 ? " sat" : (i===6 ? " sun" : "");
+  row.innerHTML =
+    '<div class="dname'+cls+'">'+d+'</div>' +
+    '<div>' +
+      '<div class="seg" data-dow="'+d+'">' +
+        '<button type="button" data-v="all" aria-pressed="false">終日OK</button>' +
+        '<button type="button" data-v="range" aria-pressed="false">時間帯</button>' +
+        '<button type="button" data-v="off" aria-pressed="false">不可</button>' +
+      '</div>' +
+      '<div class="ranges" data-ranges="'+d+'" hidden></div>' +
+      '<div class="night" data-night="'+d+'" hidden>終了が開始より早い時間帯は、翌朝までの深夜勤務として扱います</div>' +
+    '</div>';
+  daysBox.appendChild(row);
+});
+
+var calHead = document.getElementById("calHead");
+calHead.innerHTML = DOW.map(function(d,i){
+  var c = i===5?" sat":(i===6?" sun":"");
+  return '<div class="cal-h'+c+'">'+d+'</div>';
+}).join("");
+
+var cal = document.getElementById("cal");
+for (var i=0;i<NDAYS;i++){
+  var d = dateOf(i), k = keyOf(d);
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "day"; b.dataset.k = k; b.dataset.s = "";
+  b.innerHTML = '<span class="m">'+(d.getMonth()+1)+'月</span>' +
+                '<span class="d">'+d.getDate()+'</span>' +
+                '<span class="mk"></span>' +
+                (HOLIDAYS[k] ? '<span class="hol">祝</span>'
+                             : (BUSY[k] ? '<span class="busy">繁忙</span>' : ''));
+  b.setAttribute("aria-label", k + (HOLIDAYS[k] ? " "+HOLIDAYS[k] : (BUSY[k] ? " "+BUSY[k] : "")));
+  cal.appendChild(b);
+}
+
+var hyBox = document.getElementById("hybrid");
+STORES.forEach(function(s){
+  var row = document.createElement("div");
+  row.className = "hy";
+  row.innerHTML = '<div class="sname">'+s+'</div>' +
+    '<div class="seg3" data-store="'+s+'">' +
+      '<button type="button" data-v="○" aria-pressed="false">○</button>' +
+      '<button type="button" data-v="▲" aria-pressed="false">▲</button>' +
+      '<button type="button" data-v="×" aria-pressed="false">×</button>' +
+    '</div>';
+  hyBox.appendChild(row);
+});
+
+/* ---------- render from state ---------- */
+function render(){
+  if (elName.value !== S.name) elName.value = S.name;
+  elStore.value = S.store || "";
+
+  DOW.forEach(function(d){
+    var st = S.base[d];
+    var seg = daysBox.querySelector('.seg[data-dow="'+d+'"]');
+    Array.prototype.forEach.call(seg.querySelectorAll("button"), function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.v === st.mode));
+    });
+    var rg = daysBox.querySelector('[data-ranges="'+d+'"]');
+    if (st.mode === "range"){
+      rg.hidden = false;
+      rg.innerHTML = rangeRowsHTML(st.ranges);
+    } else {
+      rg.hidden = true;
+      rg.innerHTML = "";
+    }
+    daysBox.querySelector('[data-night="'+d+'"]').hidden =
+      !(st.mode === "range" && hasOvernight(st.ranges));
+  });
+
+  document.getElementById("wDays").value = S.wish.days;
+  document.getElementById("wHours").value = S.wish.hours;
+  document.getElementById("wPay").value = S.wish.pay;
+
+  Array.prototype.forEach.call(cal.children, function(b){
+    var v = S.irr[b.dataset.k];
+    b.dataset.s = v ? v.mode : "";
+    var mk = b.querySelector(".mk"), m = b.querySelector(".m");
+    var d = b.dataset.k.split("/")[0];
+    if (!v){ mk.textContent = ""; m.textContent = d+"月"; }
+    else if (v.mode === "all"){ mk.textContent = "○"; m.textContent = d+"月"; }
+    else if (v.mode === "off"){ mk.textContent = "×"; m.textContent = d+"月"; }
+    else if (v.ranges.length > 1){ mk.textContent = ""; m.textContent = v.ranges.length + "枠"; }
+    else { mk.textContent = ""; m.textContent = v.ranges[0].s.replace(":","")+"-"+v.ranges[0].e.replace(":",""); }
+    b.setAttribute("aria-current", String(selDay === b.dataset.k));
+  });
+
+  STORES.forEach(function(s){
+    var seg = hyBox.querySelector('.seg3[data-store="'+s+'"]');
+    Array.prototype.forEach.call(seg.querySelectorAll("button"), function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.v === S.hybrid[s]));
+    });
+  });
+
+  document.getElementById("note").value = S.note;
+  renderDayEdit();
+}
+
+function renderDayEdit(){
+  var box = document.getElementById("dayEdit");
+  if (!selDay){ box.hidden = true; return; }
+  box.hidden = false;
+  var cur = S.irr[selDay] || {mode:"", ranges:[{s:"09:00", e:"17:00"}]};
+  var tag = HOLIDAYS[selDay] ? "　" + HOLIDAYS[selDay] : (BUSY[selDay] ? "　" + BUSY[selDay] : "");
+  document.getElementById("deTitle").textContent = START.getFullYear() + "年 " + selDay + tag;
+  Array.prototype.forEach.call(document.getElementById("deSeg").querySelectorAll("button"), function(b){
+    b.setAttribute("aria-pressed", String(b.dataset.v === cur.mode));
+  });
+  var rg = document.getElementById("deRanges");
+  if (cur.mode === "range"){ rg.hidden = false; rg.innerHTML = rangeRowsHTML(cur.ranges); }
+  else { rg.hidden = true; rg.innerHTML = ""; }
+}
+
+/* ---------- events ---------- */
+elName.addEventListener("input", function(){ S.name = this.value.trim(); save(); });
+elStore.addEventListener("change", function(){ S.store = this.value; save(); });
+
+daysBox.addEventListener("click", function(e){
+  var seg = e.target.closest(".seg button");
+  if (seg){
+    var d = seg.closest(".seg").dataset.dow;
+    S.base[d].mode = (S.base[d].mode === seg.dataset.v) ? "" : seg.dataset.v;
+    save(); render(); return;
+  }
+  var act = e.target.closest("[data-act]"); if(!act) return;
+  var box = act.closest(".ranges"); if(!box) return;
+  var st = S.base[box.dataset.ranges];
+  if (act.dataset.act === "add"){
+    if (st.ranges.length < MAX_RANGES) st.ranges.push(nextRange(st.ranges));
+  } else {
+    st.ranges.splice(+act.closest(".times").dataset.i, 1);
+  }
+  save(); render();
+});
+daysBox.addEventListener("change", function(e){
+  var sel = e.target.closest("select[data-t]"); if(!sel) return;
+  var box = sel.closest(".ranges"); if(!box) return;
+  S.base[box.dataset.ranges].ranges[+sel.closest(".times").dataset.i][sel.dataset.t] = sel.value;
+  save(); render();
+});
+
+["wDays","wHours","wPay"].forEach(function(id,ix){
+  var key = ["days","hours","pay"][ix];
+  document.getElementById(id).addEventListener("input", function(){ S.wish[key] = this.value; save(); });
+});
+
+cal.addEventListener("click", function(e){
+  var b = e.target.closest(".day"); if(!b) return;
+  selDay = (selDay === b.dataset.k) ? null : b.dataset.k;
+  render();
+  if (selDay) document.getElementById("dayEdit").scrollIntoView({block:"nearest", behavior:"smooth"});
+});
+document.getElementById("deSeg").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b || !selDay) return;
+  var v = b.dataset.v;
+  if (!v){ delete S.irr[selDay]; }
+  else {
+    var cur = S.irr[selDay];
+    S.irr[selDay] = {
+      mode: v,
+      ranges: (cur && cur.ranges) ? cur.ranges : [{s:"09:00", e:"17:00"}]
+    };
+  }
+  save(); render();
+});
+document.getElementById("deRanges").addEventListener("click", function(e){
+  var act = e.target.closest("[data-act]"); if(!act || !selDay || !S.irr[selDay]) return;
+  var st = S.irr[selDay];
+  if (act.dataset.act === "add"){
+    if (st.ranges.length < MAX_RANGES) st.ranges.push(nextRange(st.ranges));
+  } else {
+    st.ranges.splice(+act.closest(".times").dataset.i, 1);
+  }
+  save(); render();
+});
+document.getElementById("deRanges").addEventListener("change", function(e){
+  var sel = e.target.closest("select[data-t]"); if(!sel || !selDay || !S.irr[selDay]) return;
+  S.irr[selDay].ranges[+sel.closest(".times").dataset.i][sel.dataset.t] = sel.value;
+  save(); render();
+});
+
+hyBox.addEventListener("click", function(e){
+  var b = e.target.closest(".seg3 button"); if(!b) return;
+  var s = b.closest(".seg3").dataset.store;
+  S.hybrid[s] = (S.hybrid[s] === b.dataset.v) ? "" : b.dataset.v;
+  save(); render();
+});
+document.getElementById("note").addEventListener("input", function(){ S.note = this.value; save(); });
+
+/* ---------- output text ---------- */
+function rangesText(ranges){
+  return ranges.map(function(r){
+    return r.s + "-" + r.e + (r.e <= r.s ? "(翌朝まで)" : "");
+  }).join(" / ");
+}
+function baseLine(d){
+  var st = S.base[d];
+  if (st.mode === "all") return "終日OK";
+  if (st.mode === "off") return "不可";
+  if (st.mode === "range") return rangesText(st.ranges);
+  return "未記入";
+}
+function irrLine(k){
+  var v = S.irr[k];
+  if (v.mode === "all") return "終日OK";
+  if (v.mode === "off") return "休み希望";
+  return rangesText(v.ranges);
+}
+function buildText(){
+  var L = [];
+  L.push("=== " + START.getFullYear() + "年" + CFG.label + " シフト申請 ===");
+  L.push("氏名: " + (S.name || "(未記入)"));
+  L.push("所属: " + (S.store || "(未記入)"));
+  L.push("");
+  L.push("[基本シフト]");
+  DOW.forEach(function(d){ L.push("  " + d + " " + baseLine(d)); });
+  L.push("");
+  L.push("[週の希望]  週" + (S.wish.days||"-") + "日 / 週" + (S.wish.hours||"-") + "時間 / 給与" + (S.wish.pay||"-") + "万円");
+  L.push("");
+  var ks = Object.keys(S.irr);
+  L.push("[イレギュラー] " + (ks.length ? ks.length + "件" : "なし"));
+  ks.sort(function(a,b){
+    var pa = a.split("/"), pb = b.split("/");
+    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+  }).forEach(function(k){ L.push("  " + k + " " + irrLine(k)); });
+  L.push("");
+  L.push("[勤務可能店舗]");
+  STORES.forEach(function(s){ L.push("  " + SHORT[s] + " " + (S.hybrid[s] || "-")); });
+  if (S.note.trim()){
+    L.push("");
+    L.push("[備考]");
+    S.note.trim().split("\n").forEach(function(x){ L.push("  " + x); });
+  }
+  L.push("");
+  L.push("#DATA:" + b64enc(JSON.stringify(S)));
+  L.push("=== ここまで ===");
+  return L.join("\n");
+}
+
+function toast(msg){
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove("on"); }, 2200);
+}
+
+function missing(){
+  var m = [];
+  if (!S.name) m.push("氏名");
+  if (!S.store) m.push("所属店舗");
+  var any = DOW.some(function(d){ return S.base[d].mode; });
+  if (!any) m.push("基本シフト");
+  return m;
+}
+
+document.getElementById("doneBtn").addEventListener("click", function(){
+  var m = missing();
+  if (m.length){ toast(m.join("・") + " が未記入です"); return; }
+  document.getElementById("outText").value = buildText();
+  document.getElementById("out").hidden = false;
+  document.getElementById("out").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+document.getElementById("resetBtn").addEventListener("click", function(){
+  if (!confirm("記入内容をすべて消します。よろしいですか？")) return;
+  S = blank(); selDay = null; save(); render();
+  document.getElementById("out").hidden = true;
+  toast("クリアしました");
+});
+
+function copyText(str, okMsg){
+  var ta = document.createElement("textarea");
+  ta.value = str;
+  ta.style.position = "fixed"; ta.style.top = "-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  var done = false;
+  try { done = document.execCommand("copy"); } catch(e){}
+  document.body.removeChild(ta);
+  if (done){ toast(okMsg); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(str).then(function(){ toast(okMsg); },
+      function(){ toast("コピーできません。テキストを長押しして選択してください"); });
+  } else {
+    toast("コピーできません。テキストを長押しして選択してください");
+  }
+}
+document.getElementById("copyBtn").addEventListener("click", function(){
+  copyText(document.getElementById("outText").value, "コピーしました。店長へ送ってください");
+});
+
+var dl = null;
+if (window.claude && window.claude.use){
+  window.claude.use("downloads").then(function(d){ dl = d; syncSaveBtns(); }, function(){});
+}
+function syncSaveBtns(){
+  document.getElementById("saveBtn").style.display = dl ? "" : "none";
+  document.getElementById("csvBtn").style.display = dl ? "" : "none";
+}
+syncSaveBtns();
+
+function offerSave(filename, data, okMsg){
+  if (!dl){ toast("この画面では保存できません。コピーをお使いください"); return; }
+  dl.save({filename:filename, data:data}).then(
+    function(){ toast(okMsg); },
+    function(err){ if (err && err.code === "declined") return; toast("保存できませんでした"); }
+  );
+}
+document.getElementById("saveBtn").addEventListener("click", function(){
+  var n = (S.name || "申請").replace(/[\\/:*?"<>|]/g, "");
+  offerSave("シフト申請_" + START.getFullYear() + "年" + CFG.label + "_" + n + ".txt", document.getElementById("outText").value, "保存しました");
+});
+
+/* ================= AGGREGATE ================= */
+function switchMode(agg){
+  document.getElementById("mApply").setAttribute("aria-pressed", String(!agg));
+  document.getElementById("mAgg").setAttribute("aria-pressed", String(agg));
+  document.getElementById("viewApply").classList.toggle("hidden", agg);
+  document.getElementById("viewAgg").classList.toggle("hidden", !agg);
+  document.getElementById("actionBar").style.display = agg ? "none" : "";
+  window.scrollTo(0,0);
+}
+document.getElementById("mApply").addEventListener("click", function(){ switchMode(false); });
+document.getElementById("mAgg").addEventListener("click", function(){ switchMode(true); renderAgg(); });
+
+var COLS = ["受付方法","氏名","所属","月","火","水","木","金","土","日","週日数","週時間","給与","イレギュラー","釜利谷","寺前","久里浜","久比里","大矢部","備考"];
+
+function rowOf(o){
+  function rt(st){ return st.ranges.map(function(r){ return r.s+"-"+r.e; }).join(" / "); }
+  function bl(d){
+    var st = o.base && o.base[d];
+    if (!st || !st.mode) return "";
+    if (st.mode === "all") return "終日";
+    if (st.mode === "off") return "不可";
+    return rt(st);
+  }
+  var ks = Object.keys(o.irr || {}).sort(function(a,b){
+    var pa=a.split("/"), pb=b.split("/");
+    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+  });
+  var irr = ks.map(function(k){
+    var v = o.irr[k];
+    return k + " " + (v.mode === "all" ? "終日" : v.mode === "off" ? "休" : rt(v));
+  }).join("、");
+  var w = o.wish || {};
+  var h = o.hybrid || {};
+  return ["アプリ", o.name||"", o.store||"", bl("月"),bl("火"),bl("水"),bl("木"),bl("金"),bl("土"),bl("日"),
+          w.days||"", w.hours||"", w.pay||"", irr,
+          h[STORES[0]]||"", h[STORES[1]]||"", h[STORES[2]]||"", h[STORES[3]]||"", h[STORES[4]]||"",
+          (o.note||"").replace(/\n/g, " ")];
+}
+/* 紙で受け取った人は氏名だけ記録し、中身は用紙を見て埋める */
+function paperRow(n){
+  var r = new Array(COLS.length);
+  for (var i=0;i<r.length;i++) r[i] = "";
+  r[0] = "紙"; r[1] = n; r[2] = CFG.store;
+  return r;
+}
+
+document.getElementById("loadBtn").addEventListener("click", function(){
+  var txt = document.getElementById("pasteBox").value;
+  var re = /#DATA:([A-Za-z0-9+/=]+)/g, m, found = 0, bad = 0;
+  while ((m = re.exec(txt)) !== null){
+    try {
+      var o = migrate(JSON.parse(b64dec(m[1])));
+      if (!o || !o.name){ bad++; continue; }
+      var ix = -1;
+      for (var i=0;i<subs.length;i++){ if (subs[i].name === o.name){ ix = i; break; } }
+      if (ix >= 0) subs[ix] = o; else subs.push(o);
+      found++;
+    } catch(e){ bad++; }
+  }
+  if (!found){ toast(bad ? "読み取れませんでした" : "申請テキストが見つかりません"); }
+  else { toast(found + "名分を読み込みました" + (bad ? "（" + bad + "件は失敗）" : "")); document.getElementById("pasteBox").value = ""; }
+  saveAgg(); renderAgg();
+});
+document.getElementById("clearBtn").addEventListener("click", function(){
+  if ((!subs.length && !paper.length) || !confirm("読み込んだ申請と「紙で受領」の記録をすべて消します。よろしいですか？")) return;
+  subs = []; paper = []; saveAgg(); renderAgg(); toast("消去しました");
+});
+
+function renderAgg(){
+  var tbl = document.getElementById("tbl");
+  tbl.querySelector("thead").innerHTML = "<tr>" + COLS.map(function(c){ return "<th>"+c+"</th>"; }).join("") + "</tr>";
+  tbl.querySelector("tbody").innerHTML = subs.length
+    ? subs.map(function(o){
+        return "<tr>" + rowOf(o).map(function(v,i){
+          var mono = (i>=3 && i<=13);
+          return '<td'+(mono?' class="mono"':'')+'>' + String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;") + "</td>";
+        }).join("") + "</tr>";
+      }).join("")
+    : '<tr><td colspan="' + COLS.length + '" style="color:var(--muted)">まだ読み込んでいません</td></tr>';
+
+  // 申請の氏名を名簿の表記に寄せる（全角半角・空白ゆれを吸収）
+  var doneKeys = {}, unknown = [];
+  subs.forEach(function(o){
+    var hit = inRoster(o.name);
+    if (hit) doneKeys[norm(hit)] = true;
+    else if (o.name) unknown.push(o.name);
+  });
+  paper = paper.filter(function(n){ return !doneKeys[norm(n)]; });
+  var paperKeys = {};
+  paper.forEach(function(n){ paperKeys[norm(n)] = true; });
+  var left = ROSTER.filter(function(n){ return !doneKeys[norm(n)] && !paperKeys[norm(n)]; });
+
+  document.getElementById("cDone").textContent = subs.length;
+  document.getElementById("cPaper").textContent = paper.length;
+  document.getElementById("cLeft").textContent = ROSTER.length ? left.length : "—";
+
+  document.getElementById("pending").innerHTML = !ROSTER.length
+    ? '<span class="empty">先にスタッフ名簿を登録してください</span>'
+    : (left.length
+        ? left.map(function(n){ return '<button type="button" data-n="'+n+'">'+n+'</button>'; }).join("")
+        : '<span style="border-color:var(--ok);color:var(--ok);background:var(--ok-soft)">全員提出ずみ</span>');
+  document.getElementById("paperList").innerHTML = paper.length
+    ? paper.map(function(n){ return '<button type="button" class="paper" data-n="'+n+'">'+n+'</button>'; }).join("")
+    : '<span class="empty">なし</span>';
+
+  var show = ROSTER.length > 0 && unknown.length > 0;
+  document.getElementById("unknownLabel").style.display = show ? "" : "none";
+  document.getElementById("unknownList").style.display = show ? "" : "none";
+  document.getElementById("unknownList").innerHTML =
+    unknown.map(function(n){ return '<span>'+n+'</span>'; }).join("");
+}
+
+function renderRoster(){
+  document.getElementById("rosterBox").value = ROSTER.join("\n");
+  document.getElementById("rosterCount").textContent =
+    ROSTER.length ? ROSTER.length + " 名を登録ずみ" : "未登録";
+  fillRosterHints();
+}
+document.getElementById("rosterSave").addEventListener("click", function(){
+  var seen = {};
+  ROSTER = document.getElementById("rosterBox").value.split("\n")
+    .map(function(s){ return s.trim(); })
+    .filter(function(s){
+      if (!s || seen[norm(s)]) return false;
+      seen[norm(s)] = true; return true;
+    });
+  saveRoster(); renderRoster(); renderAgg();
+  toast(ROSTER.length ? ROSTER.length + " 名を保存しました" : "名簿を空にしました");
+});
+
+document.getElementById("pending").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  if (paper.indexOf(b.dataset.n) < 0) paper.push(b.dataset.n);
+  saveAgg(); renderAgg(); toast(b.dataset.n + " さんを「紙で受領」にしました");
+});
+document.getElementById("paperList").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  paper = paper.filter(function(n){ return n !== b.dataset.n; });
+  saveAgg(); renderAgg(); toast(b.dataset.n + " さんを未提出に戻しました");
+});
+
+function csvText(){
+  function q(v){ var s = String(v==null?"":v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s; }
+  var lines = [COLS.map(q).join(",")];
+  subs.forEach(function(o){ lines.push(rowOf(o).map(q).join(",")); });
+  paper.forEach(function(n){ lines.push(paperRow(n).map(q).join(",")); });
+  return "﻿" + lines.join("\r\n");
+}
+document.getElementById("csvBtn").addEventListener("click", function(){
+  if (!subs.length && !paper.length){ toast("先に申請を読み込んでください"); return; }
+  offerSave("シフト申請集計_" + START.getFullYear() + "年" + CFG.label + ".csv", csvText(), "CSVを保存しました");
+});
+document.getElementById("csvCopyBtn").addEventListener("click", function(){
+  if (!subs.length && !paper.length){ toast("先に申請を読み込んでください"); return; }
+  var t = csvText();
+  document.getElementById("csvText").value = t;
+  document.getElementById("csvOut").hidden = false;
+  copyText(t, "CSVをコピーしました");
+});
+
+/* ---------- go ---------- */
+loadRoster();
+load();
+loadAgg();
+renderRoster();
+render();
+renderAgg();
+})();
+</script>
+
+</body>
+</html>
