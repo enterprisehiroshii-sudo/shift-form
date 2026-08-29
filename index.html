@@ -287,6 +287,20 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.65}
 :root[data-theme="dark"] .btn-main{color:#131619}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-main{color:#131619}}
 .btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-line{background:#06c755;color:#fff;border-color:#06c755}
+.btn-line:hover{background:#05b34c;border-color:#05b34c}
+.donebox{
+  border:2px solid var(--ok);background:var(--ok-soft);border-radius:2px;
+  padding:12px 14px;margin-bottom:14px;display:flex;flex-direction:column;gap:3px;
+}
+.donebox[hidden]{display:none}
+.donebox strong{font-family:"Zen Kaku Gothic New",sans-serif;font-size:16px;color:var(--ok)}
+.donebox span{font-size:13px;color:var(--ink)}
+details summary{
+  cursor:pointer;font-size:13px;color:var(--muted);
+  padding:4px 0;list-style-position:inside;
+}
+details summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 
 .out{margin-top:14px}
 .out[hidden]{display:none}
@@ -422,13 +436,22 @@ tr:last-child td{border-bottom:0}
 
     <div class="out" id="out">
       <section>
-        <div class="sec-bar">送信用テキスト<span class="hint">店長へLINE等で送ってください</span></div>
+        <div class="sec-bar">申請を送る<span class="hint">最後の手順です</span></div>
         <div class="card">
-          <textarea id="outText" readonly></textarea>
-          <div style="display:flex;gap:9px;margin-top:10px">
-            <button class="btn btn-main" type="button" id="copyBtn">この内容をコピー</button>
+          <div id="sendDone" class="donebox" hidden>
+            <strong>送信しました</strong>
+            <span>店長に届きます。この画面は閉じて構いません。</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <button class="btn btn-main" type="button" id="sendBtn" hidden>この内容で申請する</button>
+            <button class="btn btn-line" type="button" id="lineBtn">LINEで店長に送る</button>
+            <button class="btn" type="button" id="copyBtn">コピーして自分で貼る</button>
             <button class="btn" type="button" id="saveBtn">ファイルで保存</button>
           </div>
+          <details style="margin-top:14px">
+            <summary>送る内容を確認する</summary>
+            <textarea id="outText" readonly style="margin-top:9px"></textarea>
+          </details>
         </div>
       </section>
     </div>
@@ -534,7 +557,10 @@ var CFG = {
   deadline: "9月15日",
   store:    "横須賀大矢部三丁目店",   // 試験運用はこの店舗のみ
   holidays: {"10/12":"スポーツの日"},
-  busy:     {"10/31":"ハロウィン"}    // 祝日ではないが人手が要る日
+  busy:     {"10/31":"ハロウィン"},   // 祝日ではないが人手が要る日
+  /* Googleスプレッドシートへ直接送る場合はGASのウェブアプリURLをここに入れます。
+     空のままなら「送信」ボタンは出ず、LINE送信とコピーだけになります。 */
+  endpoint: ""
 };
 
 var START = new Date(CFG.start[0], CFG.start[1]-1, CFG.start[2]);
@@ -652,6 +678,70 @@ function loadAgg(){
     var o = JSON.parse(raw);
     if(o){ subs = o.subs || []; paper = o.paper || []; }
   }catch(e){}
+}
+
+/* ---------- 圧縮コード「S1」 ----------
+   LINEのURLは長すぎると送れないため、申請内容を短い文字列に畳みます。
+   時刻は15分刻みの通し番号(0〜96)を36進数2桁で表します。 */
+function t2i(t){ var p = t.split(":"); return (+p[0]*60 + +p[1]) / 15; }
+function i2t(i){
+  var m = i*15, h = Math.floor(m/60);
+  return (h<10?"0":"")+h + ":" + ((m%60)<10?"0":"")+(m%60);
+}
+function n36(n){ var s = n.toString(36); return s.length < 2 ? "0"+s : s; }
+function encRanges(rs){ return rs.map(function(r){ return n36(t2i(r.s)) + n36(t2i(r.e)); }).join(";"); }
+function decRanges(str){
+  if (!str) return [{s:"09:00", e:"17:00"}];
+  return str.split(";").map(function(x){
+    return { s: i2t(parseInt(x.slice(0,2),36)), e: i2t(parseInt(x.slice(2,4),36)) };
+  });
+}
+var MODE_C = {all:"A", off:"X", range:"R"}, C_MODE = {A:"all", X:"off", R:"range"};
+var HYB_C = {"○":"O", "▲":"T", "×":"X"}, C_HYB = {O:"○", T:"▲", X:"×"};
+function clean(s){ return String(s == null ? "" : s).replace(/[|\r\n]+/g, " ").trim(); }
+
+function encodeState(o){
+  var base = DOW.map(function(d){
+    var st = o.base[d];
+    if (!st.mode) return "-";
+    return st.mode === "range" ? "R" + encRanges(st.ranges) : MODE_C[st.mode];
+  }).join(",");
+  var irr = Object.keys(o.irr).map(function(k){
+    var v = o.irr[k], p = k.split("/");
+    var dt = new Date(START.getFullYear(), +p[0]-1, +p[1]);
+    var idx = Math.round((dt - START) / 86400000);
+    if (idx < 0 || idx >= NDAYS) return "";
+    return idx.toString(36) + (v.mode === "range" ? "R" + encRanges(v.ranges) : MODE_C[v.mode]);
+  }).filter(Boolean).join(",");
+  var hyb = STORES.map(function(s){ return HYB_C[o.hybrid[s]] || "-"; }).join("");
+  var w = o.wish;
+  return ["S1", clean(o.name), base, [w.days, w.hours, w.pay].join("."), irr, hyb, clean(o.note)].join("|");
+}
+function decodeState(code){
+  var f = code.split("|");
+  if (f[0] !== "S1") return null;
+  var o = blank();
+  o.name = f[1] || "";
+  (f[2] || "").split(",").forEach(function(c, i){
+    if (i >= DOW.length || !c || c === "-") return;
+    var st = o.base[DOW[i]];
+    if (c.charAt(0) === "R"){ st.mode = "range"; st.ranges = decRanges(c.slice(1)); }
+    else st.mode = C_MODE[c.charAt(0)] || "";
+  });
+  var w = (f[3] || "").split(".");
+  o.wish = { days: w[0] || "", hours: w[1] || "", pay: w[2] || "" };
+  (f[4] || "").split(",").filter(Boolean).forEach(function(e){
+    var idx = parseInt(e.charAt(0), 36);
+    if (isNaN(idx) || idx < 0 || idx >= NDAYS) return;
+    var k = keyOf(dateOf(idx)), rest = e.slice(1);
+    if (rest.charAt(0) === "R") o.irr[k] = { mode:"range", ranges: decRanges(rest.slice(1)) };
+    else o.irr[k] = { mode: C_MODE[rest.charAt(0)] || "all", ranges:[{s:"09:00", e:"17:00"}] };
+  });
+  (f[5] || "").split("").forEach(function(c, i){
+    if (i < STORES.length) o.hybrid[STORES[i]] = C_HYB[c] || "";
+  });
+  o.note = f[6] || "";
+  return o;
 }
 
 /* ---------- base64 (utf-8 safe) ---------- */
@@ -916,7 +1006,7 @@ function buildText(){
     S.note.trim().split("\n").forEach(function(x){ L.push("  " + x); });
   }
   L.push("");
-  L.push("#DATA:" + b64enc(JSON.stringify(S)));
+  L.push("#" + encodeState(S));
   L.push("=== ここまで ===");
   return L.join("\n");
 }
@@ -970,6 +1060,48 @@ function copyText(str, okMsg){
 }
 document.getElementById("copyBtn").addEventListener("click", function(){
   copyText(document.getElementById("outText").value, "コピーしました。店長へ送ってください");
+});
+
+/* LINEを開いて本文を入れた状態にする。送り先はスタッフ本人が選ぶ */
+document.getElementById("lineBtn").addEventListener("click", function(){
+  var full = document.getElementById("outText").value;
+  var url = "https://line.me/R/share?text=" + encodeURIComponent(full);
+  // 日本語はURLに載せると1文字9バイトになる。長すぎると送れないので、
+  // その場合は読みやすい本文を落とし、店長が取り込むのに必要な分だけ送る。
+  if (url.length > 1800){
+    var brief = [
+      "=== " + START.getFullYear() + "年" + CFG.label + " シフト申請 ===",
+      "氏名: " + S.name,
+      "（内容が長いため、店長の集計画面で開いてください）",
+      "#" + encodeState(S)
+    ].join("\n");
+    url = "https://line.me/R/share?text=" + encodeURIComponent(brief);
+  }
+  window.open(url, "_blank", "noopener");
+});
+
+/* スプレッドシート等へ直接送る。CFG.endpoint が空のときはボタン自体を出さない */
+document.getElementById("sendBtn").hidden = !CFG.endpoint;
+document.getElementById("sendBtn").addEventListener("click", function(){
+  var btn = this;
+  btn.disabled = true; btn.textContent = "送信中…";
+  fetch(CFG.endpoint, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type": "text/plain;charset=utf-8"},
+    body: JSON.stringify({
+      period: CFG.ym, store: S.store, name: S.name,
+      code: encodeState(S), text: document.getElementById("outText").value,
+      sentAt: new Date().toISOString()
+    })
+  }).then(function(){
+    document.getElementById("sendDone").hidden = false;
+    btn.hidden = true;
+    document.getElementById("sendDone").scrollIntoView({behavior:"smooth", block:"center"});
+  }, function(){
+    btn.disabled = false; btn.textContent = "この内容で申請する";
+    toast("送信できませんでした。LINEで送ってください");
+  });
 });
 
 var dl = null;
@@ -1042,10 +1174,11 @@ function paperRow(n){
 
 document.getElementById("loadBtn").addEventListener("click", function(){
   var txt = document.getElementById("pasteBox").value;
-  var re = /#DATA:([A-Za-z0-9+/=]+)/g, m, found = 0, bad = 0;
+  // 新形式 #S1|... と、旧形式 #DATA:<base64> の両方を受け付ける
+  var re = /#(S1\|[^\r\n]+)|#DATA:([A-Za-z0-9+/=]+)/g, m, found = 0, bad = 0;
   while ((m = re.exec(txt)) !== null){
     try {
-      var o = migrate(JSON.parse(b64dec(m[1])));
+      var o = m[1] ? decodeState(m[1].trim()) : migrate(JSON.parse(b64dec(m[2])));
       if (!o || !o.name){ bad++; continue; }
       var ix = -1;
       for (var i=0;i<subs.length;i++){ if (subs[i].name === o.name){ ix = i; break; } }
