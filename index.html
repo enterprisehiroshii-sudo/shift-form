@@ -1459,62 +1459,63 @@ function drawSheet(o){
 
   c.fillStyle = "#fff"; c.fillRect(0,0,cv.width,cv.height);
 
-  // 見出し（紙の様式と同じ白抜きの黒帯）
+  // 見出し（紙の様式と同じ白抜きの黒帯）。勤務時間とカレンダーに場所を回すため低めにする。
   var y = M;
   var titleW = IW * 0.52;
-  svRect(M, y, titleW, 88, "#111");
-  svFit(CFG.label + "シフト申請書", M + titleW/2, y + 44, titleW - 40, 40, "center", "#fff", 700);
-  svRect(M + titleW, y, IW - titleW, 88, "#fff");
-  svText("氏 名", M + titleW + 22, y + 44, 20, "left", "#444", 500);
-  svFit(o.name || "", M + titleW + 110, y + 44, IW - titleW - 130, 40, "left", "#111", 700);
-  y += 88 + 20;
+  svRect(M, y, titleW, 72, "#111");
+  svFit(CFG.label + "シフト申請書", M + titleW/2, y + 36, titleW - 40, 34, "center", "#fff", 700);
+  svRect(M + titleW, y, IW - titleW, 72, "#fff");
+  svText("氏 名", M + titleW + 22, y + 36, 18, "left", "#444", 500);
+  svFit(o.name || "", M + titleW + 100, y + 36, IW - titleW - 120, 34, "left", "#111", 700);
+  y += 72 + 14;
 
   var cw = IW / 7;
 
   // 基本シフト申請
-  svRect(M, y, IW, 32, "#eceae5");
-  svText("■基本シフト申請■　※勤務できる曜日・時間帯", M + 12, y + 16, 20, "left", "#111", 700);
-  y += 32;
+  svRect(M, y, IW, 28, "#eceae5");
+  svText("■基本シフト申請■　※勤務できる曜日・時間帯", M + 12, y + 14, 18, "left", "#111", 700);
+  y += 28;
   svRect(M, y, IW, 34, "#f5f3ee");
   for (var i=0;i<7;i++){
     if (i) svLine(M + cw*i, y, M + cw*i, y + 34);
-    svText(DOW[i], M + cw*i + cw/2, y + 17, 22, "center", (i===5?"#2f6fa8":(i===6?"#b0451c":"#111")), 700);
+    svText(DOW[i], M + cw*i + cw/2, y + 17, 24, "center", (i===5?"#2f6fa8":(i===6?"#b0451c":"#111")), 700);
   }
   y += 34;
-  var bh = 118;
+  var bh = 150;
   svRect(M, y, IW, bh);
   for (var i=1;i<7;i++) svLine(M + cw*i, y, M + cw*i, y + bh);
   for (var i=0;i<7;i++){
     var st = o.base[DOW[i]];
     var cx = M + cw*i + cw/2;
-    if (!st || !st.mode){ svText("―", cx, y + bh/2, 24, "center", "#bbb"); continue; }
-    if (st.mode === "all"){ svText("終日OK", cx, y + bh/2, 26, "center", "#16624f", 700); continue; }
-    if (st.mode === "off"){ svText("×", cx, y + bh/2, 46, "center", "#b0451c", 700); continue; }
+    if (!st || !st.mode){ svText("―", cx, y + bh/2, 30, "center", "#bbb"); continue; }
+    if (st.mode === "all"){ svText("終日OK", cx, y + bh/2, 32, "center", "#16624f", 700); continue; }
+    if (st.mode === "off"){ svText("×", cx, y + bh/2, 58, "center", "#b0451c", 700); continue; }
     var rs = st.ranges;
-    var lh = rs.length > 1 ? 34 : 0;
+    var one = rs.length === 1;
+    var lh = one ? 0 : 42;
     var y0 = y + bh/2 - lh*(rs.length-1)/2;
     for (var k=0;k<rs.length;k++){
-      svFit(rs[k].s + "-" + rs[k].e, cx, y0 + lh*k, cw - 16, 26, "center", "#111", 700);
+      svFit(rs[k].s + "-" + rs[k].e, cx, y0 + lh*k, cw - 14, (one ? 34 : 30), "center", "#111", 700);
     }
   }
-  y += bh + 10;
+  y += bh + 8;
 
   var w = o.wish || {};
   svText("※上記日時内で　週 " + (w.days || "―") + " 日、週 " + (w.hours || "―") +
-         " 時間程度、給与 " + (w.pay || "―") + " 万円位／月を希望。", M + 4, y + 16, 21, "left", "#111", 500);
-  y += 46;
+         " 時間程度、給与 " + (w.pay || "―") + " 万円位／月を希望。", M + 4, y + 14, 19, "left", "#111", 500);
+  y += 38;
 
   // イレギュラー申請（4週×7日のカレンダー）
-  svRect(M, y, IW, 32, "#eceae5");
-  svText("■イレギュラー申請■", M + 12, y + 16, 20, "left", "#111", 700);
-  y += 32;
-  var rowH = 96;
+  svRect(M, y, IW, 28, "#eceae5");
+  svText("■イレギュラー申請■", M + 12, y + 14, 18, "left", "#111", 700);
+  y += 28;
+  var rowH = 114;
   for (var wk=0; wk<4; wk++){
     svRect(M, y, IW, 30, "#f5f3ee");
     for (var i=0;i<7;i++){
       if (i) svLine(M + cw*i, y, M + cw*i, y + 30);
       var d = dateOf(wk*7 + i);
-      svText((d.getMonth()+1) + "月" + d.getDate() + "日", M + cw*i + cw/2, y + 15, 18, "center", "#333", 500);
+      svText((d.getMonth()+1) + "月" + d.getDate() + "日", M + cw*i + cw/2, y + 15, 20, "center", "#333", 500);
     }
     y += 30;
     svRect(M, y, IW, rowH);
@@ -1523,53 +1524,53 @@ function drawSheet(o){
       var key = keyOf(dateOf(wk*7 + i));
       var v = o.irr[key];
       var cx = M + cw*i + cw/2;
-      if (HOLIDAYS[key]) svText("祝", M + cw*i + cw - 20, y + 16, 15, "center", "#b0451c", 700);
-      else if (BUSY[key]) svText("繁忙", M + cw*i + cw - 28, y + 16, 15, "center", "#a8781a", 700);
+      if (HOLIDAYS[key]) svText("祝", M + cw*i + cw - 22, y + 18, 16, "center", "#b0451c", 700);
+      else if (BUSY[key]) svText("繁忙", M + cw*i + cw - 30, y + 18, 16, "center", "#a8781a", 700);
       if (!v) continue;
-      if (v.mode === "all"){ svText("○", cx, y + rowH/2, 44, "center", "#16624f", 700); continue; }
-      if (v.mode === "off"){ svText("×", cx, y + rowH/2, 44, "center", "#b0451c", 700); continue; }
-      var rs = v.ranges, lh = rs.length > 1 ? 30 : 0;
+      if (v.mode === "all"){ svText("○", cx, y + rowH/2, 56, "center", "#16624f", 700); continue; }
+      if (v.mode === "off"){ svText("×", cx, y + rowH/2, 56, "center", "#b0451c", 700); continue; }
+      var rs = v.ranges, one = rs.length === 1, lh = one ? 0 : 36;
       var y0 = y + rowH/2 - lh*(rs.length-1)/2;
       for (var k=0;k<rs.length;k++){
-        svFit(rs[k].s + "-" + rs[k].e, cx, y0 + lh*k, cw - 14, 22, "center", "#111", 700);
+        svFit(rs[k].s + "-" + rs[k].e, cx, y0 + lh*k, cw - 14, (one ? 28 : 25), "center", "#111", 700);
       }
     }
     y += rowH;
   }
-  y += 18;
+  y += 12;
 
-  // 下段は横幅を活かして左右に並べる
+  // 下段は横幅を活かして左右に並べる（上の2つを大きくするため高さを詰めている）
   var gap = 24, leftW = IW * 0.46, rightX = M + leftW + gap, rightW = IW - leftW - gap;
   var y2 = y;
 
-  svRect(M, y, leftW, 32, "#eceae5");
-  svText("■ハイブリッド申請■　勤務可能・不可店舗", M + 12, y + 16, 19, "left", "#111", 700);
-  y += 32;
-  var hh = 38;
+  svRect(M, y, leftW, 26, "#eceae5");
+  svText("■ハイブリッド申請■　勤務可能・不可店舗", M + 10, y + 13, 16, "left", "#111", 700);
+  y += 26;
+  var hh = 32;
   for (var i=0;i<STORES.length;i++){
     svRect(M, y, leftW, hh);
-    svFit(STORES[i], M + 16, y + hh/2, leftW - 80, 20, "left", "#111", 500);
+    svFit(STORES[i], M + 14, y + hh/2, leftW - 70, 18, "left", "#111", 500);
     var mark = (o.hybrid && o.hybrid[STORES[i]]) || "―";
     var col = mark === "○" ? "#16624f" : (mark === "▲" ? "#a8781a" : (mark === "×" ? "#b0451c" : "#bbb"));
-    svText(mark, M + leftW - 34, y + hh/2, 30, "center", col, 700);
+    svText(mark, M + leftW - 30, y + hh/2, 26, "center", col, 700);
     y += hh;
   }
   var bottomY = y;
 
-  svRect(rightX, y2, rightW, 32, "#eceae5");
-  svText("備考", rightX + 12, y2 + 16, 19, "left", "#111", 700);
-  var noteY = y2 + 32;
+  svRect(rightX, y2, rightW, 26, "#eceae5");
+  svText("備考", rightX + 10, y2 + 13, 16, "left", "#111", 700);
+  var noteY = y2 + 26;
   var noteH = bottomY - noteY;
   svRect(rightX, noteY, rightW, noteH);
   var note = (o.note || "").split("\n");
   for (var i=0;i<note.length && i<5;i++){
-    svFit(note[i], rightX + 16, noteY + 28 + i*30, rightW - 32, 20, "left", "#111", 500);
+    svFit(note[i], rightX + 14, noteY + 24 + i*28, rightW - 28, 18, "left", "#111", 500);
   }
 
   svText("所属：" + (o.store || "―") + "　／　" + START.getFullYear() + "年" + CFG.label +
          "（" + (START.getMonth()+1) + "/" + START.getDate() + "〜" +
          (dateOf(NDAYS-1).getMonth()+1) + "/" + dateOf(NDAYS-1).getDate() + "）",
-         M, bottomY + 20, 16, "left", "#666", 500);
+         M, bottomY + 18, 15, "left", "#666", 500);
 }
 
 function openSheet(o){
