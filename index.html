@@ -297,6 +297,27 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.65}
 .donebox[hidden]{display:none}
 .donebox strong{font-family:"Zen Kaku Gothic New",sans-serif;font-size:16px;color:var(--ok)}
 .donebox span{font-size:13px;color:var(--ink)}
+
+.linkbtn{
+  appearance:none;background:none;border:0;padding:8px 0;margin-top:6px;cursor:pointer;
+  font-family:inherit;font-size:13px;color:var(--muted);text-decoration:underline;
+}
+.linkbtn:hover{color:var(--ink)}
+.linkbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.linkbtn[hidden]{display:none}
+.fallback{
+  margin-top:12px;border:2px solid var(--mid);background:var(--mid-soft);
+  border-radius:2px;padding:14px;
+}
+.fallback[hidden]{display:none}
+.fb-q{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:15px;
+  margin:0 0 8px;color:var(--ink);
+}
+.fallback textarea{
+  font-family:"Roboto Mono",monospace;font-size:12px;line-height:1.6;
+  min-height:150px;background:var(--surface);
+}
 details summary{
   cursor:pointer;font-size:13px;color:var(--muted);
   padding:4px 0;list-style-position:inside;
@@ -468,11 +489,18 @@ tr:last-child td{border-bottom:0}
             <button class="btn btn-main" type="button" id="sendBtn" hidden>この内容で申請する</button>
             <button class="btn btn-line" type="button" id="lineBtn">LINEで店長に送る</button>
           </div>
-          <details style="margin-top:14px">
-            <summary>うまく送れないとき（内容を表示）</summary>
-            <p class="note" style="margin:9px 0 6px">下の枠を長押しして全部選び、コピーして店長に送ってください。</p>
+          <button class="linkbtn" type="button" id="showFallback">うまく送れないときは</button>
+
+          <div class="fallback" id="fallback" hidden>
+            <p class="fb-q" id="fbTitle">LINEに本文は入りましたか？</p>
+            <p class="note" style="margin:0 0 10px">
+              <b>空のメッセージになっていた場合</b>は、下の「内容をコピー」を押してから、
+              LINEの入力欄を長押しして貼り付けて送ってください。
+            </p>
+            <button class="btn btn-main" type="button" id="copyBtn" style="width:100%">内容をコピー</button>
+            <p class="note" style="margin:10px 0 6px">コピーできないときは、下の枠を長押しして「すべてを選択」→「コピー」でも送れます。</p>
             <textarea id="outText" readonly></textarea>
-          </details>
+          </div>
         </div>
       </section>
     </div>
@@ -1061,6 +1089,8 @@ document.getElementById("doneBtn").addEventListener("click", function(){
   if (m.length){ toast(m.join("・") + " が未記入です"); return; }
   document.getElementById("outText").value = buildText();
   document.getElementById("out").hidden = false;
+  document.getElementById("fallback").hidden = true;
+  document.getElementById("showFallback").hidden = false;
   document.getElementById("out").scrollIntoView({behavior:"smooth", block:"start"});
 });
 
@@ -1071,21 +1101,36 @@ document.getElementById("resetBtn").addEventListener("click", function(){
   toast("クリアしました");
 });
 
-function copyText(str, okMsg){
-  var ta = document.createElement("textarea");
-  ta.value = str;
-  ta.style.position = "fixed"; ta.style.top = "-9999px";
-  document.body.appendChild(ta);
-  ta.select();
+/* iPhone は画面外の要素からコピーできないため、実際に表示されている
+   入力欄を選択してからコピーする。失敗しても選択は残るので、
+   そのまま長押し→コピーで送れる。 */
+function copyText(str, okMsg, el){
+  var ta = el, temp = false;
+  if (!ta){
+    temp = true;
+    ta = document.createElement("textarea");
+    ta.value = str;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed"; ta.style.left = "8px"; ta.style.bottom = "8px";
+    ta.style.width = "1px"; ta.style.height = "1px"; ta.style.opacity = "0.01";
+    document.body.appendChild(ta);
+  }
   var done = false;
-  try { done = document.execCommand("copy"); } catch(e){}
-  document.body.removeChild(ta);
+  try {
+    ta.focus();
+    ta.setSelectionRange(0, ta.value.length);
+    done = document.execCommand("copy");
+  } catch(e){}
+  if (temp) document.body.removeChild(ta);
   if (done){ toast(okMsg); return; }
+
   if (navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(str).then(function(){ toast(okMsg); },
-      function(){ toast("コピーできません。テキストを長押しして選択してください"); });
+    navigator.clipboard.writeText(str).then(
+      function(){ toast(okMsg); },
+      function(){ toast("枠内を選択しました。長押しして「コピー」を押してください"); }
+    );
   } else {
-    toast("コピーできません。テキストを長押しして選択してください");
+    toast("枠内を選択しました。長押しして「コピー」を押してください");
   }
 }
 /* LINEに載せる本文。
@@ -1123,16 +1168,53 @@ function buildLineText(){
 
 /* LINEを開いて本文を入れた状態にする。送り先はスタッフ本人が選ぶ。
    window.open はスマホでブロックされることがあるため、同じタブで遷移する。 */
+function showFallback(title){
+  document.getElementById("fbTitle").textContent = title || "LINEに本文は入りましたか？";
+  document.getElementById("fallback").hidden = false;
+  document.getElementById("showFallback").hidden = true;
+}
+document.getElementById("showFallback").addEventListener("click", function(){
+  showFallback("うまく送れないとき");
+  document.getElementById("fallback").scrollIntoView({behavior:"smooth", block:"nearest"});
+});
+document.getElementById("copyBtn").addEventListener("click", function(){
+  copyText(document.getElementById("outText").value,
+           "コピーしました。LINEの入力欄に貼り付けて送ってください",
+           document.getElementById("outText"));
+});
+
+/* LINEから戻ってきたら、本文が入っていたか確かめてもらう。
+   送信できたかはこちらから知る手段がないため、本人に確認してもらう。 */
+var LINE_TRY = "shiftapply_linetry";
+var lineTried = false;          // 保存領域が使えない端末でも動くよう、変数でも持つ
+function checkAfterLine(){
+  var tried = lineTried;
+  try { if (sessionStorage.getItem(LINE_TRY) === "1") tried = true; } catch(e){}
+  if (!tried) return;
+  lineTried = false;
+  try { sessionStorage.removeItem(LINE_TRY); } catch(e){}
+  if (document.getElementById("out").hidden) return;
+  showFallback("LINEに本文は入りましたか？");
+  document.getElementById("fallback").scrollIntoView({behavior:"smooth", block:"center"});
+}
+window.addEventListener("pageshow", checkAfterLine);
+document.addEventListener("visibilitychange", function(){
+  if (document.visibilityState === "visible") checkAfterLine();
+});
+
 document.getElementById("lineBtn").addEventListener("click", function(){
   var m = missing();
   if (m.length){ toast(m.join("・") + " が未記入です"); return; }
   var txt = buildLineText();
   if (encodeURIComponent(txt).length > LINE_HARD_LIMIT){
     // ほぼ備考が長すぎる場合。黙って空メッセージを送るより知らせる。
-    toast("備考が長すぎて送れません。短くするか、下の「うまく送れないとき」からコピーしてください");
-    document.querySelector("#out details").open = true;
+    toast("備考が長すぎてLINEに載りません。下の内容をコピーして送ってください");
+    showFallback("備考が長すぎます。コピーして送ってください");
+    document.getElementById("fallback").scrollIntoView({behavior:"smooth", block:"center"});
     return;
   }
+  lineTried = true;
+  try { sessionStorage.setItem(LINE_TRY, "1"); } catch(e){}
   location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(txt);
 });
 
@@ -1546,7 +1628,7 @@ document.getElementById("csvCopyBtn").addEventListener("click", function(){
   var t = csvText();
   document.getElementById("csvText").value = t;
   document.getElementById("csvOut").hidden = false;
-  copyText(t, "CSVをコピーしました");
+  copyText(t, "CSVをコピーしました", document.getElementById("csvText"));
 });
 
 /* ---------- go ---------- */
