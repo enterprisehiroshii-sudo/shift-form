@@ -109,6 +109,7 @@ body{
 
 /* ---- mode switch ---- */
 .modes{display:flex;gap:0;margin-top:16px;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.modes[hidden]{display:none}
 .modes button{
   flex:1;appearance:none;border:0;background:var(--surface);color:var(--muted);
   font-family:inherit;font-size:14px;font-weight:500;padding:11px 8px;cursor:pointer;
@@ -357,7 +358,8 @@ tr:last-child td{border-bottom:0}
       <span id="mRange">申請期間 2026.10.05 — 11.01</span>
       <span id="mDue">提出期限 <b>9月15日</b></span>
     </div>
-    <div class="modes" role="group" aria-label="表示モード">
+    <!-- 店長専用。URLの末尾に #kanri が付いているときだけ表示する -->
+    <div class="modes" role="group" aria-label="表示モード" id="modes" hidden>
       <button type="button" id="mApply" aria-pressed="true">申請する</button>
       <button type="button" id="mAgg" aria-pressed="false">店長用 集計</button>
     </div>
@@ -1138,6 +1140,18 @@ function switchMode(agg){
 document.getElementById("mApply").addEventListener("click", function(){ switchMode(false); });
 document.getElementById("mAgg").addEventListener("click", function(){ switchMode(true); renderAgg(); });
 
+/* 集計はスタッフに見せない。店長がURLの末尾に #kanri を付けて開いたときだけ出す。
+   ページを開いたあとにハッシュを足しても切り替わるようにしておく。 */
+function isKanri(){
+  return /(^|[#&?])kanri\b/i.test(location.hash) || /[?&]kanri\b/i.test(location.search);
+}
+function applyKanri(){
+  var on = isKanri();
+  document.getElementById("modes").hidden = !on;
+  if (!on) { switchMode(false); }
+}
+window.addEventListener("hashchange", applyKanri);
+
 var COLS = ["受付方法","氏名","所属","月","火","水","木","金","土","日","週日数","週時間","給与","イレギュラー","釜利谷","寺前","久里浜","久比里","大矢部","備考"];
 
 function rowOf(o){
@@ -1294,6 +1308,7 @@ loadAgg();
 renderRoster();
 render();
 renderAgg();
+applyKanri();
 })();
 </script>
 
