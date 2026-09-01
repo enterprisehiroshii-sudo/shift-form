@@ -467,12 +467,11 @@ tr:last-child td{border-bottom:0}
           <div style="display:flex;flex-direction:column;gap:9px">
             <button class="btn btn-main" type="button" id="sendBtn" hidden>この内容で申請する</button>
             <button class="btn btn-line" type="button" id="lineBtn">LINEで店長に送る</button>
-            <button class="btn" type="button" id="copyBtn">コピーして自分で貼る</button>
-            <button class="btn" type="button" id="saveBtn">ファイルで保存</button>
           </div>
           <details style="margin-top:14px">
-            <summary>送る内容を確認する</summary>
-            <textarea id="outText" readonly style="margin-top:9px"></textarea>
+            <summary>うまく送れないとき（内容を表示）</summary>
+            <p class="note" style="margin:9px 0 6px">下の枠を長押しして全部選び、コピーして店長に送ってください。</p>
+            <textarea id="outText" readonly></textarea>
           </details>
         </div>
       </section>
@@ -1089,26 +1088,52 @@ function copyText(str, okMsg){
     toast("コピーできません。テキストを長押しして選択してください");
   }
 }
-document.getElementById("copyBtn").addEventListener("click", function(){
-  copyText(document.getElementById("outText").value, "コピーしました。店長へ送ってください");
-});
+/* LINEに載せる本文。
+   日本語はURLエンコードで1文字9バイトになるため、共有URLが長いとLINE側が
+   本文を捨てて空メッセージになる。必ず送れる短さに収まるよう、
+   申請コードを先に確保してから、入るぶんだけ読みやすい行を足す。 */
+var LINE_SOFT_LIMIT = 900;    // ここに収まれば曜日ごとの明細も載せる
+var LINE_HARD_LIMIT = 1300;   // これを超えると本文ごと消えるおそれがある
 
-/* LINEを開いて本文を入れた状態にする。送り先はスタッフ本人が選ぶ */
+function buildLineText(){
+  var head = "【" + START.getFullYear() + "年" + CFG.label + " シフト申請】" + (S.name || "");
+  var code = "#" + encodeState(S);
+  var ks = Object.keys(S.irr);
+
+  // 明細（全部載るときだけ使う。途中で切れると読みにくいため）
+  var full = [];
+  DOW.forEach(function(d){ full.push("　" + d + " " + baseLine(d)); });
+  if (ks.length) full.push("　イレギュラー " + ks.length + "件");
+  if (S.note.trim()) full.push("　備考あり");
+
+  // 要約（明細が入らないとき用の1〜2行）
+  var okDays = DOW.filter(function(d){ return S.base[d].mode && S.base[d].mode !== "off"; }).join("");
+  var brief = ["　勤務できる曜日 " + (okDays || "なし")];
+  if (ks.length) brief.push("　イレギュラー " + ks.length + "件");
+  if (S.note.trim()) brief.push("　備考あり");
+
+  var withFull  = head + "\n" + full.join("\n")  + "\n" + code;
+  if (encodeURIComponent(withFull).length <= LINE_SOFT_LIMIT) return withFull;
+
+  var withBrief = head + "\n" + brief.join("\n") + "\n" + code;
+  if (encodeURIComponent(withBrief).length <= LINE_HARD_LIMIT) return withBrief;
+
+  return head + "\n" + code;
+}
+
+/* LINEを開いて本文を入れた状態にする。送り先はスタッフ本人が選ぶ。
+   window.open はスマホでブロックされることがあるため、同じタブで遷移する。 */
 document.getElementById("lineBtn").addEventListener("click", function(){
-  var full = document.getElementById("outText").value;
-  var url = "https://line.me/R/share?text=" + encodeURIComponent(full);
-  // 日本語はURLに載せると1文字9バイトになる。長すぎると送れないので、
-  // その場合は読みやすい本文を落とし、店長が取り込むのに必要な分だけ送る。
-  if (url.length > 1800){
-    var brief = [
-      "=== " + START.getFullYear() + "年" + CFG.label + " シフト申請 ===",
-      "氏名: " + S.name,
-      "（内容が長いため、店長の集計画面で開いてください）",
-      "#" + encodeState(S)
-    ].join("\n");
-    url = "https://line.me/R/share?text=" + encodeURIComponent(brief);
+  var m = missing();
+  if (m.length){ toast(m.join("・") + " が未記入です"); return; }
+  var txt = buildLineText();
+  if (encodeURIComponent(txt).length > LINE_HARD_LIMIT){
+    // ほぼ備考が長すぎる場合。黙って空メッセージを送るより知らせる。
+    toast("備考が長すぎて送れません。短くするか、下の「うまく送れないとき」からコピーしてください");
+    document.querySelector("#out details").open = true;
+    return;
   }
-  window.open(url, "_blank", "noopener");
+  location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(txt);
 });
 
 /* スプレッドシート等へ直接送る。CFG.endpoint が空のときはボタン自体を出さない */
@@ -1137,14 +1162,8 @@ document.getElementById("sendBtn").addEventListener("click", function(){
 
 var dl = null;
 if (window.claude && window.claude.use){
-  window.claude.use("downloads").then(function(d){ dl = d; syncSaveBtns(); }, function(){});
+  window.claude.use("downloads").then(function(d){ dl = d; }, function(){});
 }
-function syncSaveBtns(){
-  document.getElementById("saveBtn").style.display = dl ? "" : "none";
-  document.getElementById("csvBtn").style.display = dl ? "" : "none";
-}
-syncSaveBtns();
-
 function offerSave(filename, data, okMsg){
   if (!dl){ toast("この画面では保存できません。コピーをお使いください"); return; }
   dl.save({filename:filename, data:data}).then(
@@ -1152,10 +1171,6 @@ function offerSave(filename, data, okMsg){
     function(err){ if (err && err.code === "declined") return; toast("保存できませんでした"); }
   );
 }
-document.getElementById("saveBtn").addEventListener("click", function(){
-  var n = (S.name || "申請").replace(/[\\/:*?"<>|]/g, "");
-  offerSave("シフト申請_" + START.getFullYear() + "年" + CFG.label + "_" + n + ".txt", document.getElementById("outText").value, "保存しました");
-});
 
 /* ================= AGGREGATE ================= */
 function switchMode(agg){
