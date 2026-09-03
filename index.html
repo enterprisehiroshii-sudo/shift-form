@@ -298,6 +298,19 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.65}
 .donebox strong{font-family:"Zen Kaku Gothic New",sans-serif;font-size:16px;color:var(--ok)}
 .donebox span{font-size:13px;color:var(--ink)}
 
+.linenote{
+  border:2px solid #06c755;background:rgba(6,199,85,.08);
+  border-radius:2px;padding:12px 14px;margin-bottom:12px;
+}
+.linenote[hidden]{display:none}
+.linenote strong{
+  display:block;font-family:"Zen Kaku Gothic New",sans-serif;
+  font-size:15px;color:var(--ink);margin-bottom:4px;
+}
+.linenote p{margin:0 0 8px;font-size:12.5px;color:var(--muted)}
+.linenote ol{margin:0;padding-left:1.3em;font-size:13.5px;line-height:1.9}
+.linenote li b{color:var(--ok)}
+
 .linkbtn{
   appearance:none;background:none;border:0;padding:8px 0;margin-top:6px;cursor:pointer;
   font-family:inherit;font-size:13px;color:var(--muted);text-decoration:underline;
@@ -485,6 +498,16 @@ tr:last-child td{border-bottom:0}
             <strong>送信しました</strong>
             <span>店長に届きます。この画面は閉じて構いません。</span>
           </div>
+          <div class="linenote" id="lineNote" hidden>
+            <strong>LINEの中でこのページを開いています</strong>
+            <p>この場合は「送る」が使えないので、コピーして貼り付けてください。</p>
+            <ol>
+              <li>下の<b>「内容をコピー」</b>を押す</li>
+              <li>右上の <b>×</b> でこの画面を閉じる</li>
+              <li>店長とのトークを開き、入力欄を<b>長押しして貼り付け</b>、送信</li>
+            </ol>
+          </div>
+
           <div style="display:flex;flex-direction:column;gap:9px">
             <button class="btn btn-main" type="button" id="sendBtn" hidden>この内容で申請する</button>
             <button class="btn btn-line" type="button" id="lineBtn">LINEで店長に送る</button>
@@ -1091,6 +1114,15 @@ document.getElementById("doneBtn").addEventListener("click", function(){
   document.getElementById("out").hidden = false;
   document.getElementById("fallback").hidden = true;
   document.getElementById("showFallback").hidden = false;
+
+  if (IN_LINE){
+    // LINEの中では送信ボタンが効かないので、最初からコピー手順を出す
+    document.getElementById("lineNote").hidden = false;
+    var lb = document.getElementById("lineBtn");
+    lb.textContent = "LINEで送る（うまくいかないことがあります）";
+    lb.classList.remove("btn-line");
+    showFallback("コピーして店長に貼り付けてください");
+  }
   document.getElementById("out").scrollIntoView({behavior:"smooth", block:"start"});
 });
 
@@ -1189,6 +1221,11 @@ function buildLineText(){
 
 /* LINEを開いて本文を入れた状態にする。送り先はスタッフ本人が選ぶ。
    window.open はスマホでブロックされることがあるため、同じタブで遷移する。 */
+/* LINEアプリ内のブラウザで開かれているか。
+   この中では「LINEを開く」が効かない（すでにLINEの中にいるため）ので、
+   コピーして貼り付ける手順に切り替える。 */
+var IN_LINE = /\bLine\//i.test(navigator.userAgent);
+
 function showFallback(title){
   document.getElementById("fbTitle").textContent = title || "LINEに本文は入りましたか？";
   document.getElementById("fallback").hidden = false;
