@@ -1137,32 +1137,53 @@ function copyText(str, okMsg, el){
    日本語はURLエンコードで1文字9バイトになるため、共有URLが長いとLINE側が
    本文を捨てて空メッセージになる。必ず送れる短さに収まるよう、
    申請コードを先に確保してから、入るぶんだけ読みやすい行を足す。 */
-var LINE_SOFT_LIMIT = 900;    // ここに収まれば曜日ごとの明細も載せる
-var LINE_HARD_LIMIT = 1300;   // これを超えると本文ごと消えるおそれがある
+var LINE_SOFT_LIMIT = 1500;   // ここに収まれば日付まで含めた明細を載せる
+var LINE_HARD_LIMIT = 1900;   // これを超えるとLINEが本文を捨てるおそれがある
+
+function sortedIrrKeys(){
+  return Object.keys(S.irr).sort(function(a,b){
+    var pa = a.split("/"), pb = b.split("/");
+    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+  });
+}
 
 function buildLineText(){
   var head = "【" + START.getFullYear() + "年" + CFG.label + " シフト申請】" + (S.name || "");
   var code = "#" + encodeState(S);
-  var ks = Object.keys(S.irr);
+  var ks = sortedIrrKeys();
 
-  // 明細（全部載るときだけ使う。途中で切れると読みにくいため）
+  // 第1候補：曜日ごとの時間帯と、イレギュラーを日付まで書き出す
   var full = [];
   DOW.forEach(function(d){ full.push("　" + d + " " + baseLine(d)); });
-  if (ks.length) full.push("　イレギュラー " + ks.length + "件");
-  if (S.note.trim()) full.push("　備考あり");
+  if (ks.length){
+    full.push("［イレギュラー］");
+    ks.forEach(function(k){ full.push("　" + k + " " + irrLine(k)); });
+  }
+  if (S.note.trim()){
+    full.push("［備考］");
+    S.note.trim().split("\n").forEach(function(x){ full.push("　" + x); });
+  }
 
-  // 要約（明細が入らないとき用の1〜2行）
+  // 第2候補：曜日ごとの時間帯まで。イレギュラーと備考は件数だけ
+  var mid = [];
+  DOW.forEach(function(d){ mid.push("　" + d + " " + baseLine(d)); });
+  if (ks.length) mid.push("　イレギュラー " + ks.length + "件（内容はコードに入っています）");
+  if (S.note.trim()) mid.push("　備考あり（内容はコードに入っています）");
+
+  // 第3候補：勤務できる曜日だけ
   var okDays = DOW.filter(function(d){ return S.base[d].mode && S.base[d].mode !== "off"; }).join("");
   var brief = ["　勤務できる曜日 " + (okDays || "なし")];
   if (ks.length) brief.push("　イレギュラー " + ks.length + "件");
   if (S.note.trim()) brief.push("　備考あり");
 
-  var withFull  = head + "\n" + full.join("\n")  + "\n" + code;
-  if (encodeURIComponent(withFull).length <= LINE_SOFT_LIMIT) return withFull;
-
-  var withBrief = head + "\n" + brief.join("\n") + "\n" + code;
-  if (encodeURIComponent(withBrief).length <= LINE_HARD_LIMIT) return withBrief;
-
+  // コードは必ず先頭側に置く。LINEが長文を途中で切っても、
+  // 後ろの明細が欠けるだけで申請内容そのものは失われないようにするため。
+  var cands = [full, mid, brief];
+  for (var i=0; i<cands.length; i++){
+    var t = head + "\n" + code + "\n" + cands[i].join("\n");
+    var lim = (i === 0) ? LINE_SOFT_LIMIT : LINE_HARD_LIMIT;
+    if (encodeURIComponent(t).length <= lim) return t;
+  }
   return head + "\n" + code;
 }
 
