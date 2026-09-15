@@ -1179,6 +1179,38 @@ function sortedIrrKeys(){
   });
 }
 
+/* 連続する日をまとめる。10/5 10/6 10/7 なら 10/5-7。月をまたぐときは 10/30-11/1 と書く。 */
+function packDays(ks, idx){
+  var out = [], i = 0;
+  while (i < ks.length){
+    var j = i;
+    while (j+1 < ks.length && idx[ks[j+1]] === idx[ks[j]] + 1) j++;
+    if (j === i) out.push(ks[i]);
+    else {
+      var a = ks[i].split("/"), b = ks[j].split("/");
+      out.push(ks[i] + "-" + (a[0] === b[0] ? b[1] : ks[j]));
+    }
+    i = j + 1;
+  }
+  return out;
+}
+/* イレギュラーを内容ごとにまとめる。
+   コンビニの24時間シフトでは休み希望を20日以上入れる人がいる。
+   1日1行のままだと28行で1500バイトを超え、LINEの本文から日付が丸ごと消えて
+   「28件（内容はコードに入っています）」だけになってしまうため、
+   「休み希望 10/5-7,10/9-14」「10:00-16:30 10/8,10/15」のように畳む。 */
+function irrGrouped(ks){
+  var idx = {};
+  for (var n=0; n<NDAYS; n++) idx[keyOf(dateOf(n))] = n;
+  var order = [], byText = {};
+  ks.forEach(function(k){
+    var t = irrLine(k);
+    if (!byText[t]){ byText[t] = []; order.push(t); }
+    byText[t].push(k);
+  });
+  return order.map(function(t){ return "　" + t + " " + packDays(byText[t], idx).join(","); });
+}
+
 function buildLineText(){
   var head = "【" + START.getFullYear() + "年" + CFG.label + " シフト申請】" + (S.name || "");
   var code = "#" + encodeState(S);
@@ -1189,7 +1221,7 @@ function buildLineText(){
   DOW.forEach(function(d){ full.push("　" + d + " " + baseLine(d)); });
   if (ks.length){
     full.push("［イレギュラー］");
-    ks.forEach(function(k){ full.push("　" + k + " " + irrLine(k)); });
+    full = full.concat(irrGrouped(ks));
   }
   if (S.note.trim()){
     full.push("［備考］");
