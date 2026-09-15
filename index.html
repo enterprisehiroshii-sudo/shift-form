@@ -1339,7 +1339,10 @@ window.addEventListener("hashchange", applyKanri);
 var COLS = ["受付方法","氏名","所属","月","火","水","木","金","土","日","週日数","週時間","給与","イレギュラー","釜利谷","寺前","久里浜","久比里","大矢部","備考"];
 
 function rowOf(o){
-  function rt(st){ return st.ranges.map(function(r){ return r.s+"-"+r.e; }).join(" / "); }
+  /* 日をまたぐ時間帯は申請本文と同じ「(翌朝まで)」を付ける。
+     24時間営業で 22:00-06:00 のような申請が来たとき、
+     店長が入力ミス（06:00-22:00）と見分けられるようにするため。 */
+  function rt(st){ return rangesText(st.ranges); }
   function bl(d){
     var st = o.base && o.base[d];
     if (!st || !st.mode) return "";
@@ -1550,11 +1553,13 @@ function drawSheet(o){
     if (st.mode === "off"){ svText("×", cx, y + bh/2, 58, "center", "#b0451c", 700); continue; }
     var rs = st.ranges;
     var one = rs.length === 1;
-    var lh = one ? 0 : 42;
-    var y0 = y + bh/2 - lh*(rs.length-1)/2;
+    var night = hasOvernight(rs);   // 断り書きを入れるぶん、時刻を少し上に寄せる
+    var lh = one ? 0 : (night ? 38 : 42);
+    var y0 = y + bh/2 - (night ? 12 : 0) - lh*(rs.length-1)/2;
     for (var k=0;k<rs.length;k++){
       svFit(rs[k].s + "-" + rs[k].e, cx, y0 + lh*k, cw - 14, (one ? 34 : 30), "center", "#111", 700);
     }
+    if (night) svText("翌朝まで", cx, y + bh - 18, 17, "center", "#b0451c", 700);
   }
   y += bh + 8;
 
@@ -1587,11 +1592,13 @@ function drawSheet(o){
       if (!v) continue;
       if (v.mode === "all"){ svText("○", cx, y + rowH/2, 56, "center", "#16624f", 700); continue; }
       if (v.mode === "off"){ svText("×", cx, y + rowH/2, 56, "center", "#b0451c", 700); continue; }
-      var rs = v.ranges, one = rs.length === 1, lh = one ? 0 : 36;
-      var y0 = y + rowH/2 - lh*(rs.length-1)/2;
+      var rs = v.ranges, one = rs.length === 1, night = hasOvernight(rs);
+      var lh = one ? 0 : (night ? 30 : 36);
+      var y0 = y + rowH/2 - (night ? 10 : 0) - lh*(rs.length-1)/2;
       for (var k=0;k<rs.length;k++){
         svFit(rs[k].s + "-" + rs[k].e, cx, y0 + lh*k, cw - 14, (one ? 28 : 25), "center", "#111", 700);
       }
+      if (night) svText("翌朝まで", cx, y + rowH - 14, 14, "center", "#b0451c", 700);
     }
     y += rowH;
   }
