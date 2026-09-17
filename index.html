@@ -291,7 +291,11 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.65}
 .btn-line{background:#06c755;color:#fff;border-color:#06c755}
 .btn-line:hover{background:#05b34c;border-color:#05b34c}
 /* 申請はこちらが本筋。LINEは控えめにして、押し間違えを減らす */
-#sendBtn{font-size:19px;padding:20px 16px;letter-spacing:.04em}
+#sendBtn{
+  font-size:19px;padding:20px 16px;letter-spacing:.04em;
+  background:#0068b7;border-color:#0068b7;color:#fff;   /* ローソンブルー */
+}
+#sendBtn:hover{background:#005694;border-color:#005694}
 #lineBtn{font-size:14px;padding:10px 14px;background:transparent;color:#06c755;border-color:#06c755}
 #lineBtn:hover{background:#06c755;color:#fff}
 /* 送信先を設定していないときは、LINEが唯一の送り方なので大きく出す */
