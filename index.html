@@ -614,7 +614,7 @@ tr:last-child td{border-bottom:0}
     <section>
       <div class="sec-bar">提出状況</div>
       <div class="card">
-        <p class="count">アプリ <b id="cDone">0</b> 名 ／ 紙 <b id="cPaper">0</b> 名 ／ 未提出 <b id="cLeft">0</b> 名</p>
+        <p class="count">受付ずみ <b id="cDone">0</b> 名<span id="cProxy"></span> ／ 紙 <b id="cPaper">0</b> 名 ／ 未提出 <b id="cLeft">0</b> 名</p>
         <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
         <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)" id="unknownLabel">名簿にない名前<span style="font-weight:400;color:var(--muted)">　— 表記ゆれの可能性があります</span></p>
         <div class="pending" id="unknownList"></div>
@@ -1481,7 +1481,8 @@ function rowOf(o){
   }).join("、");
   var w = o.wish || {};
   var h = o.hybrid || {};
-  return ["アプリ", o.name||"", o.store||"", bl("月"),bl("火"),bl("水"),bl("木"),bl("金"),bl("土"),bl("日"),
+  // 受付方法 … アプリ（本人が送信）／代理（店長が入力）／アプリ（修正）／紙
+  return [o.via || "アプリ", o.name||"", o.store||"", bl("月"),bl("火"),bl("水"),bl("木"),bl("金"),bl("土"),bl("日"),
           w.days||"", w.hours||"", w.pay||"", irr,
           h[STORES[0]]||"", h[STORES[1]]||"", h[STORES[2]]||"", h[STORES[3]]||"", h[STORES[4]]||"",
           (o.note||"").replace(/\n/g, " ")];
@@ -1574,7 +1575,13 @@ function renderAgg(){
   mine.forEach(function(p){ paperKeys[norm(p.n)] = true; });
   var left = ROSTER.filter(function(n){ return !doneKeys[norm(n)] && !paperKeys[norm(n)]; });
 
+  var nProxy = view.filter(function(e){ return e.o.via === "代理"; }).length;
+  var nEdit  = view.filter(function(e){ return e.o.via === "アプリ（修正）"; }).length;
+  var inner  = [];
+  if (nProxy) inner.push("代理 " + nProxy);
+  if (nEdit)  inner.push("修正 " + nEdit);
   document.getElementById("cDone").textContent = view.length;
+  document.getElementById("cProxy").textContent = inner.length ? "（うち " + inner.join("・") + "）" : "";
   document.getElementById("cPaper").textContent = mine.length;
   document.getElementById("cLeft").textContent = ROSTER.length ? left.length : "—";
 
@@ -1657,8 +1664,14 @@ function applyProxyUI(){
 }
 function startProxy(name, store, ix){
   if (!PROXY) PROXY_BACK = JSON.parse(JSON.stringify(S));  // 店長自身の下書きを預かる
-  if (ix != null && subs[ix]) S = migrate(JSON.parse(JSON.stringify(subs[ix])));
-  else { S = blank(); S.name = name || ""; S.store = store || aggStore; }
+  if (ix != null && subs[ix]) {
+    S = migrate(JSON.parse(JSON.stringify(subs[ix])));
+    // アプリで届いたものを店長が直した場合は、その旨を残す
+    if (S.via !== "代理") S.via = "アプリ（修正）";
+  } else {
+    S = blank(); S.name = name || ""; S.store = store || aggStore;
+    S.via = "代理";
+  }
   PROXY = { name: S.name, store: S.store };
   selDay = null;
   applyProxyUI();
