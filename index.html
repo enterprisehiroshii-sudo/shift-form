@@ -1456,7 +1456,12 @@ function isKanri(){
 function applyKanri(){
   var on = isKanri();
   document.getElementById("modes").hidden = !on;
-  if (!on) { switchMode(false); }
+  if (!on) {
+    // スタッフが開く画面には、代理入力にまつわるものを一切出さない。
+    // 書きかけは残しておくので、#kanri を付けて開き直せば続きから再開できる。
+    if (PROXY) endProxy(true);
+    switchMode(false);
+  }
 }
 window.addEventListener("hashchange", applyKanri);
 
@@ -1681,10 +1686,11 @@ function startProxy(name, store, ix){
   switchMode(false);
   toast((S.name || "この方") + " さんの代わりに記入します");
 }
-function endProxy(){
+/* keepDraft を付けると、書きかけを残したまま画面だけ元に戻す */
+function endProxy(keepDraft){
   if (!PROXY) return;
   PROXY = null;
-  try{ localStorage.removeItem(LS+"_proxy"); }catch(e){}
+  if (!keepDraft){ try{ localStorage.removeItem(LS+"_proxy"); }catch(e){} }
   S = PROXY_BACK ? migrate(PROXY_BACK) : blank();
   PROXY_BACK = null;
   selDay = null;
