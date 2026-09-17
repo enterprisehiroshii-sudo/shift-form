@@ -371,6 +371,38 @@ tr:last-child td{border-bottom:0}
 .pending button.paper{border-color:var(--mid);color:var(--mid);background:var(--mid-soft)}
 .pending button.paper:hover{border-color:var(--ink);color:var(--ink)}
 .pending .empty{border-color:var(--line-strong);color:var(--muted);background:transparent}
+/* 未提出の1名を「氏名（代理入力）＋紙」の2つのボタンで出す */
+.pending .pend{display:inline-flex}
+.pending .pend button{border-radius:0}
+.pending .pend button:first-child{border-radius:2px 0 0 2px}
+.pending .pend button.mini{
+  border-radius:0 2px 2px 0;border-left-color:transparent;padding:3px 8px;
+  font-size:11.5px;color:var(--muted);
+}
+.pending .pend button.mini:hover{color:var(--ink)}
+/* 店舗の切り替え */
+.stab{display:flex;flex-wrap:wrap;gap:6px}
+.stab button{
+  appearance:none;cursor:pointer;font-family:inherit;font-size:12.5px;line-height:1.6;
+  border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);
+  color:var(--muted);padding:5px 12px;
+}
+.stab button:hover{border-color:var(--ink);color:var(--ink)}
+.stab button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--surface);font-weight:700}
+.stab button:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+/* 店長が本人の代わりに書いているときの帯 */
+.proxy{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  border:1px solid var(--mid);background:var(--mid-soft);color:var(--ink);
+  padding:10px 14px;border-radius:2px;margin:0 0 18px;font-size:13px;
+}
+.proxy b{font-weight:700}
+.proxy button{
+  appearance:none;cursor:pointer;font-family:inherit;font-size:12.5px;margin-left:auto;
+  border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);
+  color:var(--muted);padding:4px 11px;
+}
+.proxy button:hover{border-color:var(--ink);color:var(--ink)}
 .count{
   font-family:"Roboto Mono",monospace;font-size:13px;font-variant-numeric:tabular-nums;
   color:var(--muted);margin:0 0 10px;
@@ -421,6 +453,11 @@ tr:last-child td{border-bottom:0}
 
   <!-- ============ APPLY ============ -->
   <div id="viewApply">
+    <!-- 店長がスタッフの代わりに書いているときだけ出る -->
+    <div class="proxy" id="proxyBar" hidden>
+      <span>代理入力中　<b id="proxyWho"></b></span>
+      <button type="button" id="proxyCancel">やめる</button>
+    </div>
     <section>
       <div class="sec-bar">申請者</div>
       <div class="card">
@@ -510,7 +547,8 @@ tr:last-child td{border-bottom:0}
 
           <div style="display:flex;flex-direction:column;gap:9px">
             <button class="btn btn-main" type="button" id="sendBtn" hidden>この内容で申請する</button>
-            <button class="btn btn-line" type="button" id="lineBtn">LINEで店長に送る</button>
+            <p class="note" style="margin:2px 0 0;text-align:center" id="lineLead" hidden>上のボタンで申請できないときは、こちらから送ってください。</p>
+            <button class="btn btn-line" type="button" id="lineBtn">申請できないときはLINEで送る</button>
           </div>
           <button class="linkbtn" type="button" id="showFallback">うまく送れないときは</button>
 
@@ -532,9 +570,17 @@ tr:last-child td{border-bottom:0}
   <!-- ============ AGGREGATE ============ -->
   <div id="viewAgg" class="hidden">
     <section>
+      <div class="sec-bar">店舗<span class="hint">選んだ店舗の申請だけを表示します</span></div>
+      <div class="card">
+        <div class="stab" id="storeTabs"></div>
+        <p class="count" style="margin:14px 0 0" id="storeSummary"></p>
+      </div>
+    </section>
+
+    <section>
       <div class="sec-bar">スタッフ名簿<span class="hint">この端末にだけ保存されます</span></div>
       <div class="card">
-        <p class="note">未提出者を出すために使います。1行に1名で入力してください。<b>このページには保存されず、店長のブラウザの中だけに残ります。</b>一度登録すれば翌月以降も引き継がれます。</p>
+        <p class="note">未提出者を出すために使います。1行に1名で入力してください。名簿は<b id="rosterStore">店舗</b>のぶんです。店舗を切り替えると、その店舗の名簿になります。<b>このページには保存されず、店長のブラウザの中だけに残ります。</b>一度登録すれば翌月以降も引き継がれます。</p>
         <textarea id="rosterBox" placeholder="山田太郎&#10;鈴木花子&#10;佐藤一郎" style="min-height:110px"></textarea>
         <div style="display:flex;gap:9px;margin-top:10px;align-items:center">
           <button class="btn btn-main" type="button" id="rosterSave">名簿を保存</button>
@@ -562,7 +608,7 @@ tr:last-child td{border-bottom:0}
         <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
         <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)" id="unknownLabel">名簿にない名前<span style="font-weight:400;color:var(--muted)">　— 表記ゆれの可能性があります</span></p>
         <div class="pending" id="unknownList"></div>
-        <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)">未提出<span style="font-weight:400;color:var(--muted)">　— 紙で受け取った人はタップしてください</span></p>
+        <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)">未提出<span style="font-weight:400;color:var(--muted)">　— 氏名を押すと代わりに記入できます／「紙」は用紙で受け取った印です</span></p>
         <div class="pending" id="pending"></div>
         <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)">紙で受領<span style="font-weight:400;color:var(--muted)">　— タップで取り消し</span></p>
         <div class="pending" id="paperList"></div>
@@ -601,28 +647,54 @@ tr:last-child td{border-bottom:0}
 (function(){
 "use strict";
 
-/* 名簿はこのファイルに持ちません。店長が集計画面で登録し、その端末にだけ保存されます。 */
-var ROSTER = [];
-var LS_ROSTER = "shift_roster_v1";
+/* 名簿はこのファイルに持ちません。店長が集計画面で登録し、その端末にだけ保存されます。
+   5店舗を1つのアプリで使うので、名簿は店舗ごとに分けて持ちます。 */
+var ROSTERS = {};        // { 店舗名: [氏名, …] }
+var ROSTER  = [];        // いま表示している店舗の名簿
+var aggStore = "";       // 集計画面で選んでいる店舗
+var LS_ROSTER   = "shift_roster_v1";   // 以前の1店舗ぶん
+var LS_ROSTER2  = "shift_roster_v2";
+var LS_AGGSTORE = "shift_aggstore_v1";
+function rosterFor(st){ var a = ROSTERS[st]; return Array.isArray(a) ? a : []; }
 function loadRoster(){
+  var ok = null;
   try{
-    var raw = localStorage.getItem(LS_ROSTER);
-    ROSTER = raw ? JSON.parse(raw) : [];
-    if (!Array.isArray(ROSTER)) ROSTER = [];
-  }catch(e){ ROSTER = []; }
+    var raw = localStorage.getItem(LS_ROSTER2);
+    var o = raw ? JSON.parse(raw) : null;
+    if (o && typeof o === "object" && !Array.isArray(o)) ok = o;
+  }catch(e){}
+  if (ok) { ROSTERS = ok; }
+  else {
+    // 前の版で登録した名簿を、その時の店舗のものとして引き継ぐ
+    ROSTERS = {};
+    try{
+      var old = JSON.parse(localStorage.getItem(LS_ROSTER) || "[]");
+      if (Array.isArray(old) && old.length) ROSTERS[CFG.store] = old;
+    }catch(e){}
+  }
+  try{ aggStore = localStorage.getItem(LS_AGGSTORE) || ""; }catch(e){ aggStore = ""; }
+  if (STORES.indexOf(aggStore) < 0) aggStore = CFG.store;
+  ROSTER = rosterFor(aggStore);
 }
-function saveRoster(){ try{ localStorage.setItem(LS_ROSTER, JSON.stringify(ROSTER)); }catch(e){} }
+function saveRoster(){
+  try{
+    localStorage.setItem(LS_ROSTER2, JSON.stringify(ROSTERS));
+    localStorage.setItem(LS_AGGSTORE, aggStore);
+  }catch(e){}
+}
 /* 表記ゆれを吸収して照合する（全角半角・空白の違いを無視） */
 function norm(s){
   s = String(s == null ? "" : s);
   if (String.prototype.normalize) s = s.normalize("NFKC");
   return s.replace(/\s+/g, "");
 }
-function inRoster(n){
-  var k = norm(n);
-  for (var i=0;i<ROSTER.length;i++) if (norm(ROSTER[i]) === k) return ROSTER[i];
+function inRoster(n, list){
+  var L = list || ROSTER, k = norm(n);
+  for (var i=0;i<L.length;i++) if (norm(L[i]) === k) return L[i];
   return null;
 }
+/* 所属店舗が空の申請は、どの店舗で見ても出るようにする（見落とし防止） */
+function inStore(o, st){ return !o.store || o.store === st; }
 
 var STORES =["横浜釜利谷東二丁目店","寺前一丁目店","横須賀久里浜四丁目店","横須賀久比里店","横須賀大矢部三丁目店"];
 var SHORT = {"横浜釜利谷東二丁目店":"釜利谷","寺前一丁目店":"寺前","横須賀久里浜四丁目店":"久里浜","横須賀久比里店":"久比里","横須賀大矢部三丁目店":"大矢部"};
@@ -720,8 +792,10 @@ function blank(){
 }
 var S = blank();
 var subs = [];      // アプリで届いた申請
-var paper = [];     // 紙で受け取った人の氏名
+var paper = [];     // 紙で受け取った人 { n:氏名, s:店舗 }
 var selDay = null;
+var PROXY = null;      // 代理入力中 { name, store }
+var PROXY_BACK = null; // 店長自身の下書きの控え
 
 function dateOf(i){ var d = new Date(START.getTime()); d.setDate(d.getDate()+i); return d; }
 function keyOf(d){ return (d.getMonth()+1)+"/"+d.getDate(); }
@@ -746,7 +820,8 @@ function pad2(n){ return (n<10?"0":"")+n; }
 })();
 
 /* ---------- persistence ---------- */
-function save(){ try{ localStorage.setItem(LS, JSON.stringify(S)); }catch(e){} }
+/* 代理入力のあいだは別の場所に書く。店長自身の下書きを上書きしないため */
+function save(){ try{ localStorage.setItem(PROXY ? LS+"_proxy" : LS, JSON.stringify(S)); }catch(e){} }
 function load(){
   try{
     var raw = localStorage.getItem(LS);
@@ -762,7 +837,12 @@ function loadAgg(){
     var raw = localStorage.getItem(LS+"_agg");
     if(!raw) return;
     var o = JSON.parse(raw);
-    if(o){ subs = o.subs || []; paper = o.paper || []; }
+    if(!o) return;
+    subs = o.subs || [];
+    // 紙で受領は店舗ごとに持つ。前の版は氏名だけだったので、その時の店舗を補う
+    paper = (o.paper || []).map(function(p){
+      return (typeof p === "string") ? {n:p, s:CFG.store} : p;
+    }).filter(function(p){ return p && p.n; });
   }catch(e){}
 }
 
@@ -853,8 +933,10 @@ function b64dec(b64){
 /* ---------- build UI ---------- */
 var elName = document.getElementById("name");
 function fillRosterHints(){
+  // 代理入力のときは、選んでいる店舗の名簿を候補に出す
+  var list = (S && S.store && rosterFor(S.store).length) ? rosterFor(S.store) : ROSTER;
   document.getElementById("rosterList").innerHTML =
-    ROSTER.map(function(n){ return '<option value="'+n.replace(/"/g,"&quot;")+'"></option>'; }).join("");
+    list.map(function(n){ return '<option value="'+n.replace(/"/g,"&quot;")+'"></option>'; }).join("");
 }
 
 var elStore = document.getElementById("store");
@@ -981,8 +1063,16 @@ function renderDayEdit(){
 }
 
 /* ---------- events ---------- */
-elName.addEventListener("input", function(){ S.name = this.value.trim(); save(); });
-elStore.addEventListener("change", function(){ S.store = this.value; save(); if (window.setMastStore) setMastStore(); });
+elName.addEventListener("input", function(){
+  S.name = this.value.trim(); save();
+  if (PROXY){ PROXY.name = S.name; applyProxyUI(); }
+});
+elStore.addEventListener("change", function(){
+  S.store = this.value; save();
+  if (window.setMastStore) setMastStore();
+  if (PROXY){ PROXY.store = S.store; applyProxyUI(); }
+  fillRosterHints();
+});
 
 daysBox.addEventListener("click", function(e){
   var seg = e.target.closest(".seg button");
@@ -1124,6 +1214,7 @@ function missing(){
 document.getElementById("doneBtn").addEventListener("click", function(){
   var m = missing();
   if (m.length){ toast(m.join("・") + " が未記入です"); return; }
+  if (PROXY){ registerProxy(); return; }   // 店長の代理入力はそのまま集計へ
   document.getElementById("outText").value = buildText();
   document.getElementById("out").hidden = false;
   document.getElementById("fallback").hidden = true;
@@ -1142,7 +1233,9 @@ document.getElementById("doneBtn").addEventListener("click", function(){
 
 document.getElementById("resetBtn").addEventListener("click", function(){
   if (!confirm("記入内容をすべて消します。よろしいですか？")) return;
-  S = blank(); selDay = null; save(); render();
+  S = blank(); selDay = null;
+  if (PROXY){ S.name = PROXY.name; S.store = PROXY.store; }   // 代理入力の相手は残す
+  save(); render();
   document.getElementById("out").hidden = true;
   toast("クリアしました");
 });
@@ -1292,6 +1385,9 @@ document.getElementById("lineBtn").addEventListener("click", function(){
 
 /* スプレッドシート等へ直接送る。CFG.endpoint が空のときはボタン自体を出さない */
 document.getElementById("sendBtn").hidden = !CFG.endpoint;
+/* 案内文は「この内容で申請する」が出ているときだけ意味がある */
+document.getElementById("lineLead").hidden = !CFG.endpoint || IN_LINE;
+if (!CFG.endpoint) document.getElementById("lineBtn").textContent = "LINEで店長に送る";
 document.getElementById("sendBtn").addEventListener("click", function(){
   var btn = this;
   btn.disabled = true; btn.textContent = "送信中…";
@@ -1377,10 +1473,10 @@ function rowOf(o){
           (o.note||"").replace(/\n/g, " ")];
 }
 /* 紙で受け取った人は氏名だけ記録し、中身は用紙を見て埋める */
-function paperRow(n){
+function paperRow(n, st){
   var r = new Array(COLS.length);
   for (var i=0;i<r.length;i++) r[i] = "";
-  r[0] = "紙"; r[1] = n; r[2] = CFG.store;
+  r[0] = "紙"; r[1] = n; r[2] = st || aggStore;
   return r;
 }
 
@@ -1407,56 +1503,93 @@ document.getElementById("clearBtn").addEventListener("click", function(){
   subs = []; paper = []; saveAgg(); renderAgg(); toast("消去しました");
 });
 
+function esc(v){ return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+
+/* 店舗の切り替えボタンと、5店舗ぶんの集まり具合 */
+function renderStoreTabs(){
+  document.getElementById("storeTabs").innerHTML = STORES.map(function(s){
+    return '<button type="button" data-s="'+esc(s)+'" aria-pressed="'+(s===aggStore)+'">'+esc(s)+'</button>';
+  }).join("");
+  document.getElementById("storeSummary").innerHTML = STORES.map(function(s){
+    var got = subs.filter(function(o){ return inStore(o, s); }).length;
+    var all = rosterFor(s).length;
+    return SHORT[s] + " <b>" + got + "</b>" + (all ? " / " + all : "");
+  }).join("　　") + '<span style="font-size:11.5px">　（申請 / 名簿）</span>';
+  var rs = document.getElementById("rosterStore");
+  if (rs) rs.textContent = aggStore;
+}
+document.getElementById("storeTabs").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  aggStore = b.dataset.s;
+  ROSTER = rosterFor(aggStore);
+  saveRoster(); renderStoreTabs(); renderRoster(); renderAgg();
+});
+
 function renderAgg(){
+  // いま選んでいる店舗ぶんだけ出す。元の並び順（subsの番号）は持ったままにする
+  var view = [];
+  subs.forEach(function(o, ix){ if (inStore(o, aggStore)) view.push({o:o, ix:ix}); });
+
   var tbl = document.getElementById("tbl");
   tbl.querySelector("thead").innerHTML = "<tr><th>申請書</th>" +
     COLS.map(function(c){ return "<th>"+c+"</th>"; }).join("") + "</tr>";
-  tbl.querySelector("tbody").innerHTML = subs.length
-    ? subs.map(function(o,ix){
-        return '<tr><td><button type="button" class="viewbtn" data-ix="'+ix+'">表示</button></td>' +
-          rowOf(o).map(function(v,i){
+  tbl.querySelector("tbody").innerHTML = view.length
+    ? view.map(function(e){
+        return '<tr><td>' +
+          '<button type="button" class="viewbtn" data-ix="'+e.ix+'">表示</button> ' +
+          '<button type="button" class="viewbtn editbtn" data-ix="'+e.ix+'">直す</button></td>' +
+          rowOf(e.o).map(function(v,i){
             var mono = (i>=3 && i<=13);
-            return '<td'+(mono?' class="mono"':'')+'>' + String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;") + "</td>";
+            return '<td'+(mono?' class="mono"':'')+'>' + esc(v) + "</td>";
           }).join("") + "</tr>";
       }).join("")
-    : '<tr><td colspan="' + (COLS.length+1) + '" style="color:var(--muted)">まだ読み込んでいません</td></tr>';
+    : '<tr><td colspan="' + (COLS.length+1) + '" style="color:var(--muted)">' +
+      (subs.length ? "この店舗の申請はまだありません" : "まだ読み込んでいません") + "</td></tr>";
 
   // 申請の氏名を名簿の表記に寄せる（全角半角・空白ゆれを吸収）
   var doneKeys = {}, unknown = [];
-  subs.forEach(function(o){
-    var hit = inRoster(o.name);
+  view.forEach(function(e){
+    var hit = inRoster(e.o.name);
     if (hit) doneKeys[norm(hit)] = true;
-    else if (o.name) unknown.push(o.name);
+    else if (e.o.name) unknown.push(e.o.name);
   });
-  paper = paper.filter(function(n){ return !doneKeys[norm(n)]; });
+  // 申請が届いた人は「紙で受領」から外す
+  paper = paper.filter(function(p){ return !(p.s === aggStore && doneKeys[norm(p.n)]); });
+  var mine = paper.filter(function(p){ return p.s === aggStore; });
   var paperKeys = {};
-  paper.forEach(function(n){ paperKeys[norm(n)] = true; });
+  mine.forEach(function(p){ paperKeys[norm(p.n)] = true; });
   var left = ROSTER.filter(function(n){ return !doneKeys[norm(n)] && !paperKeys[norm(n)]; });
 
-  document.getElementById("cDone").textContent = subs.length;
-  document.getElementById("cPaper").textContent = paper.length;
+  document.getElementById("cDone").textContent = view.length;
+  document.getElementById("cPaper").textContent = mine.length;
   document.getElementById("cLeft").textContent = ROSTER.length ? left.length : "—";
 
   document.getElementById("pending").innerHTML = !ROSTER.length
     ? '<span class="empty">先にスタッフ名簿を登録してください</span>'
     : (left.length
-        ? left.map(function(n){ return '<button type="button" data-n="'+n+'">'+n+'</button>'; }).join("")
+        ? left.map(function(n){
+            return '<span class="pend">' +
+              '<button type="button" data-a="proxy" data-n="'+esc(n)+'">'+esc(n)+'</button>' +
+              '<button type="button" class="mini" data-a="paper" data-n="'+esc(n)+'">紙</button></span>';
+          }).join("")
         : '<span style="border-color:var(--ok);color:var(--ok);background:var(--ok-soft)">全員提出ずみ</span>');
-  document.getElementById("paperList").innerHTML = paper.length
-    ? paper.map(function(n){ return '<button type="button" class="paper" data-n="'+n+'">'+n+'</button>'; }).join("")
+  document.getElementById("paperList").innerHTML = mine.length
+    ? mine.map(function(p){ return '<button type="button" class="paper" data-n="'+esc(p.n)+'">'+esc(p.n)+'</button>'; }).join("")
     : '<span class="empty">なし</span>';
 
   var show = ROSTER.length > 0 && unknown.length > 0;
   document.getElementById("unknownLabel").style.display = show ? "" : "none";
   document.getElementById("unknownList").style.display = show ? "" : "none";
   document.getElementById("unknownList").innerHTML =
-    unknown.map(function(n){ return '<span>'+n+'</span>'; }).join("");
+    unknown.map(function(n){ return '<span>'+esc(n)+'</span>'; }).join("");
+
+  renderStoreTabs();
 }
 
 function renderRoster(){
   document.getElementById("rosterBox").value = ROSTER.join("\n");
   document.getElementById("rosterCount").textContent =
-    ROSTER.length ? ROSTER.length + " 名を登録ずみ" : "未登録";
+    ROSTER.length ? SHORT[aggStore] + "　" + ROSTER.length + " 名を登録ずみ" : SHORT[aggStore] + "　未登録";
   fillRosterHints();
 }
 document.getElementById("rosterSave").addEventListener("click", function(){
@@ -1467,26 +1600,92 @@ document.getElementById("rosterSave").addEventListener("click", function(){
       if (!s || seen[norm(s)]) return false;
       seen[norm(s)] = true; return true;
     });
+  ROSTERS[aggStore] = ROSTER;
   saveRoster(); renderRoster(); renderAgg();
-  toast(ROSTER.length ? ROSTER.length + " 名を保存しました" : "名簿を空にしました");
+  toast(ROSTER.length ? SHORT[aggStore] + " に " + ROSTER.length + " 名を保存しました" : SHORT[aggStore] + " の名簿を空にしました");
 });
 
 document.getElementById("tbl").addEventListener("click", function(e){
   var b = e.target.closest(".viewbtn"); if(!b) return;
   var o = subs[+b.dataset.ix];
-  if (o) openSheet(o);
+  if (!o) return;
+  if (b.classList.contains("editbtn")) startProxy(o.name, o.store, +b.dataset.ix);
+  else openSheet(o);
 });
 
 document.getElementById("pending").addEventListener("click", function(e){
   var b = e.target.closest("button"); if(!b) return;
-  if (paper.indexOf(b.dataset.n) < 0) paper.push(b.dataset.n);
-  saveAgg(); renderAgg(); toast(b.dataset.n + " さんを「紙で受領」にしました");
+  var n = b.dataset.n;
+  if (b.dataset.a === "proxy"){ startProxy(n, aggStore, null); return; }
+  var dup = paper.some(function(p){ return p.s === aggStore && norm(p.n) === norm(n); });
+  if (!dup) paper.push({n:n, s:aggStore});
+  saveAgg(); renderAgg(); toast(n + " さんを「紙で受領」にしました");
 });
 document.getElementById("paperList").addEventListener("click", function(e){
   var b = e.target.closest("button"); if(!b) return;
-  paper = paper.filter(function(n){ return n !== b.dataset.n; });
-  saveAgg(); renderAgg(); toast(b.dataset.n + " さんを未提出に戻しました");
+  var n = b.dataset.n;
+  paper = paper.filter(function(p){ return !(p.s === aggStore && p.n === n); });
+  saveAgg(); renderAgg(); toast(n + " さんを未提出に戻しました");
 });
+
+/* ================= 代理入力 =================
+   店長が、紙で受け取った申請や電話で聞いた内容を、本人の代わりに入れる画面。
+   申請画面をそのまま使い、最後に「集計に登録」で一覧に加えます。 */
+function applyProxyUI(){
+  var bar = document.getElementById("proxyBar");
+  bar.hidden = !PROXY;
+  if (PROXY){
+    document.getElementById("proxyWho").textContent =
+      (PROXY.name || "（氏名未記入）") + "　" + (SHORT[PROXY.store] || PROXY.store || "");
+  }
+  document.getElementById("doneBtn").textContent = PROXY ? "集計に登録" : "記入おわり";
+  document.getElementById("mApply").textContent  = PROXY ? "代理入力" : "申請する";
+}
+function startProxy(name, store, ix){
+  if (!PROXY) PROXY_BACK = JSON.parse(JSON.stringify(S));  // 店長自身の下書きを預かる
+  if (ix != null && subs[ix]) S = migrate(JSON.parse(JSON.stringify(subs[ix])));
+  else { S = blank(); S.name = name || ""; S.store = store || aggStore; }
+  PROXY = { name: S.name, store: S.store };
+  selDay = null;
+  applyProxyUI();
+  save(); render();
+  if (window.setMastStore) setMastStore();
+  document.getElementById("out").hidden = true;
+  switchMode(false);
+  toast((S.name || "この方") + " さんの代わりに記入します");
+}
+function endProxy(){
+  if (!PROXY) return;
+  PROXY = null;
+  try{ localStorage.removeItem(LS+"_proxy"); }catch(e){}
+  S = PROXY_BACK ? migrate(PROXY_BACK) : blank();
+  PROXY_BACK = null;
+  selDay = null;
+  applyProxyUI();
+  render();
+  if (window.setMastStore) setMastStore();
+  document.getElementById("out").hidden = true;
+}
+document.getElementById("proxyCancel").addEventListener("click", function(){
+  if (!confirm("代理入力をやめます。入れた内容は登録されません。よろしいですか？")) return;
+  endProxy();
+  switchMode(true); renderAgg();
+  toast("代理入力をやめました");
+});
+function registerProxy(){
+  var o = JSON.parse(JSON.stringify(S));
+  var ix = -1;
+  for (var i=0;i<subs.length;i++){ if (norm(subs[i].name) === norm(o.name)){ ix = i; break; } }
+  if (ix >= 0) subs[ix] = o; else subs.push(o);
+  paper = paper.filter(function(p){ return norm(p.n) !== norm(o.name); });
+  if (STORES.indexOf(o.store) >= 0 && o.store !== aggStore){
+    aggStore = o.store; ROSTER = rosterFor(aggStore); saveRoster();
+  }
+  var nm = o.name;
+  saveAgg(); endProxy();
+  switchMode(true); renderRoster(); renderAgg();
+  toast(nm + " さんの申請を登録しました");
+}
 
 /* ================= 申請書ビュー =================
    届いた申請を、紙の申請書と同じ並びでキャンバスに描きます。
@@ -1693,16 +1892,18 @@ document.getElementById("svPrint").addEventListener("click", function(){
   wnd.document.close();
 });
 
+/* CSVは画面に出ている店舗のぶんだけ。店舗を切り替えて5回出せば全店ぶんになります */
 function csvText(){
   function q(v){ var s = String(v==null?"":v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s; }
   var lines = [COLS.map(q).join(",")];
-  subs.forEach(function(o){ lines.push(rowOf(o).map(q).join(",")); });
-  paper.forEach(function(n){ lines.push(paperRow(n).map(q).join(",")); });
+  subs.forEach(function(o){ if (inStore(o, aggStore)) lines.push(rowOf(o).map(q).join(",")); });
+  paper.forEach(function(p){ if (p.s === aggStore) lines.push(paperRow(p.n, p.s).map(q).join(",")); });
   return "﻿" + lines.join("\r\n");
 }
 document.getElementById("csvBtn").addEventListener("click", function(){
   if (!subs.length && !paper.length){ toast("先に申請を読み込んでください"); return; }
-  offerSave("シフト申請集計_" + START.getFullYear() + "年" + CFG.label + ".csv", csvText(), "CSVを保存しました");
+  offerSave("シフト申請集計_" + START.getFullYear() + "年" + CFG.label + "_" + (SHORT[aggStore]||"") + ".csv",
+            csvText(), SHORT[aggStore] + " のCSVを保存しました");
 });
 document.getElementById("csvCopyBtn").addEventListener("click", function(){
   if (!subs.length && !paper.length){ toast("先に申請を読み込んでください"); return; }
@@ -1716,10 +1917,25 @@ document.getElementById("csvCopyBtn").addEventListener("click", function(){
 loadRoster();
 load();
 loadAgg();
+/* 代理入力の途中で画面を閉じてしまったときは、その続きから出す */
+(function(){
+  if (!isKanri()) return;
+  try{
+    var raw = localStorage.getItem(LS+"_proxy");
+    if (!raw) return;
+    var po = JSON.parse(raw);
+    if (!po || po.v !== 1 || !po.name) return;
+    PROXY_BACK = JSON.parse(JSON.stringify(S));
+    S = migrate(po);
+    PROXY = { name: S.name, store: S.store };
+  }catch(e){}
+})();
+applyProxyUI();
 renderRoster();
 render();
 renderAgg();
 applyKanri();
+if (PROXY) toast(PROXY.name + " さんの代理入力の続きです");
 })();
 </script>
 
