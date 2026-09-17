@@ -1732,9 +1732,27 @@ function registerProxy(){
     aggStore = o.store; ROSTER = rosterFor(aggStore); saveRoster();
   }
   var nm = o.name;
+  var body = null;
+  if (CFG.endpoint){
+    // 端末が変わっても残るよう、代理入力もスプレッドシートへ送る
+    body = JSON.stringify({
+      period: CFG.ym, store: o.store, name: o.name,
+      code: encodeState(o), text: "【代理入力】" + buildText(),
+      via: "代理", sentAt: new Date().toISOString()
+    });
+  }
   saveAgg(); endProxy();
   switchMode(true); renderRoster(); renderAgg();
   toast(nm + " さんの申請を登録しました");
+  if (body){
+    fetch(CFG.endpoint, {
+      method: "POST", mode: "no-cors",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: body
+    }).then(function(){}, function(){
+      toast("集計には入りましたが、スプレッドシートへは送れませんでした");
+    });
+  }
 }
 
 /* ================= 申請書ビュー =================
