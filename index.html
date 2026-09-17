@@ -616,6 +616,14 @@ tr:last-child td{border-bottom:0}
     </section>
 
     <section>
+      <div class="sec-bar">代理入力<span class="hint">紙や電話で受けたぶんを店長が入れます</span></div>
+      <div class="card">
+        <p class="note">申請画面が開きます。書き終えて「集計に登録」を押すと、この一覧に加わります。<b>名簿にない方も入れられます。</b>スタッフには送られません。</p>
+        <button class="btn btn-main" type="button" id="proxyNew" style="width:100%">代理で申請を入力する</button>
+      </div>
+    </section>
+
+    <section>
       <div class="sec-bar">提出状況</div>
       <div class="card">
         <p class="count">受付ずみ <b id="cDone">0</b> 名<span id="cProxy"></span> ／ 紙 <b id="cPaper">0</b> 名 ／ 未提出 <b id="cLeft">0</b> 名</p>
@@ -1688,7 +1696,7 @@ function startProxy(name, store, ix){
   if (window.setMastStore) setMastStore();
   document.getElementById("out").hidden = true;
   switchMode(false);
-  toast((S.name || "この方") + " さんの代わりに記入します");
+  toast(S.name ? S.name + " さんの代わりに記入します" : "代理入力を始めます。氏名から記入してください");
 }
 /* keepDraft を付けると、書きかけを残したまま画面だけ元に戻す */
 function endProxy(keepDraft){
@@ -1703,6 +1711,11 @@ function endProxy(keepDraft){
   if (window.setMastStore) setMastStore();
   document.getElementById("out").hidden = true;
 }
+/* 名簿がなくても代理入力を始められるようにしておく */
+document.getElementById("proxyNew").addEventListener("click", function(){
+  startProxy("", aggStore, null);
+  elName.focus();
+});
 document.getElementById("proxyCancel").addEventListener("click", function(){
   if (!confirm("代理入力をやめます。入れた内容は登録されません。よろしいですか？")) return;
   endProxy();
