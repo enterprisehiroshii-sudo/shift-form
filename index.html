@@ -631,17 +631,17 @@ var DOW = ["月","火","水","木","金","土","日"];
 /* ===== 対象月の設定 — 翌月分を作るときはこのブロックだけ直せば全体が切り替わります =====
    期間の決め方: 月初の最初の月曜 〜 末日を含む週の日曜（統合設定シート 01_全体ルール より） */
 var CFG = {
-  label:    "10月度",
-  ym:       "2026-10",
-  start:    [2026, 10, 5],           // 2026/10/05(月)
-  days:     28,                       // .. 2026/11/01(日)
-  deadline: "9月15日",
+  label:    "11月度",
+  ym:       "2026-11",
+  start:    [2026, 11, 2],           // 2026/11/02(月)
+  days:     35,                       // .. 2026/12/06(日) 11月30日を含む週の日曜まで＝5週
+  deadline: "10月15日",
   store:    "横須賀大矢部三丁目店",   // 試験運用はこの店舗のみ
-  holidays: {"10/12":"スポーツの日"},
-  busy:     {"10/31":"ハロウィン"},   // 祝日ではないが人手が要る日
+  holidays: {"11/3":"文化の日", "11/23":"勤労感謝の日"},
+  busy:     {},                       // 祝日ではないが人手が要る日
   /* Googleスプレッドシートへ直接送る場合はGASのウェブアプリURLをここに入れます。
      空のままなら「送信」ボタンは出ず、LINE送信とコピーだけになります。 */
-  endpoint: ""
+  endpoint: "https://script.google.com/macros/s/AKfycbwHZ5krFwlZkE5q7ckUmxBL8_KkTVciSTMx2ssKUiCVMwoq_iPvZxpz6BatdQMQT8VR/exec"
 };
 
 var START = new Date(CFG.start[0], CFG.start[1]-1, CFG.start[2]);
@@ -737,6 +737,11 @@ function pad2(n){ return (n<10?"0":"")+n; }
     " — " + pad2(end.getMonth()+1) + "." + pad2(end.getDate());
   document.getElementById("mDue").innerHTML = "提出期限 <b>" + CFG.deadline + "</b>";
   document.getElementById("mStore").textContent = CFG.store;
+  // 店舗を選んだら見出しもその店舗名に変える（5店舗共通で使うため）
+  window.setMastStore = function(){
+    var el = document.getElementById("mStore");
+    if (el) el.textContent = (S && S.store) ? S.store : "店舗を選んでください";
+  };
   document.title = CFG.label + "シフト申請書";
 })();
 
@@ -747,7 +752,7 @@ function load(){
     var raw = localStorage.getItem(LS);
     if(!raw) return;
     var o = JSON.parse(raw);
-    if(o && o.v===1){ S = migrate(o); if(!S.store) S.store = CFG.store; }
+    if(o && o.v===1){ S = migrate(o); }
   }catch(e){}
 }
 /* 店長側は9/15までの数日かけて集めるので、読み込んだ分も保存しておく */
@@ -796,7 +801,10 @@ function encodeState(o){
   }).filter(Boolean).join(",");
   var hyb = STORES.map(function(s){ return HYB_C[o.hybrid[s]] || "-"; }).join("");
   var w = o.wish;
-  return ["S1", clean(o.name), base, [w.days, w.hours, w.pay].join("."), irr, hyb, clean(o.note)].join("|");
+  // 末尾に所属店舗の番号を足す。古い形式（7項目）も読めるようにしてある。
+  var si = STORES.indexOf(o.store);
+  return ["S1", clean(o.name), base, [w.days, w.hours, w.pay].join("."), irr, hyb, clean(o.note),
+          (si < 0 ? "" : String(si))].join("|");
 }
 function decodeState(code){
   var f = code.split("|");
@@ -822,6 +830,11 @@ function decodeState(code){
     if (i < STORES.length) o.hybrid[STORES[i]] = C_HYB[c] || "";
   });
   o.note = f[6] || "";
+  // 所属店舗。無い（古い形式）ときは設定の店舗のままにする
+  if (f[7] !== undefined && f[7] !== "") {
+    var si = parseInt(f[7], 10);
+    if (!isNaN(si) && STORES[si]) o.store = STORES[si];
+  }
   return o;
 }
 
@@ -904,6 +917,7 @@ STORES.forEach(function(s){
 function render(){
   if (elName.value !== S.name) elName.value = S.name;
   elStore.value = S.store || "";
+  if (window.setMastStore) setMastStore();
 
   DOW.forEach(function(d){
     var st = S.base[d];
@@ -968,7 +982,7 @@ function renderDayEdit(){
 
 /* ---------- events ---------- */
 elName.addEventListener("input", function(){ S.name = this.value.trim(); save(); });
-elStore.addEventListener("change", function(){ S.store = this.value; save(); });
+elStore.addEventListener("change", function(){ S.store = this.value; save(); if (window.setMastStore) setMastStore(); });
 
 daysBox.addEventListener("click", function(e){
   var seg = e.target.closest(".seg button");
@@ -1511,6 +1525,9 @@ function svFit(t,x,y,maxW,size,align,color,weight){
 /* A4横向き。縦向きだと曜日1列が狭く、時刻の文字を大きくできないため横にしている。 */
 function drawSheet(o){
   var cv = document.getElementById("svCanvas");
+  // 月度は4週のときと5週のときがある。5週の月は1週ぶん（見出し30＋本体114）背を高くする。
+  var NWK = Math.ceil(NDAYS / 7);
+  cv.height = 1240 + Math.max(0, NWK - 4) * 144;
   SV.cv = cv; SV.ctx = cv.getContext("2d");
   SV.name = o.name || "申請";
   var c = SV.ctx, W = cv.width, M = 46, IW = W - M*2;
@@ -1568,7 +1585,7 @@ function drawSheet(o){
   svText("■イレギュラー申請■", M + 12, y + 14, 18, "left", "#111", 700);
   y += 28;
   var rowH = 114;
-  for (var wk=0; wk<4; wk++){
+  for (var wk=0; wk<NWK; wk++){
     svRect(M, y, IW, 30, "#f5f3ee");
     for (var i=0;i<7;i++){
       if (i) svLine(M + cw*i, y, M + cw*i, y + 30);
