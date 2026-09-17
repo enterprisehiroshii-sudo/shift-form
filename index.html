@@ -606,7 +606,17 @@ tr:last-child td{border-bottom:0}
     <section>
       <div class="sec-bar">申請の取り込み</div>
       <div class="card">
-        <p class="note">スタッフから届いた申請テキストを、まとめてここに貼り付けてください。何人分でも一度に読み込めます。</p>
+        <p class="note" style="font-weight:700;color:var(--ink);margin-bottom:8px">スプレッドシートから取り込む</p>
+        <p class="note">届いている申請を、まとめて読み込みます。合言葉は一度入れればこの端末に残ります。</p>
+        <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+          <input type="password" id="readKey" placeholder="読み取りの合言葉" autocomplete="off"
+                 style="flex:1;min-width:150px;font-family:inherit;font-size:15px;padding:11px 12px;border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);color:var(--ink)">
+          <button class="btn btn-main" type="button" id="pullBtn" style="flex:0 0 auto">取り込む</button>
+        </div>
+        <p class="note" id="pullMsg" style="margin:10px 0 0"></p>
+
+        <p class="note" style="font-weight:700;color:var(--ink);margin:22px 0 8px;padding-top:18px;border-top:1px solid var(--line)">貼り付けて取り込む</p>
+        <p class="note">LINEなどで届いた申請テキストを、まとめてここに貼り付けてください。何人分でも一度に読み込めます。</p>
         <textarea id="pasteBox" placeholder="受け取った申請テキストを貼り付け" style="min-height:120px;font-family:'Roboto Mono',monospace;font-size:12px"></textarea>
         <div style="display:flex;gap:9px;margin-top:10px">
           <button class="btn btn-main" type="button" id="loadBtn">読み込む</button>
@@ -1530,6 +1540,58 @@ document.getElementById("loadBtn").addEventListener("click", function(){
   else { toast(found + "名分を読み込みました" + (bad ? "（" + bad + "件は失敗）" : "")); document.getElementById("pasteBox").value = ""; }
   saveAgg(); renderAgg();
 });
+/* ---- スプレッドシートから直接取り込む ----
+   合言葉はこの端末にだけ残します。ページには書きません。 */
+var LS_READKEY = "shift_readkey_v1";
+(function(){
+  var el = document.getElementById("readKey");
+  try{ el.value = localStorage.getItem(LS_READKEY) || ""; }catch(e){}
+  el.addEventListener("input", function(){
+    try{ localStorage.setItem(LS_READKEY, this.value.trim()); }catch(e){}
+  });
+  document.getElementById("pullBtn").hidden = !CFG.endpoint;
+})();
+function pullMsg(s){ document.getElementById("pullMsg").textContent = s; }
+document.getElementById("pullBtn").addEventListener("click", function(){
+  var key = document.getElementById("readKey").value.trim();
+  if (!key){ pullMsg("合言葉を入れてください。"); return; }
+  var btn = this;
+  btn.disabled = true; btn.textContent = "読み込み中…";
+  pullMsg("");
+  fetch(CFG.endpoint + "?list=1&key=" + encodeURIComponent(key), {cache:"no-store"})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      btn.disabled = false; btn.textContent = "取り込む";
+      if (!d || !d.ok){ pullMsg("合言葉が違うようです。スプレッドシート側の設定をご確認ください。"); return; }
+      if (!Array.isArray(d.rows)){
+        pullMsg("スプレッドシート側がまだ古い版です。受信スクリプトを新しいものに入れ替えてください。");
+        return;
+      }
+      var got = 0, skip = 0, bad = 0;
+      (d.rows || []).forEach(function(x){
+        if (x.period && x.period !== CFG.ym){ skip++; return; }   // 今月度ぶんだけ
+        try{
+          var o = decodeState(String(x.code).replace(/^#/, ""));
+          if (!o || !o.name){ bad++; return; }
+          if (/【代理入力】/.test(x.text || "")) o.via = "代理";
+          if (x.store && STORES.indexOf(x.store) >= 0) o.store = x.store;
+          var ix = -1;
+          for (var i=0;i<subs.length;i++){ if (norm(subs[i].name) === norm(o.name)){ ix = i; break; } }
+          if (ix >= 0) subs[ix] = o; else subs.push(o);   // 同じ人はあとの申請で上書き
+          got++;
+        }catch(e){ bad++; }
+      });
+      saveAgg(); renderRoster(); renderAgg();
+      pullMsg(got + " 名分を取り込みました。"
+        + (skip ? "（" + skip + " 件は他の月度なので除きました）" : "")
+        + (bad ? "（" + bad + " 件は読み取れませんでした）" : ""));
+      toast(got ? got + " 名分を取り込みました" : "取り込むものがありませんでした");
+    }, function(){
+      btn.disabled = false; btn.textContent = "取り込む";
+      pullMsg("つながりませんでした。通信の状態をご確認ください。");
+    });
+});
+
 document.getElementById("clearBtn").addEventListener("click", function(){
   if ((!subs.length && !paper.length) || !confirm("読み込んだ申請と「紙で受領」の記録をすべて消します。よろしいですか？")) return;
   subs = []; paper = []; saveAgg(); renderAgg(); toast("消去しました");
