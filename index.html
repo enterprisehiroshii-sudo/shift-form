@@ -290,6 +290,12 @@ input::placeholder,textarea::placeholder{color:var(--muted);opacity:.65}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn-line{background:#06c755;color:#fff;border-color:#06c755}
 .btn-line:hover{background:#05b34c;border-color:#05b34c}
+/* 申請はこちらが本筋。LINEは控えめにして、押し間違えを減らす */
+#sendBtn{font-size:19px;padding:20px 16px;letter-spacing:.04em}
+#lineBtn{font-size:14px;padding:10px 14px;background:transparent;color:#06c755;border-color:#06c755}
+#lineBtn:hover{background:#06c755;color:#fff}
+/* 送信先を設定していないときは、LINEが唯一の送り方なので大きく出す */
+#lineBtn.solo{font-size:19px;padding:20px 16px;background:#06c755;color:#fff}
 .donebox{
   border:2px solid var(--ok);background:var(--ok-soft);border-radius:2px;
   padding:12px 14px;margin-bottom:14px;display:flex;flex-direction:column;gap:3px;
@@ -1387,7 +1393,11 @@ document.getElementById("lineBtn").addEventListener("click", function(){
 document.getElementById("sendBtn").hidden = !CFG.endpoint;
 /* 案内文は「この内容で申請する」が出ているときだけ意味がある */
 document.getElementById("lineLead").hidden = !CFG.endpoint || IN_LINE;
-if (!CFG.endpoint) document.getElementById("lineBtn").textContent = "LINEで店長に送る";
+if (!CFG.endpoint){
+  var lb0 = document.getElementById("lineBtn");
+  lb0.textContent = "LINEで店長に送る";
+  lb0.classList.add("solo");
+}
 document.getElementById("sendBtn").addEventListener("click", function(){
   var btn = this;
   btn.disabled = true; btn.textContent = "送信中…";
