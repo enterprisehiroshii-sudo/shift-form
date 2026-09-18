@@ -1567,9 +1567,18 @@ document.getElementById("pullBtn").addEventListener("click", function(){
         pullMsg("スプレッドシート側がまだ古い版です。受信スクリプトを新しいものに入れ替えてください。");
         return;
       }
+      // 対象月は "2026-11" のはずだが、表計算側で日付に化けることがあるので緩く見る
+      function samePeriod(p){
+        if (!p) return true;
+        var s = String(p);
+        if (s === CFG.ym) return true;
+        var dt = new Date(s);
+        if (isNaN(dt.getTime())) return false;
+        return (dt.getFullYear() + "-" + pad2(dt.getMonth()+1)) === CFG.ym;
+      }
       var got = 0, skip = 0, bad = 0;
       (d.rows || []).forEach(function(x){
-        if (x.period && x.period !== CFG.ym){ skip++; return; }   // 今月度ぶんだけ
+        if (!samePeriod(x.period)){ skip++; return; }   // 今月度ぶんだけ
         try{
           var o = decodeState(String(x.code).replace(/^#/, ""));
           if (!o || !o.name){ bad++; return; }
