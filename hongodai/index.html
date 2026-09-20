@@ -1,0 +1,2107 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10月度シフト申請書</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap">
+
+<style>
+:root{
+  --paper:#f7f5f0;
+  --surface:#ffffff;
+  --sunk:#efece5;
+  --ink:#16191c;
+  --muted:#6b665e;
+  --line:#ddd7cc;
+  --line-strong:#c4bcae;
+  --ok:#16624f;
+  --ok-soft:#e2efea;
+  --mid:#a8781a;
+  --mid-soft:#f6eddb;
+  --no:#b0451c;
+  --no-soft:#f8e6de;
+  --bar-bg:#16191c;
+  --bar-fg:#f7f5f0;
+  --focus:#16624f;
+  --shadow:0 1px 2px rgba(22,25,28,.06),0 8px 24px rgba(22,25,28,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#131619;
+    --surface:#1b1f24;
+    --sunk:#23282e;
+    --ink:#eceae5;
+    --muted:#9b968d;
+    --line:#2f353c;
+    --line-strong:#434b54;
+    --ok:#54c3a1;
+    --ok-soft:#16302a;
+    --mid:#d9a441;
+    --mid-soft:#332a17;
+    --no:#e2805a;
+    --no-soft:#382019;
+    --bar-bg:#eceae5;
+    --bar-fg:#131619;
+    --focus:#54c3a1;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131619;
+  --surface:#1b1f24;
+  --sunk:#23282e;
+  --ink:#eceae5;
+  --muted:#9b968d;
+  --line:#2f353c;
+  --line-strong:#434b54;
+  --ok:#54c3a1;
+  --ok-soft:#16302a;
+  --mid:#d9a441;
+  --mid-soft:#332a17;
+  --no:#e2805a;
+  --no-soft:#382019;
+  --bar-bg:#eceae5;
+  --bar-fg:#131619;
+  --focus:#54c3a1;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  font-size:15px;
+  line-height:1.7;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px 128px}
+
+/* ---- masthead: mirrors the reversed header bar on the paper form ---- */
+.mast{padding:28px 0 20px}
+.mast-bar{
+  background:var(--bar-bg);color:var(--bar-fg);
+  padding:14px 18px;border-radius:2px;
+  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+}
+.mast-bar h1{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:900;
+  font-size:22px;letter-spacing:.06em;margin:0;line-height:1.25;
+}
+.mast-bar .co{
+  font-family:"Roboto Mono",monospace;font-size:11px;letter-spacing:.14em;
+  opacity:.72;text-transform:uppercase;
+}
+.meta{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;
+}
+.meta span{
+  font-family:"Roboto Mono",monospace;font-size:12px;
+  border:1px solid var(--line-strong);border-radius:2px;
+  padding:5px 9px;color:var(--muted);background:var(--surface);
+  font-variant-numeric:tabular-nums;
+}
+.meta span b{color:var(--no);font-weight:700}
+
+/* 隠す指定の入れ忘れで出てしまわないよう、まとめて押さえておく */
+[hidden]{display:none !important}
+
+/* ---- mode switch ---- */
+.modes{display:flex;gap:0;margin-top:16px;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.modes[hidden]{display:none}
+.modes button{
+  flex:1;appearance:none;border:0;background:var(--surface);color:var(--muted);
+  font-family:inherit;font-size:14px;font-weight:500;padding:11px 8px;cursor:pointer;
+}
+.modes button+button{border-left:1px solid var(--line-strong)}
+.modes button[aria-pressed="true"]{background:var(--bar-bg);color:var(--bar-fg);font-weight:700}
+.modes button:focus-visible{outline:2px solid var(--focus);outline-offset:-4px}
+
+/* ---- sections ---- */
+section{margin-top:26px}
+.sec-bar{
+  background:var(--bar-bg);color:var(--bar-fg);
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;
+  font-size:14px;letter-spacing:.08em;padding:8px 14px;border-radius:2px 2px 0 0;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+}
+.sec-bar .hint{font-family:"Noto Sans JP",sans-serif;font-weight:400;font-size:11px;letter-spacing:0;opacity:.75}
+.card{
+  background:var(--surface);border:1px solid var(--line);border-top:0;
+  border-radius:0 0 2px 2px;padding:16px 14px;box-shadow:var(--shadow);
+}
+.note{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+
+label.fld{display:block;margin-bottom:14px}
+label.fld:last-child{margin-bottom:0}
+.fld-l{
+  display:block;font-size:12px;font-weight:700;letter-spacing:.04em;
+  color:var(--muted);margin-bottom:5px;
+}
+input[type=text],input[type=number],select,textarea{
+  width:100%;font-family:inherit;font-size:15px;color:var(--ink);
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:2px;
+  padding:9px 10px;line-height:1.5;
+}
+textarea{resize:vertical;min-height:76px}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.65}
+
+/* ---- weekday rows ---- */
+.drow{
+  display:grid;grid-template-columns:38px 1fr;gap:10px;align-items:start;
+  padding:10px 0;border-top:1px solid var(--line);
+}
+.drow:first-of-type{border-top:0;padding-top:0}
+.dname{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:17px;
+  text-align:center;padding-top:5px;
+}
+.dname.sat{color:#2f6fa8}
+.dname.sun{color:var(--no)}
+:root[data-theme="dark"] .dname.sat,:root:not([data-theme="light"]) .dname.sat{color:#79b2e0}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .dname.sat{color:#2f6fa8}}
+
+.seg{display:flex;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.seg button{
+  flex:1;appearance:none;border:0;background:var(--surface);color:var(--muted);
+  font-family:inherit;font-size:13px;font-weight:500;padding:8px 4px;cursor:pointer;white-space:nowrap;
+}
+.seg button+button{border-left:1px solid var(--line-strong)}
+.seg button:focus-visible{outline:2px solid var(--focus);outline-offset:-3px}
+.seg button[aria-pressed="true"]{font-weight:700}
+.seg button[aria-pressed="true"][data-v="all"]{background:var(--ok);color:#fff}
+.seg button[aria-pressed="true"][data-v="range"]{background:var(--sunk);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.seg button[aria-pressed="true"][data-v="off"]{background:var(--no);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"][data-v="all"],
+:root[data-theme="dark"] .seg button[aria-pressed="true"][data-v="off"]{color:#131619}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .seg button[aria-pressed="true"][data-v="all"],
+  :root:not([data-theme="light"]) .seg button[aria-pressed="true"][data-v="off"]{color:#131619}
+}
+
+.ranges{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.ranges[hidden]{display:none}
+.times{display:flex;align-items:center;gap:7px}
+.times select{flex:1;font-family:"Roboto Mono",monospace;font-size:14px;padding:7px 6px;font-variant-numeric:tabular-nums}
+.times .tilde{color:var(--muted);font-family:"Roboto Mono",monospace}
+.xbtn{
+  appearance:none;flex:0 0 auto;width:32px;height:32px;cursor:pointer;
+  border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);
+  color:var(--no);font-family:inherit;font-size:16px;font-weight:700;line-height:1;padding:0;
+}
+.xbtn:hover{border-color:var(--no);background:var(--no-soft)}
+.xbtn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.addbtn{
+  appearance:none;align-self:flex-start;cursor:pointer;
+  border:1px dashed var(--line-strong);border-radius:2px;background:transparent;
+  color:var(--muted);font-family:inherit;font-size:12.5px;font-weight:500;padding:6px 12px;
+}
+.addbtn:hover{border-color:var(--ok);color:var(--ok)}
+.addbtn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.night{
+  margin-top:7px;font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.night[hidden]{display:none}
+
+/* ---- calendar ---- */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-h{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:11px;
+  text-align:center;color:var(--muted);padding-bottom:2px;
+}
+.cal-h.sat{color:#2f6fa8}.cal-h.sun{color:var(--no)}
+.day{
+  appearance:none;border:1px solid var(--line);background:var(--surface);
+  border-radius:2px;padding:5px 2px 4px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:1px;min-height:52px;
+  font-family:inherit;color:var(--ink);
+}
+.day:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.day .d{font-family:"Roboto Mono",monospace;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+.day .m{font-family:"Roboto Mono",monospace;font-size:9px;color:var(--muted);letter-spacing:-.02em}
+.day .mk{font-size:15px;font-weight:700;line-height:1.1}
+.day[data-s="all"]{background:var(--ok-soft);border-color:var(--ok)}
+.day[data-s="all"] .mk{color:var(--ok)}
+.day[data-s="off"]{background:var(--no-soft);border-color:var(--no)}
+.day[data-s="off"] .mk{color:var(--no)}
+.day[data-s="range"]{background:var(--mid-soft);border-color:var(--mid)}
+.day[data-s="range"] .m{color:var(--mid);font-weight:700}
+.day[aria-current="true"]{box-shadow:0 0 0 2px var(--focus)}
+.day .hol{font-size:8px;color:var(--no);line-height:1}
+.day .busy{font-size:8px;color:var(--mid);font-weight:700;line-height:1}
+
+.dayedit{
+  margin-top:12px;border:1px solid var(--line-strong);border-radius:2px;
+  background:var(--sunk);padding:12px;
+}
+.dayedit[hidden]{display:none}
+.dayedit h4{
+  margin:0 0 9px;font-family:"Roboto Mono",monospace;font-size:14px;font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.seg4{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.seg4 button{
+  appearance:none;border:0;background:var(--surface);color:var(--muted);
+  font-family:inherit;font-size:12.5px;font-weight:500;padding:9px 2px;cursor:pointer;
+}
+.seg4 button+button{border-left:1px solid var(--line-strong)}
+.seg4 button[aria-pressed="true"]{background:var(--bar-bg);color:var(--bar-fg);font-weight:700}
+.seg4 button:focus-visible{outline:2px solid var(--focus);outline-offset:-3px}
+
+/* ---- hybrid ---- */
+.hy{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.hy:first-of-type{border-top:0;padding-top:0}
+.hy .sname{font-size:14px;font-weight:500}
+.seg3{display:flex;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.seg3 button{
+  appearance:none;border:0;background:var(--surface);color:var(--muted);
+  font-size:16px;font-weight:700;width:46px;padding:7px 0;cursor:pointer;font-family:inherit;
+}
+.seg3 button+button{border-left:1px solid var(--line-strong)}
+.seg3 button:focus-visible{outline:2px solid var(--focus);outline-offset:-3px}
+.seg3 button[aria-pressed="true"][data-v="○"]{background:var(--ok);color:#fff}
+.seg3 button[aria-pressed="true"][data-v="▲"]{background:var(--mid);color:#fff}
+.seg3 button[aria-pressed="true"][data-v="×"]{background:var(--no);color:#fff}
+:root[data-theme="dark"] .seg3 button[aria-pressed="true"]{color:#131619}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg3 button[aria-pressed="true"]{color:#131619}}
+
+.wishrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.wishrow .fld-l{white-space:nowrap}
+
+/* ---- action bar ---- */
+.actions{
+  position:fixed;left:0;right:0;bottom:0;background:var(--surface);
+  border-top:1px solid var(--line-strong);padding:11px 16px;
+  box-shadow:0 -6px 20px rgba(22,25,28,.08);z-index:20;
+}
+.actions-in{max-width:640px;margin:0 auto;display:flex;gap:9px}
+.btn{
+  appearance:none;font-family:inherit;font-size:15px;font-weight:700;
+  border-radius:2px;padding:12px 14px;cursor:pointer;border:1px solid var(--line-strong);
+  background:var(--surface);color:var(--ink);
+}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.btn-main{flex:1;background:var(--ok);color:#fff;border-color:var(--ok)}
+:root[data-theme="dark"] .btn-main{color:#131619}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-main{color:#131619}}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-line{background:#06c755;color:#fff;border-color:#06c755}
+.btn-line:hover{background:#05b34c;border-color:#05b34c}
+/* 申請はこちらが本筋。LINEは控えめにして、押し間違えを減らす */
+#sendBtn{
+  font-size:19px;padding:20px 16px;letter-spacing:.04em;
+  background:#0068b7;border-color:#0068b7;color:#fff;   /* ローソンブルー */
+}
+#sendBtn:hover{background:#005694;border-color:#005694}
+#lineBtn{font-size:14px;padding:10px 14px;background:transparent;color:#06c755;border-color:#06c755}
+#lineBtn:hover{background:#06c755;color:#fff}
+/* 送信先を設定していないときは、LINEが唯一の送り方なので大きく出す */
+#lineBtn.solo{font-size:19px;padding:20px 16px;background:#06c755;color:#fff}
+.donebox{
+  border:2px solid var(--ok);background:var(--ok-soft);border-radius:2px;
+  padding:12px 14px;margin-bottom:14px;display:flex;flex-direction:column;gap:3px;
+}
+.donebox[hidden]{display:none}
+.donebox strong{font-family:"Zen Kaku Gothic New",sans-serif;font-size:16px;color:var(--ok)}
+.donebox span{font-size:13px;color:var(--ink)}
+
+.linenote{
+  border:2px solid #06c755;background:rgba(6,199,85,.08);
+  border-radius:2px;padding:12px 14px;margin-bottom:12px;
+}
+.linenote[hidden]{display:none}
+.linenote strong{
+  display:block;font-family:"Zen Kaku Gothic New",sans-serif;
+  font-size:15px;color:var(--ink);margin-bottom:4px;
+}
+.linenote p{margin:0 0 8px;font-size:12.5px;color:var(--muted)}
+.linenote ol{margin:0;padding-left:1.3em;font-size:13.5px;line-height:1.9}
+.linenote li b{color:var(--ok)}
+
+.linkbtn{
+  appearance:none;background:none;border:0;padding:8px 0;margin-top:6px;cursor:pointer;
+  font-family:inherit;font-size:13px;color:var(--muted);text-decoration:underline;
+}
+.linkbtn:hover{color:var(--ink)}
+.linkbtn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.linkbtn[hidden]{display:none}
+.fallback{
+  margin-top:12px;border:2px solid var(--mid);background:var(--mid-soft);
+  border-radius:2px;padding:14px;
+}
+.fallback[hidden]{display:none}
+.fb-q{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-weight:700;font-size:15px;
+  margin:0 0 8px;color:var(--ink);
+}
+.fallback textarea{
+  font-family:"Roboto Mono",monospace;font-size:12px;line-height:1.6;
+  min-height:150px;background:var(--surface);
+}
+details summary{
+  cursor:pointer;font-size:13px;color:var(--muted);
+  padding:4px 0;list-style-position:inside;
+}
+details summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+.out{margin-top:14px}
+.out[hidden]{display:none}
+.out textarea{
+  font-family:"Roboto Mono",monospace;font-size:12px;line-height:1.6;
+  min-height:220px;background:var(--sunk);
+}
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:80px;
+  background:var(--bar-bg);color:var(--bar-fg);padding:10px 18px;border-radius:2px;
+  font-size:13.5px;font-weight:500;z-index:40;box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transition:opacity .18s ease;
+}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+
+/* ---- aggregate view ---- */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:2px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:left;white-space:nowrap;vertical-align:top}
+th{background:var(--sunk);font-weight:700;font-size:11.5px;color:var(--muted);letter-spacing:.03em;position:sticky;top:0}
+td.mono{font-family:"Roboto Mono",monospace;font-variant-numeric:tabular-nums;font-size:12px}
+tr:last-child td{border-bottom:0}
+.pending{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pending span,.pending button{
+  font-family:inherit;font-size:12.5px;line-height:1.6;
+  border:1px solid var(--no);color:var(--no);background:var(--no-soft);
+  padding:3px 9px;border-radius:2px;
+}
+.pending button{cursor:pointer;appearance:none}
+.pending button:hover{border-color:var(--ink);color:var(--ink)}
+.pending button:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.pending button.paper{border-color:var(--mid);color:var(--mid);background:var(--mid-soft)}
+.pending button.paper:hover{border-color:var(--ink);color:var(--ink)}
+.pending .empty{border-color:var(--line-strong);color:var(--muted);background:transparent}
+/* 未提出の1名を「氏名（代理入力）＋紙」の2つのボタンで出す */
+.pending .pend{display:inline-flex}
+.pending .pend button{border-radius:0}
+.pending .pend button:first-child{border-radius:2px 0 0 2px}
+.pending .pend button.mini{
+  border-radius:0 2px 2px 0;border-left-color:transparent;padding:3px 8px;
+  font-size:11.5px;color:var(--muted);
+}
+.pending .pend button.mini:hover{color:var(--ink)}
+/* 店舗の切り替え */
+.stab{display:flex;flex-wrap:wrap;gap:6px}
+.stab button{
+  appearance:none;cursor:pointer;font-family:inherit;font-size:12.5px;line-height:1.6;
+  border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);
+  color:var(--muted);padding:5px 12px;
+}
+.stab button:hover{border-color:var(--ink);color:var(--ink)}
+.stab button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--surface);font-weight:700}
+.stab button:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+/* 店長が本人の代わりに書いているときの帯 */
+.proxy{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  border:1px solid var(--mid);background:var(--mid-soft);color:var(--ink);
+  padding:10px 14px;border-radius:2px;margin:0 0 18px;font-size:13px;
+}
+.proxy[hidden]{display:none}
+.proxy b{font-weight:700}
+.proxy button{
+  appearance:none;cursor:pointer;font-family:inherit;font-size:12.5px;margin-left:auto;
+  border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);
+  color:var(--muted);padding:4px 11px;
+}
+.proxy button:hover{border-color:var(--ink);color:var(--ink)}
+.count{
+  font-family:"Roboto Mono",monospace;font-size:13px;font-variant-numeric:tabular-nums;
+  color:var(--muted);margin:0 0 10px;
+}
+.count b{color:var(--ink);font-size:17px;font-weight:700}
+.hidden{display:none !important}
+
+/* ---- 申請書ビュー（紙の様式で表示する） ---- */
+.viewbtn{
+  appearance:none;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;
+  border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);
+  color:var(--ink);padding:3px 9px;white-space:nowrap;
+}
+.viewbtn:hover{border-color:var(--ok);color:var(--ok)}
+.viewbtn:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+.sheetview{
+  position:fixed;inset:0;z-index:60;background:rgba(20,22,25,.72);
+  display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;overflow:auto;
+}
+.sheetview[hidden]{display:none}
+.sheetview canvas{
+  background:#fff;max-width:min(100%,1200px);height:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);border-radius:2px;
+}
+.sheetview .bar2{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+.sheetview .bar2 .btn{font-size:14px;padding:10px 18px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <div class="mast">
+    <div class="mast-bar">
+      <h1 id="mTitle">10月度シフト申請書</h1>
+      <span class="co" id="mYm">2026 / 10</span>
+    </div>
+    <div class="meta">
+      <span id="mStore">横須賀大矢部三丁目店</span>
+      <span id="mRange">申請期間 2026.10.05 — 11.01</span>
+      <span id="mDue">提出期限 <b>9月15日</b></span>
+    </div>
+    <!-- 店長専用。URLの末尾に #kanri が付いているときだけ表示する -->
+    <div class="modes" role="group" aria-label="表示モード" id="modes" hidden>
+      <button type="button" id="mApply" aria-pressed="true">申請する</button>
+      <button type="button" id="mAgg" aria-pressed="false">店長用 集計</button>
+    </div>
+  </div>
+
+  <!-- ============ APPLY ============ -->
+  <div id="viewApply">
+    <!-- 店長がスタッフの代わりに書いているときだけ出る -->
+    <div class="proxy" id="proxyBar" hidden>
+      <span>代理入力中　<b id="proxyWho"></b></span>
+      <button type="button" id="proxyCancel">やめる</button>
+    </div>
+    <section>
+      <div class="sec-bar">申請者</div>
+      <div class="card">
+        <label class="fld">
+          <span class="fld-l">氏名</span>
+          <input type="text" id="name" list="rosterList" autocomplete="name" placeholder="山田 太郎">
+          <datalist id="rosterList"></datalist>
+        </label>
+        <p class="note" style="margin:-8px 0 14px">シフト表に載っているとおりに書いてください。</p>
+        <!-- 1店舗のみのため、所属店舗の選択は出しません（値は自動で入ります） -->
+        <label class="fld" id="storeField" hidden>
+          <span class="fld-l">所属店舗</span>
+          <select id="store"></select>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">基本シフト申請<span class="hint">毎週の勤務できる曜日・時間</span></div>
+      <div class="card">
+        <p class="note">勤務できる時間帯をなるべく広く入れてください。深夜（22時以降）に働ける方は「時間帯」を選んで翌朝までの時刻を入れてください。<b>朝と夜など1日に2回入れる方は「＋ 時間帯を追加」で分けて記入できます。</b></p>
+        <div id="days"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">週の希望</div>
+      <div class="card">
+        <div class="wishrow">
+          <label class="fld"><span class="fld-l">週 何日</span><input type="number" id="wDays" min="0" max="7" inputmode="numeric" placeholder="5"></label>
+          <label class="fld"><span class="fld-l">週 何時間</span><input type="number" id="wHours" min="0" max="60" inputmode="numeric" placeholder="30"></label>
+          <label class="fld"><span class="fld-l">給与 万円/月</span><input type="number" id="wPay" min="0" max="99" inputmode="numeric" placeholder="10"></label>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">イレギュラー申請<span class="hint">日付をタップ</span></div>
+      <div class="card">
+        <p class="note">基本シフトと違う日だけ指定してください。指定のない日は基本シフトどおりで組みます。「繁忙」の日は特に人手が要ります。</p>
+        <div class="cal" id="calHead"></div>
+        <div class="cal" id="cal" style="margin-top:3px"></div>
+        <div class="dayedit" id="dayEdit" hidden>
+          <h4 id="deTitle"></h4>
+          <div class="seg4" id="deSeg">
+            <button type="button" data-v="" aria-pressed="true">未指定</button>
+            <button type="button" data-v="all" aria-pressed="false">終日OK</button>
+            <button type="button" data-v="range" aria-pressed="false">時間指定</button>
+            <button type="button" data-v="off" aria-pressed="false">休み希望</button>
+          </div>
+          <div class="ranges" id="deRanges" hidden></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1店舗のみのため、ハイブリッド申請（勤務できる店舗）は出しません -->
+    <section id="hybridSection" hidden>
+      <div class="sec-bar">ハイブリッド申請<span class="hint">勤務できる店舗</span></div>
+      <div class="card">
+        <p class="note">○＝勤務希望　▲＝可能だがなるべく希望店舗　×＝勤務不可</p>
+        <div id="hybrid"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">備考</div>
+      <div class="card">
+        <textarea id="note" placeholder="テスト期間で中旬は入れません／連勤は3日までにしてください　など"></textarea>
+      </div>
+    </section>
+
+    <div class="out" id="out">
+      <section>
+        <div class="sec-bar">申請を送る<span class="hint">最後の手順です</span></div>
+        <div class="card">
+          <div id="sendDone" class="donebox" hidden>
+            <strong>送信しました</strong>
+            <span>店長に届きます。この画面は閉じて構いません。</span>
+          </div>
+          <div class="linenote" id="lineNote" hidden>
+            <strong>LINEの中でこのページを開いています</strong>
+            <p>この場合は「送る」が使えないので、コピーして貼り付けてください。</p>
+            <ol>
+              <li>下の<b>「内容をコピー」</b>を押す</li>
+              <li>右上の <b>×</b> でこの画面を閉じる</li>
+              <li>店長とのトークを開き、入力欄を<b>長押しして貼り付け</b>、送信</li>
+            </ol>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <button class="btn btn-main" type="button" id="sendBtn" hidden>この内容で申請する</button>
+            <p class="note" style="margin:2px 0 0;text-align:center" id="lineLead" hidden>⇧のボタンで申請できないときは⇩からLINEで送ってください。</p>
+            <button class="btn btn-line" type="button" id="lineBtn">申請できないときはLINEで送る</button>
+          </div>
+          <button class="linkbtn" type="button" id="showFallback">うまく送れないときは</button>
+
+          <div class="fallback" id="fallback" hidden>
+            <p class="fb-q" id="fbTitle">LINEに本文は入りましたか？</p>
+            <p class="note" style="margin:0 0 10px">
+              <b>空のメッセージになっていた場合</b>は、下の「内容をコピー」を押してから、
+              LINEの入力欄を長押しして貼り付けて送ってください。
+            </p>
+            <button class="btn btn-main" type="button" id="copyBtn" style="width:100%">内容をコピー</button>
+            <p class="note" style="margin:10px 0 6px">コピーできないときは、下の枠を長押しして「すべてを選択」→「コピー」でも送れます。</p>
+            <textarea id="outText" readonly></textarea>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============ AGGREGATE ============ -->
+  <div id="viewAgg" class="hidden">
+    <!-- 1店舗のみのため、店舗の切り替えは出しません -->
+    <section id="storeSection" hidden>
+      <div class="sec-bar">店舗<span class="hint">選んだ店舗の申請だけを表示します</span></div>
+      <div class="card">
+        <div class="stab" id="storeTabs"></div>
+        <p class="count" style="margin:14px 0 0" id="storeSummary"></p>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">スタッフ名簿<span class="hint">この端末にだけ保存されます</span></div>
+      <div class="card">
+        <p class="note">未提出者を出すために使います。1行に1名で入力してください。<b>このページには保存されず、店長のブラウザの中だけに残ります。</b>一度登録すれば翌月以降も引き継がれます。</p>
+        <textarea id="rosterBox" placeholder="山田太郎&#10;鈴木花子&#10;佐藤一郎" style="min-height:110px"></textarea>
+        <div style="display:flex;gap:9px;margin-top:10px;align-items:center">
+          <button class="btn btn-main" type="button" id="rosterSave">名簿を保存</button>
+          <span class="count" style="margin:0" id="rosterCount">未登録</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">申請の取り込み</div>
+      <div class="card">
+        <p class="note" style="font-weight:700;color:var(--ink);margin-bottom:8px">スプレッドシートから取り込む</p>
+        <p class="note">届いている申請を、まとめて読み込みます。合言葉は一度入れればこの端末に残ります。</p>
+        <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+          <input type="password" id="readKey" placeholder="読み取りの合言葉" autocomplete="off"
+                 style="flex:1;min-width:150px;font-family:inherit;font-size:15px;padding:11px 12px;border:1px solid var(--line-strong);border-radius:2px;background:var(--surface);color:var(--ink)">
+          <button class="btn btn-main" type="button" id="pullBtn" style="flex:0 0 auto">取り込む</button>
+        </div>
+        <p class="note" id="pullMsg" style="margin:10px 0 0"></p>
+
+        <p class="note" style="font-weight:700;color:var(--ink);margin:22px 0 8px;padding-top:18px;border-top:1px solid var(--line)">貼り付けて取り込む</p>
+        <p class="note">LINEなどで届いた申請テキストを、まとめてここに貼り付けてください。何人分でも一度に読み込めます。</p>
+        <textarea id="pasteBox" placeholder="受け取った申請テキストを貼り付け" style="min-height:120px;font-family:'Roboto Mono',monospace;font-size:12px"></textarea>
+        <div style="display:flex;gap:9px;margin-top:10px">
+          <button class="btn btn-main" type="button" id="loadBtn">読み込む</button>
+          <button class="btn" type="button" id="clearBtn">全消去</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">代理入力<span class="hint">紙や電話で受けたぶんを店長が入れます</span></div>
+      <div class="card">
+        <p class="note">申請画面が開きます。書き終えて「集計に登録」を押すと、この一覧に加わります。<b>名簿にない方も入れられます。</b>スタッフには送られません。</p>
+        <button class="btn btn-main" type="button" id="proxyNew" style="width:100%">代理で申請を入力する</button>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-bar">提出状況</div>
+      <div class="card">
+        <p class="count">受付ずみ <b id="cDone">0</b> 名<span id="cProxy"></span> ／ 紙 <b id="cPaper">0</b> 名 ／ 未提出 <b id="cLeft">0</b> 名</p>
+        <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+        <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)" id="unknownLabel">名簿にない名前<span style="font-weight:400;color:var(--muted)">　— 表記ゆれの可能性があります</span></p>
+        <div class="pending" id="unknownList"></div>
+        <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)">未提出<span style="font-weight:400;color:var(--muted)">　— 氏名を押すと代わりに記入できます／「紙」は用紙で受け取った印です</span></p>
+        <div class="pending" id="pending"></div>
+        <p class="note" style="margin:14px 0 4px;font-weight:700;color:var(--ink)">紙で受領<span style="font-weight:400;color:var(--muted)">　— タップで取り消し</span></p>
+        <div class="pending" id="paperList"></div>
+        <div style="display:flex;gap:9px;margin-top:16px">
+          <button class="btn btn-main" type="button" id="csvBtn">CSVで保存</button>
+          <button class="btn" type="button" id="csvCopyBtn">CSVを表示・コピー</button>
+        </div>
+        <div class="out" id="csvOut" hidden style="margin-top:12px">
+          <p class="note" style="margin-bottom:6px">コピーできない場合は、下の枠内を選択してコピーしてください。</p>
+          <textarea id="csvText" readonly style="min-height:160px"></textarea>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="actions" id="actionBar">
+  <div class="actions-in">
+    <button class="btn" type="button" id="resetBtn">クリア</button>
+    <button class="btn btn-main" type="button" id="doneBtn">記入おわり</button>
+  </div>
+</div>
+
+<div class="sheetview" id="sheetView" hidden>
+  <div class="bar2">
+    <button class="btn btn-main" type="button" id="svSave">画像を保存</button>
+    <button class="btn" type="button" id="svPrint">印刷</button>
+    <button class="btn" type="button" id="svClose">閉じる</button>
+  </div>
+  <canvas id="svCanvas" width="1754" height="1240"></canvas>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* 名簿はこのファイルに持ちません。店長が集計画面で登録し、その端末にだけ保存されます。
+   5店舗を1つのアプリで使うので、名簿は店舗ごとに分けて持ちます。 */
+var ROSTERS = {};        // { 店舗名: [氏名, …] }
+var ROSTER  = [];        // いま表示している店舗の名簿
+var aggStore = "";       // 集計画面で選んでいる店舗
+var LS_ROSTER   = "shift_roster_v1";   // 以前の1店舗ぶん
+var LS_ROSTER2  = "shift_roster_v2";
+var LS_AGGSTORE = "shift_aggstore_v1";
+function rosterFor(st){ var a = ROSTERS[st]; return Array.isArray(a) ? a : []; }
+function loadRoster(){
+  var ok = null;
+  try{
+    var raw = localStorage.getItem(LS_ROSTER2);
+    var o = raw ? JSON.parse(raw) : null;
+    if (o && typeof o === "object" && !Array.isArray(o)) ok = o;
+  }catch(e){}
+  if (ok) { ROSTERS = ok; }
+  else {
+    // 前の版で登録した名簿を、その時の店舗のものとして引き継ぐ
+    ROSTERS = {};
+    try{
+      var old = JSON.parse(localStorage.getItem(LS_ROSTER) || "[]");
+      if (Array.isArray(old) && old.length) ROSTERS[CFG.store] = old;
+    }catch(e){}
+  }
+  try{ aggStore = localStorage.getItem(LS_AGGSTORE) || ""; }catch(e){ aggStore = ""; }
+  if (STORES.indexOf(aggStore) < 0) aggStore = CFG.store;
+  ROSTER = rosterFor(aggStore);
+}
+function saveRoster(){
+  try{
+    localStorage.setItem(LS_ROSTER2, JSON.stringify(ROSTERS));
+    localStorage.setItem(LS_AGGSTORE, aggStore);
+  }catch(e){}
+}
+/* 表記ゆれを吸収して照合する（全角半角・空白の違いを無視） */
+function norm(s){
+  s = String(s == null ? "" : s);
+  if (String.prototype.normalize) s = s.normalize("NFKC");
+  return s.replace(/\s+/g, "");
+}
+function inRoster(n, list){
+  var L = list || ROSTER, k = norm(n);
+  for (var i=0;i<L.length;i++) if (norm(L[i]) === k) return L[i];
+  return null;
+}
+/* 所属店舗が空の申請は、どの店舗で見ても出るようにする（見落とし防止） */
+function inStore(o, st){ return !o.store || o.store === st; }
+
+var STORES =["本郷台駅前店"];
+var SHORT = {"本郷台駅前店":"本郷台"};
+/* 1店舗だけのときは、所属店舗の選択とハイブリッド申請（勤務できる店舗）を出しません */
+var SINGLE = STORES.length === 1;
+var DOW = ["月","火","水","木","金","土","日"];
+
+/* ===== 対象月の設定 — 翌月分を作るときはこのブロックだけ直せば全体が切り替わります =====
+   期間の決め方: 月初の最初の月曜 〜 末日を含む週の日曜（統合設定シート 01_全体ルール より） */
+var CFG = {
+  label:    "11月度",
+  ym:       "2026-11",
+  start:    [2026, 11, 2],           // 2026/11/02(月)
+  days:     35,                       // .. 2026/12/06(日) 11月30日を含む週の日曜まで＝5週
+  deadline: "10月15日",
+  store:    "本郷台駅前店",
+  holidays: {"11/3":"文化の日", "11/23":"勤労感謝の日"},
+  busy:     {},                       // 祝日ではないが人手が要る日
+  /* Googleスプレッドシートへ直接送る場合はGASのウェブアプリURLをここに入れます。
+     空のままなら「送信」ボタンは出ず、LINE送信とコピーだけになります。 */
+  endpoint: ""   // 本郷台駅前店用のスプレッドシートを用意したら、そのGASのURLをここに入れます
+};
+
+var START = new Date(CFG.start[0], CFG.start[1]-1, CFG.start[2]);
+var NDAYS = CFG.days;
+var HOLIDAYS = CFG.holidays;
+var BUSY = CFG.busy;
+var LS = "shiftapply_" + CFG.ym.replace("-","_") + "_v1";
+
+/* ---------- time options ---------- */
+var TIMES = [];
+for (var h=0; h<=24; h++){
+  for (var m=0; m<60; m+=15){
+    if (h===24 && m>0) break;
+    TIMES.push((h<10?"0":"")+h+":"+(m<10?"0":"")+m);
+  }
+}
+function timeOpts(sel){
+  return TIMES.map(function(t){
+    return '<option value="'+t+'"'+(t===sel?' selected':'')+'>'+t+'</option>';
+  }).join("");
+}
+var MAX_RANGES = 3;   // 1日あたりに入れられる時間帯の数
+
+/* 時間帯の行を組み立てる。基本シフトとイレギュラーで同じものを使う */
+function rangeRowsHTML(ranges){
+  var h = "";
+  for (var i=0;i<ranges.length;i++){
+    h += '<div class="times" data-i="'+i+'">' +
+           '<select data-t="s" aria-label="開始時刻">'+timeOpts(ranges[i].s)+'</select>' +
+           '<span class="tilde">〜</span>' +
+           '<select data-t="e" aria-label="終了時刻">'+timeOpts(ranges[i].e)+'</select>' +
+           (ranges.length > 1
+             ? '<button type="button" class="xbtn" data-act="del" aria-label="この時間帯を削除">×</button>'
+             : '') +
+         '</div>';
+  }
+  if (ranges.length < MAX_RANGES)
+    h += '<button type="button" class="addbtn" data-act="add">＋ 時間帯を追加</button>';
+  return h;
+}
+/* 同じ日に2回勤務できる方向け。9:00-15:00 と 20:00-24:00 のような入れ方を想定 */
+function nextRange(ranges){
+  var last = ranges[ranges.length-1];
+  return last && last.e !== "24:00" ? {s:last.e, e:"24:00"} : {s:"09:00", e:"17:00"};
+}
+function hasOvernight(ranges){
+  for (var i=0;i<ranges.length;i++) if (ranges[i].e <= ranges[i].s) return true;
+  return false;
+}
+
+/* ---------- state ---------- */
+/* 旧形式 {mode,s,e} を {mode,ranges:[{s,e}]} に揃える。
+   保存済みの書きかけや、旧版で送られた申請テキストも読めるようにするため。 */
+function fixEntry(v){
+  if (!v || typeof v !== "object") return {mode:"", ranges:[{s:"09:00", e:"17:00"}]};
+  if (!Array.isArray(v.ranges) || !v.ranges.length)
+    v.ranges = [{s: v.s || "09:00", e: v.e || "17:00"}];
+  delete v.s; delete v.e;
+  if (v.ranges.length > MAX_RANGES) v.ranges.length = MAX_RANGES;
+  return v;
+}
+function migrate(o){
+  if (!o) return o;
+  DOW.forEach(function(d){ o.base[d] = fixEntry(o.base && o.base[d]); });
+  if (!o.irr) o.irr = {};
+  for (var k in o.irr) if (Object.prototype.hasOwnProperty.call(o.irr, k)) o.irr[k] = fixEntry(o.irr[k]);
+  return o;
+}
+
+function blank(){
+  var base = {};
+  DOW.forEach(function(d){ base[d] = {mode:"", ranges:[{s:"09:00", e:"17:00"}]}; });
+  var hy = {};
+  STORES.forEach(function(s){ hy[s] = ""; });
+  return {v:1, period:CFG.ym, name:"", store:CFG.store, base:base, wish:{days:"",hours:"",pay:""}, irr:{}, hybrid:hy, note:""};
+}
+var S = blank();
+var subs = [];      // アプリで届いた申請
+var paper = [];     // 紙で受け取った人 { n:氏名, s:店舗 }
+var selDay = null;
+var PROXY = null;      // 代理入力中 { name, store }
+var PROXY_BACK = null; // 店長自身の下書きの控え
+
+function dateOf(i){ var d = new Date(START.getTime()); d.setDate(d.getDate()+i); return d; }
+function keyOf(d){ return (d.getMonth()+1)+"/"+d.getDate(); }
+function pad2(n){ return (n<10?"0":"")+n; }
+
+/* masthead reflects CFG so a new month needs no HTML edits */
+(function(){
+  var end = dateOf(NDAYS-1);
+  document.getElementById("mTitle").textContent = CFG.label + "シフト申請書";
+  document.getElementById("mYm").textContent = CFG.ym.replace("-", " / ");
+  document.getElementById("mRange").textContent =
+    "申請期間 " + START.getFullYear() + "." + pad2(START.getMonth()+1) + "." + pad2(START.getDate()) +
+    " — " + pad2(end.getMonth()+1) + "." + pad2(end.getDate());
+  document.getElementById("mDue").innerHTML = "提出期限 <b>" + CFG.deadline + "</b>";
+  document.getElementById("mStore").textContent = CFG.store;
+  // 店舗を選んだら見出しもその店舗名に変える（5店舗共通で使うため）
+  window.setMastStore = function(){
+    var el = document.getElementById("mStore");
+    if (el) el.textContent = (S && S.store) ? S.store : "店舗を選んでください";
+  };
+  document.title = CFG.label + "シフト申請書";
+})();
+
+/* ---------- persistence ---------- */
+/* 代理入力のあいだは別の場所に書く。店長自身の下書きを上書きしないため */
+function save(){ try{ localStorage.setItem(PROXY ? LS+"_proxy" : LS, JSON.stringify(S)); }catch(e){} }
+function load(){
+  try{
+    var raw = localStorage.getItem(LS);
+    if(!raw) return;
+    var o = JSON.parse(raw);
+    if(o && o.v===1){ S = migrate(o); }
+  }catch(e){}
+}
+/* 店長側は9/15までの数日かけて集めるので、読み込んだ分も保存しておく */
+function saveAgg(){ try{ localStorage.setItem(LS+"_agg", JSON.stringify({subs:subs, paper:paper})); }catch(e){} }
+function loadAgg(){
+  try{
+    var raw = localStorage.getItem(LS+"_agg");
+    if(!raw) return;
+    var o = JSON.parse(raw);
+    if(!o) return;
+    subs = o.subs || [];
+    // 紙で受領は店舗ごとに持つ。前の版は氏名だけだったので、その時の店舗を補う
+    paper = (o.paper || []).map(function(p){
+      return (typeof p === "string") ? {n:p, s:CFG.store} : p;
+    }).filter(function(p){ return p && p.n; });
+  }catch(e){}
+}
+
+/* ---------- 圧縮コード「S1」 ----------
+   LINEのURLは長すぎると送れないため、申請内容を短い文字列に畳みます。
+   時刻は15分刻みの通し番号(0〜96)を36進数2桁で表します。 */
+function t2i(t){ var p = t.split(":"); return (+p[0]*60 + +p[1]) / 15; }
+function i2t(i){
+  var m = i*15, h = Math.floor(m/60);
+  return (h<10?"0":"")+h + ":" + ((m%60)<10?"0":"")+(m%60);
+}
+function n36(n){ var s = n.toString(36); return s.length < 2 ? "0"+s : s; }
+function encRanges(rs){ return rs.map(function(r){ return n36(t2i(r.s)) + n36(t2i(r.e)); }).join(";"); }
+function decRanges(str){
+  if (!str) return [{s:"09:00", e:"17:00"}];
+  return str.split(";").map(function(x){
+    return { s: i2t(parseInt(x.slice(0,2),36)), e: i2t(parseInt(x.slice(2,4),36)) };
+  });
+}
+var MODE_C = {all:"A", off:"X", range:"R"}, C_MODE = {A:"all", X:"off", R:"range"};
+var HYB_C = {"○":"O", "▲":"T", "×":"X"}, C_HYB = {O:"○", T:"▲", X:"×"};
+function clean(s){ return String(s == null ? "" : s).replace(/[|\r\n]+/g, " ").trim(); }
+
+function encodeState(o){
+  var base = DOW.map(function(d){
+    var st = o.base[d];
+    if (!st.mode) return "-";
+    return st.mode === "range" ? "R" + encRanges(st.ranges) : MODE_C[st.mode];
+  }).join(",");
+  var irr = Object.keys(o.irr).map(function(k){
+    var v = o.irr[k], p = k.split("/");
+    var dt = new Date(START.getFullYear(), +p[0]-1, +p[1]);
+    var idx = Math.round((dt - START) / 86400000);
+    if (idx < 0 || idx >= NDAYS) return "";
+    return idx.toString(36) + (v.mode === "range" ? "R" + encRanges(v.ranges) : MODE_C[v.mode]);
+  }).filter(Boolean).join(",");
+  var hyb = STORES.map(function(s){ return HYB_C[o.hybrid[s]] || "-"; }).join("");
+  var w = o.wish;
+  // 末尾に所属店舗の番号を足す。古い形式（7項目）も読めるようにしてある。
+  var si = STORES.indexOf(o.store);
+  return ["S1", clean(o.name), base, [w.days, w.hours, w.pay].join("."), irr, hyb, clean(o.note),
+          (si < 0 ? "" : String(si))].join("|");
+}
+function decodeState(code){
+  var f = code.split("|");
+  if (f[0] !== "S1") return null;
+  var o = blank();
+  o.name = f[1] || "";
+  (f[2] || "").split(",").forEach(function(c, i){
+    if (i >= DOW.length || !c || c === "-") return;
+    var st = o.base[DOW[i]];
+    if (c.charAt(0) === "R"){ st.mode = "range"; st.ranges = decRanges(c.slice(1)); }
+    else st.mode = C_MODE[c.charAt(0)] || "";
+  });
+  var w = (f[3] || "").split(".");
+  o.wish = { days: w[0] || "", hours: w[1] || "", pay: w[2] || "" };
+  (f[4] || "").split(",").filter(Boolean).forEach(function(e){
+    var idx = parseInt(e.charAt(0), 36);
+    if (isNaN(idx) || idx < 0 || idx >= NDAYS) return;
+    var k = keyOf(dateOf(idx)), rest = e.slice(1);
+    if (rest.charAt(0) === "R") o.irr[k] = { mode:"range", ranges: decRanges(rest.slice(1)) };
+    else o.irr[k] = { mode: C_MODE[rest.charAt(0)] || "all", ranges:[{s:"09:00", e:"17:00"}] };
+  });
+  (f[5] || "").split("").forEach(function(c, i){
+    if (i < STORES.length) o.hybrid[STORES[i]] = C_HYB[c] || "";
+  });
+  o.note = f[6] || "";
+  // 所属店舗。無い（古い形式）ときは設定の店舗のままにする
+  if (f[7] !== undefined && f[7] !== "") {
+    var si = parseInt(f[7], 10);
+    if (!isNaN(si) && STORES[si]) o.store = STORES[si];
+  }
+  return o;
+}
+
+/* ---------- base64 (utf-8 safe) ---------- */
+function b64enc(str){
+  var bytes = new TextEncoder().encode(str), bin = "";
+  for (var i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+function b64dec(b64){
+  var bin = atob(b64), bytes = new Uint8Array(bin.length);
+  for (var i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+/* ---------- build UI ---------- */
+var elName = document.getElementById("name");
+function fillRosterHints(){
+  // 代理入力のときは、選んでいる店舗の名簿を候補に出す
+  var list = (S && S.store && rosterFor(S.store).length) ? rosterFor(S.store) : ROSTER;
+  document.getElementById("rosterList").innerHTML =
+    list.map(function(n){ return '<option value="'+n.replace(/"/g,"&quot;")+'"></option>'; }).join("");
+}
+
+var elStore = document.getElementById("store");
+elStore.innerHTML = '<option value="">選んでください</option>' +
+  STORES.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join("");
+if (SINGLE) {
+  // 選ばせずに、その店舗を自動で入れる
+  document.getElementById("storeField").hidden = true;
+  document.getElementById("hybridSection").hidden = true;
+  elStore.value = STORES[0];
+}
+
+var daysBox = document.getElementById("days");
+DOW.forEach(function(d,i){
+  var row = document.createElement("div");
+  row.className = "drow";
+  var cls = i===5 ? " sat" : (i===6 ? " sun" : "");
+  row.innerHTML =
+    '<div class="dname'+cls+'">'+d+'</div>' +
+    '<div>' +
+      '<div class="seg" data-dow="'+d+'">' +
+        '<button type="button" data-v="all" aria-pressed="false">終日OK</button>' +
+        '<button type="button" data-v="range" aria-pressed="false">時間帯</button>' +
+        '<button type="button" data-v="off" aria-pressed="false">不可</button>' +
+      '</div>' +
+      '<div class="ranges" data-ranges="'+d+'" hidden></div>' +
+      '<div class="night" data-night="'+d+'" hidden>終了が開始より早い時間帯は、翌朝までの深夜勤務として扱います</div>' +
+    '</div>';
+  daysBox.appendChild(row);
+});
+
+var calHead = document.getElementById("calHead");
+calHead.innerHTML = DOW.map(function(d,i){
+  var c = i===5?" sat":(i===6?" sun":"");
+  return '<div class="cal-h'+c+'">'+d+'</div>';
+}).join("");
+
+var cal = document.getElementById("cal");
+for (var i=0;i<NDAYS;i++){
+  var d = dateOf(i), k = keyOf(d);
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "day"; b.dataset.k = k; b.dataset.s = "";
+  b.innerHTML = '<span class="m">'+(d.getMonth()+1)+'月</span>' +
+                '<span class="d">'+d.getDate()+'</span>' +
+                '<span class="mk"></span>' +
+                (HOLIDAYS[k] ? '<span class="hol">祝</span>'
+                             : (BUSY[k] ? '<span class="busy">繁忙</span>' : ''));
+  b.setAttribute("aria-label", k + (HOLIDAYS[k] ? " "+HOLIDAYS[k] : (BUSY[k] ? " "+BUSY[k] : "")));
+  cal.appendChild(b);
+}
+
+var hyBox = document.getElementById("hybrid");
+STORES.forEach(function(s){
+  var row = document.createElement("div");
+  row.className = "hy";
+  row.innerHTML = '<div class="sname">'+s+'</div>' +
+    '<div class="seg3" data-store="'+s+'">' +
+      '<button type="button" data-v="○" aria-pressed="false">○</button>' +
+      '<button type="button" data-v="▲" aria-pressed="false">▲</button>' +
+      '<button type="button" data-v="×" aria-pressed="false">×</button>' +
+    '</div>';
+  hyBox.appendChild(row);
+});
+
+/* ---------- render from state ---------- */
+function render(){
+  if (elName.value !== S.name) elName.value = S.name;
+  elStore.value = S.store || "";
+  if (window.setMastStore) setMastStore();
+
+  DOW.forEach(function(d){
+    var st = S.base[d];
+    var seg = daysBox.querySelector('.seg[data-dow="'+d+'"]');
+    Array.prototype.forEach.call(seg.querySelectorAll("button"), function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.v === st.mode));
+    });
+    var rg = daysBox.querySelector('[data-ranges="'+d+'"]');
+    if (st.mode === "range"){
+      rg.hidden = false;
+      rg.innerHTML = rangeRowsHTML(st.ranges);
+    } else {
+      rg.hidden = true;
+      rg.innerHTML = "";
+    }
+    daysBox.querySelector('[data-night="'+d+'"]').hidden =
+      !(st.mode === "range" && hasOvernight(st.ranges));
+  });
+
+  document.getElementById("wDays").value = S.wish.days;
+  document.getElementById("wHours").value = S.wish.hours;
+  document.getElementById("wPay").value = S.wish.pay;
+
+  Array.prototype.forEach.call(cal.children, function(b){
+    var v = S.irr[b.dataset.k];
+    b.dataset.s = v ? v.mode : "";
+    var mk = b.querySelector(".mk"), m = b.querySelector(".m");
+    var d = b.dataset.k.split("/")[0];
+    if (!v){ mk.textContent = ""; m.textContent = d+"月"; }
+    else if (v.mode === "all"){ mk.textContent = "○"; m.textContent = d+"月"; }
+    else if (v.mode === "off"){ mk.textContent = "×"; m.textContent = d+"月"; }
+    else if (v.ranges.length > 1){ mk.textContent = ""; m.textContent = v.ranges.length + "枠"; }
+    else { mk.textContent = ""; m.textContent = v.ranges[0].s.replace(":","")+"-"+v.ranges[0].e.replace(":",""); }
+    b.setAttribute("aria-current", String(selDay === b.dataset.k));
+  });
+
+  STORES.forEach(function(s){
+    var seg = hyBox.querySelector('.seg3[data-store="'+s+'"]');
+    Array.prototype.forEach.call(seg.querySelectorAll("button"), function(b){
+      b.setAttribute("aria-pressed", String(b.dataset.v === S.hybrid[s]));
+    });
+  });
+
+  document.getElementById("note").value = S.note;
+  renderDayEdit();
+}
+
+function renderDayEdit(){
+  var box = document.getElementById("dayEdit");
+  if (!selDay){ box.hidden = true; return; }
+  box.hidden = false;
+  var cur = S.irr[selDay] || {mode:"", ranges:[{s:"09:00", e:"17:00"}]};
+  var tag = HOLIDAYS[selDay] ? "　" + HOLIDAYS[selDay] : (BUSY[selDay] ? "　" + BUSY[selDay] : "");
+  document.getElementById("deTitle").textContent = START.getFullYear() + "年 " + selDay + tag;
+  Array.prototype.forEach.call(document.getElementById("deSeg").querySelectorAll("button"), function(b){
+    b.setAttribute("aria-pressed", String(b.dataset.v === cur.mode));
+  });
+  var rg = document.getElementById("deRanges");
+  if (cur.mode === "range"){ rg.hidden = false; rg.innerHTML = rangeRowsHTML(cur.ranges); }
+  else { rg.hidden = true; rg.innerHTML = ""; }
+}
+
+/* ---------- events ---------- */
+elName.addEventListener("input", function(){
+  S.name = this.value.trim(); save();
+  if (PROXY){ PROXY.name = S.name; applyProxyUI(); }
+});
+elStore.addEventListener("change", function(){
+  S.store = this.value; save();
+  if (window.setMastStore) setMastStore();
+  if (PROXY){ PROXY.store = S.store; applyProxyUI(); }
+  fillRosterHints();
+});
+
+daysBox.addEventListener("click", function(e){
+  var seg = e.target.closest(".seg button");
+  if (seg){
+    var d = seg.closest(".seg").dataset.dow;
+    S.base[d].mode = (S.base[d].mode === seg.dataset.v) ? "" : seg.dataset.v;
+    save(); render(); return;
+  }
+  var act = e.target.closest("[data-act]"); if(!act) return;
+  var box = act.closest(".ranges"); if(!box) return;
+  var st = S.base[box.dataset.ranges];
+  if (act.dataset.act === "add"){
+    if (st.ranges.length < MAX_RANGES) st.ranges.push(nextRange(st.ranges));
+  } else {
+    st.ranges.splice(+act.closest(".times").dataset.i, 1);
+  }
+  save(); render();
+});
+daysBox.addEventListener("change", function(e){
+  var sel = e.target.closest("select[data-t]"); if(!sel) return;
+  var box = sel.closest(".ranges"); if(!box) return;
+  S.base[box.dataset.ranges].ranges[+sel.closest(".times").dataset.i][sel.dataset.t] = sel.value;
+  save(); render();
+});
+
+["wDays","wHours","wPay"].forEach(function(id,ix){
+  var key = ["days","hours","pay"][ix];
+  document.getElementById(id).addEventListener("input", function(){ S.wish[key] = this.value; save(); });
+});
+
+cal.addEventListener("click", function(e){
+  var b = e.target.closest(".day"); if(!b) return;
+  selDay = (selDay === b.dataset.k) ? null : b.dataset.k;
+  render();
+  if (selDay) document.getElementById("dayEdit").scrollIntoView({block:"nearest", behavior:"smooth"});
+});
+document.getElementById("deSeg").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b || !selDay) return;
+  var v = b.dataset.v;
+  if (!v){ delete S.irr[selDay]; }
+  else {
+    var cur = S.irr[selDay];
+    S.irr[selDay] = {
+      mode: v,
+      ranges: (cur && cur.ranges) ? cur.ranges : [{s:"09:00", e:"17:00"}]
+    };
+  }
+  save(); render();
+});
+document.getElementById("deRanges").addEventListener("click", function(e){
+  var act = e.target.closest("[data-act]"); if(!act || !selDay || !S.irr[selDay]) return;
+  var st = S.irr[selDay];
+  if (act.dataset.act === "add"){
+    if (st.ranges.length < MAX_RANGES) st.ranges.push(nextRange(st.ranges));
+  } else {
+    st.ranges.splice(+act.closest(".times").dataset.i, 1);
+  }
+  save(); render();
+});
+document.getElementById("deRanges").addEventListener("change", function(e){
+  var sel = e.target.closest("select[data-t]"); if(!sel || !selDay || !S.irr[selDay]) return;
+  S.irr[selDay].ranges[+sel.closest(".times").dataset.i][sel.dataset.t] = sel.value;
+  save(); render();
+});
+
+hyBox.addEventListener("click", function(e){
+  var b = e.target.closest(".seg3 button"); if(!b) return;
+  var s = b.closest(".seg3").dataset.store;
+  S.hybrid[s] = (S.hybrid[s] === b.dataset.v) ? "" : b.dataset.v;
+  save(); render();
+});
+document.getElementById("note").addEventListener("input", function(){ S.note = this.value; save(); });
+
+/* ---------- output text ---------- */
+function rangesText(ranges){
+  return ranges.map(function(r){
+    return r.s + "-" + r.e + (r.e <= r.s ? "(翌朝まで)" : "");
+  }).join(" / ");
+}
+function baseLine(d){
+  var st = S.base[d];
+  if (st.mode === "all") return "終日OK";
+  if (st.mode === "off") return "不可";
+  if (st.mode === "range") return rangesText(st.ranges);
+  return "未記入";
+}
+function irrLine(k){
+  var v = S.irr[k];
+  if (v.mode === "all") return "終日OK";
+  if (v.mode === "off") return "休み希望";
+  return rangesText(v.ranges);
+}
+function buildText(){
+  var L = [];
+  L.push("=== " + START.getFullYear() + "年" + CFG.label + " シフト申請 ===");
+  L.push("氏名: " + (S.name || "(未記入)"));
+  L.push("所属: " + (S.store || "(未記入)"));
+  L.push("");
+  L.push("[基本シフト]");
+  DOW.forEach(function(d){ L.push("  " + d + " " + baseLine(d)); });
+  L.push("");
+  L.push("[週の希望]  週" + (S.wish.days||"-") + "日 / 週" + (S.wish.hours||"-") + "時間 / 給与" + (S.wish.pay||"-") + "万円");
+  L.push("");
+  var ks = Object.keys(S.irr);
+  L.push("[イレギュラー] " + (ks.length ? ks.length + "件" : "なし"));
+  ks.sort(function(a,b){
+    var pa = a.split("/"), pb = b.split("/");
+    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+  }).forEach(function(k){ L.push("  " + k + " " + irrLine(k)); });
+  if (!SINGLE){
+    L.push("");
+    L.push("[勤務可能店舗]");
+    STORES.forEach(function(s){ L.push("  " + SHORT[s] + " " + (S.hybrid[s] || "-")); });
+  }
+  if (S.note.trim()){
+    L.push("");
+    L.push("[備考]");
+    S.note.trim().split("\n").forEach(function(x){ L.push("  " + x); });
+  }
+  L.push("");
+  L.push("#" + encodeState(S));
+  L.push("=== ここまで ===");
+  return L.join("\n");
+}
+
+function toast(msg){
+  var t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove("on"); }, 2200);
+}
+
+function missing(){
+  var m = [];
+  if (!S.name) m.push("氏名");
+  if (SINGLE) { S.store = STORES[0]; }        // 1店舗なので自動で入れる
+  else if (!S.store) { m.push("所属店舗"); }
+  var any = DOW.some(function(d){ return S.base[d].mode; });
+  if (!any) m.push("基本シフト");
+  return m;
+}
+
+document.getElementById("doneBtn").addEventListener("click", function(){
+  var m = missing();
+  if (m.length){ toast(m.join("・") + " が未記入です"); return; }
+  if (PROXY){ registerProxy(); return; }   // 店長の代理入力はそのまま集計へ
+  document.getElementById("outText").value = buildText();
+  document.getElementById("out").hidden = false;
+  document.getElementById("fallback").hidden = true;
+  document.getElementById("showFallback").hidden = false;
+
+  if (IN_LINE){
+    // LINEの中では送信ボタンが効かないので、最初からコピー手順を出す
+    document.getElementById("lineNote").hidden = false;
+    var lb = document.getElementById("lineBtn");
+    lb.textContent = "LINEで送る（うまくいかないことがあります）";
+    lb.classList.remove("btn-line");
+    showFallback("コピーして店長に貼り付けてください");
+  }
+  document.getElementById("out").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+document.getElementById("resetBtn").addEventListener("click", function(){
+  if (!confirm("記入内容をすべて消します。よろしいですか？")) return;
+  S = blank(); selDay = null;
+  if (PROXY){ S.name = PROXY.name; S.store = PROXY.store; }   // 代理入力の相手は残す
+  save(); render();
+  document.getElementById("out").hidden = true;
+  toast("クリアしました");
+});
+
+/* iPhone は画面外の要素からコピーできないため、実際に表示されている
+   入力欄を選択してからコピーする。失敗しても選択は残るので、
+   そのまま長押し→コピーで送れる。 */
+function copyText(str, okMsg, el){
+  var ta = el, temp = false;
+  if (!ta){
+    temp = true;
+    ta = document.createElement("textarea");
+    ta.value = str;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed"; ta.style.left = "8px"; ta.style.bottom = "8px";
+    ta.style.width = "1px"; ta.style.height = "1px"; ta.style.opacity = "0.01";
+    document.body.appendChild(ta);
+  }
+  var done = false;
+  try {
+    ta.focus();
+    ta.setSelectionRange(0, ta.value.length);
+    done = document.execCommand("copy");
+  } catch(e){}
+  if (temp) document.body.removeChild(ta);
+  if (done){ toast(okMsg); return; }
+
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(str).then(
+      function(){ toast(okMsg); },
+      function(){ toast("枠内を選択しました。長押しして「コピー」を押してください"); }
+    );
+  } else {
+    toast("枠内を選択しました。長押しして「コピー」を押してください");
+  }
+}
+/* LINEに載せる本文。
+   日本語はURLエンコードで1文字9バイトになるため、共有URLが長いとLINE側が
+   本文を捨てて空メッセージになる。必ず送れる短さに収まるよう、
+   申請コードを先に確保してから、入るぶんだけ読みやすい行を足す。 */
+var LINE_SOFT_LIMIT = 1500;   // ここに収まれば日付まで含めた明細を載せる
+var LINE_HARD_LIMIT = 1900;   // これを超えるとLINEが本文を捨てるおそれがある
+
+function sortedIrrKeys(){
+  return Object.keys(S.irr).sort(function(a,b){
+    var pa = a.split("/"), pb = b.split("/");
+    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+  });
+}
+
+function buildLineText(){
+  var head = "【" + START.getFullYear() + "年" + CFG.label + " シフト申請】" + (S.name || "");
+  var code = "#" + encodeState(S);
+  var ks = sortedIrrKeys();
+
+  // 第1候補：曜日ごとの時間帯と、イレギュラーを日付まで書き出す
+  var full = [];
+  DOW.forEach(function(d){ full.push("　" + d + " " + baseLine(d)); });
+  if (ks.length){
+    full.push("［イレギュラー］");
+    ks.forEach(function(k){ full.push("　" + k + " " + irrLine(k)); });
+  }
+  if (S.note.trim()){
+    full.push("［備考］");
+    S.note.trim().split("\n").forEach(function(x){ full.push("　" + x); });
+  }
+
+  // 第2候補：曜日ごとの時間帯まで。イレギュラーと備考は件数だけ
+  var mid = [];
+  DOW.forEach(function(d){ mid.push("　" + d + " " + baseLine(d)); });
+  if (ks.length) mid.push("　イレギュラー " + ks.length + "件（内容はコードに入っています）");
+  if (S.note.trim()) mid.push("　備考あり（内容はコードに入っています）");
+
+  // 第3候補：勤務できる曜日だけ
+  var okDays = DOW.filter(function(d){ return S.base[d].mode && S.base[d].mode !== "off"; }).join("");
+  var brief = ["　勤務できる曜日 " + (okDays || "なし")];
+  if (ks.length) brief.push("　イレギュラー " + ks.length + "件");
+  if (S.note.trim()) brief.push("　備考あり");
+
+  // コードは必ず先頭側に置く。LINEが長文を途中で切っても、
+  // 後ろの明細が欠けるだけで申請内容そのものは失われないようにするため。
+  var cands = [full, mid, brief];
+  for (var i=0; i<cands.length; i++){
+    var t = head + "\n" + code + "\n" + cands[i].join("\n");
+    var lim = (i === 0) ? LINE_SOFT_LIMIT : LINE_HARD_LIMIT;
+    if (encodeURIComponent(t).length <= lim) return t;
+  }
+  return head + "\n" + code;
+}
+
+/* LINEを開いて本文を入れた状態にする。送り先はスタッフ本人が選ぶ。
+   window.open はスマホでブロックされることがあるため、同じタブで遷移する。 */
+/* LINEアプリ内のブラウザで開かれているか。
+   この中では「LINEを開く」が効かない（すでにLINEの中にいるため）ので、
+   コピーして貼り付ける手順に切り替える。 */
+var IN_LINE = /\bLine\//i.test(navigator.userAgent);
+
+function showFallback(title){
+  document.getElementById("fbTitle").textContent = title || "LINEに本文は入りましたか？";
+  document.getElementById("fallback").hidden = false;
+  document.getElementById("showFallback").hidden = true;
+}
+document.getElementById("showFallback").addEventListener("click", function(){
+  showFallback("うまく送れないとき");
+  document.getElementById("fallback").scrollIntoView({behavior:"smooth", block:"nearest"});
+});
+document.getElementById("copyBtn").addEventListener("click", function(){
+  copyText(document.getElementById("outText").value,
+           "コピーしました。LINEの入力欄に貼り付けて送ってください",
+           document.getElementById("outText"));
+});
+
+/* LINEから戻ってきたら、本文が入っていたか確かめてもらう。
+   送信できたかはこちらから知る手段がないため、本人に確認してもらう。 */
+var LINE_TRY = "shiftapply_linetry";
+var lineTried = false;          // 保存領域が使えない端末でも動くよう、変数でも持つ
+function checkAfterLine(){
+  var tried = lineTried;
+  try { if (sessionStorage.getItem(LINE_TRY) === "1") tried = true; } catch(e){}
+  if (!tried) return;
+  lineTried = false;
+  try { sessionStorage.removeItem(LINE_TRY); } catch(e){}
+  if (document.getElementById("out").hidden) return;
+  showFallback("LINEに本文は入りましたか？");
+  document.getElementById("fallback").scrollIntoView({behavior:"smooth", block:"center"});
+}
+window.addEventListener("pageshow", checkAfterLine);
+document.addEventListener("visibilitychange", function(){
+  if (document.visibilityState === "visible") checkAfterLine();
+});
+
+document.getElementById("lineBtn").addEventListener("click", function(){
+  var m = missing();
+  if (m.length){ toast(m.join("・") + " が未記入です"); return; }
+  var txt = buildLineText();
+  if (encodeURIComponent(txt).length > LINE_HARD_LIMIT){
+    // ほぼ備考が長すぎる場合。黙って空メッセージを送るより知らせる。
+    toast("備考が長すぎてLINEに載りません。下の内容をコピーして送ってください");
+    showFallback("備考が長すぎます。コピーして送ってください");
+    document.getElementById("fallback").scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+  lineTried = true;
+  try { sessionStorage.setItem(LINE_TRY, "1"); } catch(e){}
+  location.href = "https://line.me/R/msg/text/?" + encodeURIComponent(txt);
+});
+
+/* スプレッドシート等へ直接送る。CFG.endpoint が空のときはボタン自体を出さない */
+document.getElementById("sendBtn").hidden = !CFG.endpoint;
+/* 案内文は「この内容で申請する」が出ているときだけ意味がある */
+document.getElementById("lineLead").hidden = !CFG.endpoint || IN_LINE;
+if (!CFG.endpoint){
+  var lb0 = document.getElementById("lineBtn");
+  lb0.textContent = "LINEで店長に送る";
+  lb0.classList.add("solo");
+}
+document.getElementById("sendBtn").addEventListener("click", function(){
+  var btn = this;
+  btn.disabled = true; btn.textContent = "送信中…";
+  fetch(CFG.endpoint, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type": "text/plain;charset=utf-8"},
+    body: JSON.stringify({
+      period: CFG.ym, store: S.store, name: S.name,
+      code: encodeState(S), text: document.getElementById("outText").value,
+      sentAt: new Date().toISOString()
+    })
+  }).then(function(){
+    document.getElementById("sendDone").hidden = false;
+    btn.hidden = true;
+    document.getElementById("sendDone").scrollIntoView({behavior:"smooth", block:"center"});
+  }, function(){
+    btn.disabled = false; btn.textContent = "この内容で申請する";
+    toast("送信できませんでした。LINEで送ってください");
+  });
+});
+
+var dl = null;
+if (window.claude && window.claude.use){
+  window.claude.use("downloads").then(function(d){ dl = d; }, function(){});
+}
+function offerSave(filename, data, okMsg){
+  if (!dl){ toast("この画面では保存できません。コピーをお使いください"); return; }
+  dl.save({filename:filename, data:data}).then(
+    function(){ toast(okMsg); },
+    function(err){ if (err && err.code === "declined") return; toast("保存できませんでした"); }
+  );
+}
+
+/* ================= AGGREGATE ================= */
+function switchMode(agg){
+  document.getElementById("mApply").setAttribute("aria-pressed", String(!agg));
+  document.getElementById("mAgg").setAttribute("aria-pressed", String(agg));
+  document.getElementById("viewApply").classList.toggle("hidden", agg);
+  document.getElementById("viewAgg").classList.toggle("hidden", !agg);
+  document.getElementById("actionBar").style.display = agg ? "none" : "";
+  window.scrollTo(0,0);
+}
+document.getElementById("mApply").addEventListener("click", function(){ switchMode(false); });
+document.getElementById("mAgg").addEventListener("click", function(){ switchMode(true); renderAgg(); });
+
+/* 集計はスタッフに見せない。店長がURLの末尾に #kanri を付けて開いたときだけ出す。
+   ページを開いたあとにハッシュを足しても切り替わるようにしておく。 */
+function isKanri(){
+  return /(^|[#&?])kanri\b/i.test(location.hash) || /[?&]kanri\b/i.test(location.search);
+}
+function applyKanri(){
+  var on = isKanri();
+  document.getElementById("modes").hidden = !on;
+  if (!on) {
+    // スタッフが開く画面には、代理入力にまつわるものを一切出さない。
+    // 書きかけは残しておくので、#kanri を付けて開き直せば続きから再開できる。
+    if (PROXY) endProxy(true);
+    switchMode(false);
+  }
+}
+window.addEventListener("hashchange", applyKanri);
+
+var COLS = SINGLE
+  ? ["受付方法","氏名","所属","月","火","水","木","金","土","日","週日数","週時間","給与","イレギュラー","備考"]
+  : ["受付方法","氏名","所属","月","火","水","木","金","土","日","週日数","週時間","給与","イレギュラー","釜利谷","寺前","久里浜","久比里","大矢部","備考"];
+
+function rowOf(o){
+  function rt(st){ return st.ranges.map(function(r){ return r.s+"-"+r.e; }).join(" / "); }
+  function bl(d){
+    var st = o.base && o.base[d];
+    if (!st || !st.mode) return "";
+    if (st.mode === "all") return "終日";
+    if (st.mode === "off") return "不可";
+    return rt(st);
+  }
+  var ks = Object.keys(o.irr || {}).sort(function(a,b){
+    var pa=a.split("/"), pb=b.split("/");
+    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+  });
+  var irr = ks.map(function(k){
+    var v = o.irr[k];
+    return k + " " + (v.mode === "all" ? "終日" : v.mode === "off" ? "休" : rt(v));
+  }).join("、");
+  var w = o.wish || {};
+  var h = o.hybrid || {};
+  // 受付方法 … アプリ（本人が送信）／代理（店長が入力）／アプリ（修正）／紙
+  var r = [o.via || "アプリ", o.name||"", o.store||"", bl("月"),bl("火"),bl("水"),bl("木"),bl("金"),bl("土"),bl("日"),
+           w.days||"", w.hours||"", w.pay||"", irr];
+  if (!SINGLE) {
+    r = r.concat([h[STORES[0]]||"", h[STORES[1]]||"", h[STORES[2]]||"", h[STORES[3]]||"", h[STORES[4]]||""]);
+  }
+  r.push((o.note||"").replace(/\n/g, " "));
+  return r;
+}
+/* 紙で受け取った人は氏名だけ記録し、中身は用紙を見て埋める */
+function paperRow(n, st){
+  var r = new Array(COLS.length);
+  for (var i=0;i<r.length;i++) r[i] = "";
+  r[0] = "紙"; r[1] = n; r[2] = st || aggStore;
+  return r;
+}
+
+document.getElementById("loadBtn").addEventListener("click", function(){
+  var txt = document.getElementById("pasteBox").value;
+  // 新形式 #S1|... と、旧形式 #DATA:<base64> の両方を受け付ける
+  var re = /#(S1\|[^\r\n]+)|#DATA:([A-Za-z0-9+/=]+)/g, m, found = 0, bad = 0;
+  while ((m = re.exec(txt)) !== null){
+    try {
+      var o = m[1] ? decodeState(m[1].trim()) : migrate(JSON.parse(b64dec(m[2])));
+      if (!o || !o.name){ bad++; continue; }
+      var ix = -1;
+      for (var i=0;i<subs.length;i++){ if (subs[i].name === o.name){ ix = i; break; } }
+      if (ix >= 0) subs[ix] = o; else subs.push(o);
+      found++;
+    } catch(e){ bad++; }
+  }
+  if (!found){ toast(bad ? "読み取れませんでした" : "申請テキストが見つかりません"); }
+  else { toast(found + "名分を読み込みました" + (bad ? "（" + bad + "件は失敗）" : "")); document.getElementById("pasteBox").value = ""; }
+  saveAgg(); renderAgg();
+});
+/* ---- スプレッドシートから直接取り込む ----
+   合言葉はこの端末にだけ残します。ページには書きません。 */
+var LS_READKEY = "shift_readkey_v1";
+(function(){
+  var el = document.getElementById("readKey");
+  try{ el.value = localStorage.getItem(LS_READKEY) || ""; }catch(e){}
+  el.addEventListener("input", function(){
+    try{ localStorage.setItem(LS_READKEY, this.value.trim()); }catch(e){}
+  });
+  document.getElementById("pullBtn").hidden = !CFG.endpoint;
+})();
+function pullMsg(s){ document.getElementById("pullMsg").textContent = s; }
+document.getElementById("pullBtn").addEventListener("click", function(){
+  var key = document.getElementById("readKey").value.trim();
+  if (!key){ pullMsg("合言葉を入れてください。"); return; }
+  var btn = this;
+  btn.disabled = true; btn.textContent = "読み込み中…";
+  pullMsg("");
+  fetch(CFG.endpoint + "?list=1&key=" + encodeURIComponent(key), {cache:"no-store"})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      btn.disabled = false; btn.textContent = "取り込む";
+      if (!d || !d.ok){ pullMsg("合言葉が違うようです。スプレッドシート側の設定をご確認ください。"); return; }
+      if (!Array.isArray(d.rows)){
+        pullMsg("スプレッドシート側がまだ古い版です。受信スクリプトを新しいものに入れ替えてください。");
+        return;
+      }
+      // 対象月は "2026-11" のはずだが、表計算側で日付に化けることがあるので緩く見る
+      function samePeriod(p){
+        if (!p) return true;
+        var s = String(p);
+        if (s === CFG.ym) return true;
+        var dt = new Date(s);
+        if (isNaN(dt.getTime())) return false;
+        return (dt.getFullYear() + "-" + pad2(dt.getMonth()+1)) === CFG.ym;
+      }
+      var got = 0, skip = 0, bad = 0;
+      (d.rows || []).forEach(function(x){
+        if (!samePeriod(x.period)){ skip++; return; }   // 今月度ぶんだけ
+        try{
+          var o = decodeState(String(x.code).replace(/^#/, ""));
+          if (!o || !o.name){ bad++; return; }
+          if (/【代理入力】/.test(x.text || "")) o.via = "代理";
+          if (x.store && STORES.indexOf(x.store) >= 0) o.store = x.store;
+          var ix = -1;
+          for (var i=0;i<subs.length;i++){ if (norm(subs[i].name) === norm(o.name)){ ix = i; break; } }
+          if (ix >= 0) subs[ix] = o; else subs.push(o);   // 同じ人はあとの申請で上書き
+          got++;
+        }catch(e){ bad++; }
+      });
+      saveAgg(); renderRoster(); renderAgg();
+      pullMsg(got + " 名分を取り込みました。"
+        + (skip ? "（" + skip + " 件は他の月度なので除きました）" : "")
+        + (bad ? "（" + bad + " 件は読み取れませんでした）" : ""));
+      toast(got ? got + " 名分を取り込みました" : "取り込むものがありませんでした");
+    }, function(){
+      btn.disabled = false; btn.textContent = "取り込む";
+      pullMsg("つながりませんでした。通信の状態をご確認ください。");
+    });
+});
+
+document.getElementById("clearBtn").addEventListener("click", function(){
+  if ((!subs.length && !paper.length) || !confirm("読み込んだ申請と「紙で受領」の記録をすべて消します。よろしいですか？")) return;
+  subs = []; paper = []; saveAgg(); renderAgg(); toast("消去しました");
+});
+
+function esc(v){ return String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+
+/* 店舗の切り替えボタンと、店舗ごとの集まり具合（1店舗のときは出しません） */
+function renderStoreTabs(){
+  if (SINGLE) { document.getElementById("storeSection").hidden = true; return; }
+  document.getElementById("storeTabs").innerHTML = STORES.map(function(s){
+    return '<button type="button" data-s="'+esc(s)+'" aria-pressed="'+(s===aggStore)+'">'+esc(s)+'</button>';
+  }).join("");
+  document.getElementById("storeSummary").innerHTML = STORES.map(function(s){
+    var got = subs.filter(function(o){ return inStore(o, s); }).length;
+    var all = rosterFor(s).length;
+    return SHORT[s] + " <b>" + got + "</b>" + (all ? " / " + all : "");
+  }).join("　　") + '<span style="font-size:11.5px">　（申請 / 名簿）</span>';
+  var rs = document.getElementById("rosterStore");
+  if (rs) rs.textContent = aggStore;
+}
+document.getElementById("storeTabs").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  aggStore = b.dataset.s;
+  ROSTER = rosterFor(aggStore);
+  saveRoster(); renderStoreTabs(); renderRoster(); renderAgg();
+});
+
+function renderAgg(){
+  // いま選んでいる店舗ぶんだけ出す。元の並び順（subsの番号）は持ったままにする
+  var view = [];
+  subs.forEach(function(o, ix){ if (inStore(o, aggStore)) view.push({o:o, ix:ix}); });
+
+  var tbl = document.getElementById("tbl");
+  tbl.querySelector("thead").innerHTML = "<tr><th>申請書</th>" +
+    COLS.map(function(c){ return "<th>"+c+"</th>"; }).join("") + "</tr>";
+  tbl.querySelector("tbody").innerHTML = view.length
+    ? view.map(function(e){
+        return '<tr><td>' +
+          '<button type="button" class="viewbtn" data-ix="'+e.ix+'">表示</button> ' +
+          '<button type="button" class="viewbtn editbtn" data-ix="'+e.ix+'">直す</button></td>' +
+          rowOf(e.o).map(function(v,i){
+            var mono = (i>=3 && i<=13);
+            return '<td'+(mono?' class="mono"':'')+'>' + esc(v) + "</td>";
+          }).join("") + "</tr>";
+      }).join("")
+    : '<tr><td colspan="' + (COLS.length+1) + '" style="color:var(--muted)">' +
+      (subs.length ? "この店舗の申請はまだありません" : "まだ読み込んでいません") + "</td></tr>";
+
+  // 申請の氏名を名簿の表記に寄せる（全角半角・空白ゆれを吸収）
+  var doneKeys = {}, unknown = [];
+  view.forEach(function(e){
+    var hit = inRoster(e.o.name);
+    if (hit) doneKeys[norm(hit)] = true;
+    else if (e.o.name) unknown.push(e.o.name);
+  });
+  // 申請が届いた人は「紙で受領」から外す
+  paper = paper.filter(function(p){ return !(p.s === aggStore && doneKeys[norm(p.n)]); });
+  var mine = paper.filter(function(p){ return p.s === aggStore; });
+  var paperKeys = {};
+  mine.forEach(function(p){ paperKeys[norm(p.n)] = true; });
+  var left = ROSTER.filter(function(n){ return !doneKeys[norm(n)] && !paperKeys[norm(n)]; });
+
+  var nProxy = view.filter(function(e){ return e.o.via === "代理"; }).length;
+  var nEdit  = view.filter(function(e){ return e.o.via === "アプリ（修正）"; }).length;
+  var inner  = [];
+  if (nProxy) inner.push("代理 " + nProxy);
+  if (nEdit)  inner.push("修正 " + nEdit);
+  document.getElementById("cDone").textContent = view.length;
+  document.getElementById("cProxy").textContent = inner.length ? "（うち " + inner.join("・") + "）" : "";
+  document.getElementById("cPaper").textContent = mine.length;
+  document.getElementById("cLeft").textContent = ROSTER.length ? left.length : "—";
+
+  document.getElementById("pending").innerHTML = !ROSTER.length
+    ? '<span class="empty">先にスタッフ名簿を登録してください</span>'
+    : (left.length
+        ? left.map(function(n){
+            return '<span class="pend">' +
+              '<button type="button" data-a="proxy" data-n="'+esc(n)+'">'+esc(n)+'</button>' +
+              '<button type="button" class="mini" data-a="paper" data-n="'+esc(n)+'">紙</button></span>';
+          }).join("")
+        : '<span style="border-color:var(--ok);color:var(--ok);background:var(--ok-soft)">全員提出ずみ</span>');
+  document.getElementById("paperList").innerHTML = mine.length
+    ? mine.map(function(p){ return '<button type="button" class="paper" data-n="'+esc(p.n)+'">'+esc(p.n)+'</button>'; }).join("")
+    : '<span class="empty">なし</span>';
+
+  var show = ROSTER.length > 0 && unknown.length > 0;
+  document.getElementById("unknownLabel").style.display = show ? "" : "none";
+  document.getElementById("unknownList").style.display = show ? "" : "none";
+  document.getElementById("unknownList").innerHTML =
+    unknown.map(function(n){ return '<span>'+esc(n)+'</span>'; }).join("");
+
+  renderStoreTabs();
+}
+
+function renderRoster(){
+  document.getElementById("rosterBox").value = ROSTER.join("\n");
+  var pre = SINGLE ? "" : (SHORT[aggStore] + "　");
+  document.getElementById("rosterCount").textContent =
+    ROSTER.length ? pre + ROSTER.length + " 名を登録ずみ" : pre + "未登録";
+  fillRosterHints();
+}
+document.getElementById("rosterSave").addEventListener("click", function(){
+  var seen = {};
+  ROSTER = document.getElementById("rosterBox").value.split("\n")
+    .map(function(s){ return s.trim(); })
+    .filter(function(s){
+      if (!s || seen[norm(s)]) return false;
+      seen[norm(s)] = true; return true;
+    });
+  ROSTERS[aggStore] = ROSTER;
+  saveRoster(); renderRoster(); renderAgg();
+  toast(ROSTER.length ? SHORT[aggStore] + " に " + ROSTER.length + " 名を保存しました" : SHORT[aggStore] + " の名簿を空にしました");
+});
+
+document.getElementById("tbl").addEventListener("click", function(e){
+  var b = e.target.closest(".viewbtn"); if(!b) return;
+  var o = subs[+b.dataset.ix];
+  if (!o) return;
+  if (b.classList.contains("editbtn")) startProxy(o.name, o.store, +b.dataset.ix);
+  else openSheet(o);
+});
+
+document.getElementById("pending").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  var n = b.dataset.n;
+  if (b.dataset.a === "proxy"){ startProxy(n, aggStore, null); return; }
+  var dup = paper.some(function(p){ return p.s === aggStore && norm(p.n) === norm(n); });
+  if (!dup) paper.push({n:n, s:aggStore});
+  saveAgg(); renderAgg(); toast(n + " さんを「紙で受領」にしました");
+});
+document.getElementById("paperList").addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  var n = b.dataset.n;
+  paper = paper.filter(function(p){ return !(p.s === aggStore && p.n === n); });
+  saveAgg(); renderAgg(); toast(n + " さんを未提出に戻しました");
+});
+
+/* ================= 代理入力 =================
+   店長が、紙で受け取った申請や電話で聞いた内容を、本人の代わりに入れる画面。
+   申請画面をそのまま使い、最後に「集計に登録」で一覧に加えます。 */
+function applyProxyUI(){
+  var bar = document.getElementById("proxyBar");
+  bar.hidden = !PROXY;
+  if (PROXY){
+    document.getElementById("proxyWho").textContent =
+      (PROXY.name || "（氏名未記入）") + "　" + (SHORT[PROXY.store] || PROXY.store || "");
+  }
+  document.getElementById("doneBtn").textContent = PROXY ? "集計に登録" : "記入おわり";
+  document.getElementById("mApply").textContent  = PROXY ? "代理入力" : "申請する";
+}
+function startProxy(name, store, ix){
+  if (!PROXY) PROXY_BACK = JSON.parse(JSON.stringify(S));  // 店長自身の下書きを預かる
+  if (ix != null && subs[ix]) {
+    S = migrate(JSON.parse(JSON.stringify(subs[ix])));
+    // アプリで届いたものを店長が直した場合は、その旨を残す
+    if (S.via !== "代理") S.via = "アプリ（修正）";
+  } else {
+    S = blank(); S.name = name || ""; S.store = store || aggStore;
+    S.via = "代理";
+  }
+  PROXY = { name: S.name, store: S.store };
+  selDay = null;
+  applyProxyUI();
+  save(); render();
+  if (window.setMastStore) setMastStore();
+  document.getElementById("out").hidden = true;
+  switchMode(false);
+  toast(S.name ? S.name + " さんの代わりに記入します" : "代理入力を始めます。氏名から記入してください");
+}
+/* keepDraft を付けると、書きかけを残したまま画面だけ元に戻す */
+function endProxy(keepDraft){
+  if (!PROXY) return;
+  PROXY = null;
+  if (!keepDraft){ try{ localStorage.removeItem(LS+"_proxy"); }catch(e){} }
+  S = PROXY_BACK ? migrate(PROXY_BACK) : blank();
+  PROXY_BACK = null;
+  selDay = null;
+  applyProxyUI();
+  render();
+  if (window.setMastStore) setMastStore();
+  document.getElementById("out").hidden = true;
+}
+/* 名簿がなくても代理入力を始められるようにしておく */
+document.getElementById("proxyNew").addEventListener("click", function(){
+  startProxy("", aggStore, null);
+  elName.focus();
+});
+document.getElementById("proxyCancel").addEventListener("click", function(){
+  if (!confirm("代理入力をやめます。入れた内容は登録されません。よろしいですか？")) return;
+  endProxy();
+  switchMode(true); renderAgg();
+  toast("代理入力をやめました");
+});
+function registerProxy(){
+  var o = JSON.parse(JSON.stringify(S));
+  var ix = -1;
+  for (var i=0;i<subs.length;i++){ if (norm(subs[i].name) === norm(o.name)){ ix = i; break; } }
+  if (ix >= 0) subs[ix] = o; else subs.push(o);
+  paper = paper.filter(function(p){ return norm(p.n) !== norm(o.name); });
+  if (STORES.indexOf(o.store) >= 0 && o.store !== aggStore){
+    aggStore = o.store; ROSTER = rosterFor(aggStore); saveRoster();
+  }
+  var nm = o.name;
+  var body = null;
+  if (CFG.endpoint){
+    // 端末が変わっても残るよう、代理入力もスプレッドシートへ送る
+    body = JSON.stringify({
+      period: CFG.ym, store: o.store, name: o.name,
+      code: encodeState(o), text: "【代理入力】" + buildText(),
+      via: "代理", sentAt: new Date().toISOString()
+    });
+  }
+  saveAgg(); endProxy();
+  switchMode(true); renderRoster(); renderAgg();
+  toast(nm + " さんの申請を登録しました");
+  if (body){
+    fetch(CFG.endpoint, {
+      method: "POST", mode: "no-cors",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: body
+    }).then(function(){}, function(){
+      toast("集計には入りましたが、スプレッドシートへは送れませんでした");
+    });
+  }
+}
+
+/* ================= 申請書ビュー =================
+   届いた申請を、紙の申請書と同じ並びでキャンバスに描きます。
+   画像として保存できるよう、HTMLではなくキャンバスに直接描いています。 */
+var SV = { cv: null, ctx: null, name: "" };
+
+function svLine(x1,y1,x2,y2,w){
+  var c = SV.ctx;
+  c.strokeStyle = "#111"; c.lineWidth = w || 1.5;
+  c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+}
+function svRect(x,y,w,h,fill){
+  var c = SV.ctx;
+  if (fill){ c.fillStyle = fill; c.fillRect(x,y,w,h); }
+  c.strokeStyle = "#111"; c.lineWidth = 1.5; c.strokeRect(x,y,w,h);
+}
+function svText(t,x,y,size,align,color,weight){
+  var c = SV.ctx;
+  c.font = (weight || 500) + " " + size + 'px "Noto Sans JP", sans-serif';
+  c.fillStyle = color || "#111";
+  c.textAlign = align || "left";
+  c.textBaseline = "middle";
+  c.fillText(t, x, y);
+}
+/* 枠に収まらない文字は縮めて入れる */
+function svFit(t,x,y,maxW,size,align,color,weight){
+  var c = SV.ctx, s = size;
+  while (s > 9){
+    c.font = (weight || 500) + " " + s + 'px "Noto Sans JP", sans-serif';
+    if (c.measureText(t).width <= maxW) break;
+    s--;
+  }
+  svText(t,x,y,s,align,color,weight);
+}
+
+/* A4横向き。縦向きだと曜日1列が狭く、時刻の文字を大きくできないため横にしている。 */
+function drawSheet(o){
+  var cv = document.getElementById("svCanvas");
+  // 月度は4週のときと5週のときがある。5週の月は1週ぶん（見出し30＋本体114）背を高くする。
+  var NWK = Math.ceil(NDAYS / 7);
+  cv.height = 1240 + Math.max(0, NWK - 4) * 144;
+  SV.cv = cv; SV.ctx = cv.getContext("2d");
+  SV.name = o.name || "申請";
+  var c = SV.ctx, W = cv.width, M = 46, IW = W - M*2;
+
+  c.fillStyle = "#fff"; c.fillRect(0,0,cv.width,cv.height);
+
+  // 見出し（紙の様式と同じ白抜きの黒帯）。勤務時間とカレンダーに場所を回すため低めにする。
+  var y = M;
+  var titleW = IW * 0.52;
+  svRect(M, y, titleW, 72, "#111");
+  svFit(CFG.label + "シフト申請書", M + titleW/2, y + 36, titleW - 40, 34, "center", "#fff", 700);
+  svRect(M + titleW, y, IW - titleW, 72, "#fff");
+  svText("氏 名", M + titleW + 22, y + 36, 18, "left", "#444", 500);
+  svFit(o.name || "", M + titleW + 100, y + 36, IW - titleW - 120, 34, "left", "#111", 700);
+  y += 72 + 14;
+
+  var cw = IW / 7;
+
+  // 基本シフト申請
+  svRect(M, y, IW, 28, "#eceae5");
+  svText("■基本シフト申請■　※勤務できる曜日・時間帯", M + 12, y + 14, 18, "left", "#111", 700);
+  y += 28;
+  svRect(M, y, IW, 34, "#f5f3ee");
+  for (var i=0;i<7;i++){
+    if (i) svLine(M + cw*i, y, M + cw*i, y + 34);
+    svText(DOW[i], M + cw*i + cw/2, y + 17, 24, "center", (i===5?"#2f6fa8":(i===6?"#b0451c":"#111")), 700);
+  }
+  y += 34;
+  var bh = 150;
+  svRect(M, y, IW, bh);
+  for (var i=1;i<7;i++) svLine(M + cw*i, y, M + cw*i, y + bh);
+  for (var i=0;i<7;i++){
+    var st = o.base[DOW[i]];
+    var cx = M + cw*i + cw/2;
+    if (!st || !st.mode){ svText("―", cx, y + bh/2, 30, "center", "#bbb"); continue; }
+    if (st.mode === "all"){ svText("終日OK", cx, y + bh/2, 32, "center", "#16624f", 700); continue; }
+    if (st.mode === "off"){ svText("×", cx, y + bh/2, 58, "center", "#b0451c", 700); continue; }
+    var rs = st.ranges;
+    var one = rs.length === 1;
+    var lh = one ? 0 : 42;
+    var y0 = y + bh/2 - lh*(rs.length-1)/2;
+    for (var k=0;k<rs.length;k++){
+      svFit(rs[k].s + "-" + rs[k].e, cx, y0 + lh*k, cw - 14, (one ? 34 : 30), "center", "#111", 700);
+    }
+  }
+  y += bh + 8;
+
+  var w = o.wish || {};
+  svText("※上記日時内で　週 " + (w.days || "―") + " 日、週 " + (w.hours || "―") +
+         " 時間程度、給与 " + (w.pay || "―") + " 万円位／月を希望。", M + 4, y + 14, 19, "left", "#111", 500);
+  y += 38;
+
+  // イレギュラー申請（4週×7日のカレンダー）
+  svRect(M, y, IW, 28, "#eceae5");
+  svText("■イレギュラー申請■", M + 12, y + 14, 18, "left", "#111", 700);
+  y += 28;
+  var rowH = 114;
+  for (var wk=0; wk<NWK; wk++){
+    svRect(M, y, IW, 30, "#f5f3ee");
+    for (var i=0;i<7;i++){
+      if (i) svLine(M + cw*i, y, M + cw*i, y + 30);
+      var d = dateOf(wk*7 + i);
+      svText((d.getMonth()+1) + "月" + d.getDate() + "日", M + cw*i + cw/2, y + 15, 20, "center", "#333", 500);
+    }
+    y += 30;
+    svRect(M, y, IW, rowH);
+    for (var i=1;i<7;i++) svLine(M + cw*i, y, M + cw*i, y + rowH);
+    for (var i=0;i<7;i++){
+      var key = keyOf(dateOf(wk*7 + i));
+      var v = o.irr[key];
+      var cx = M + cw*i + cw/2;
+      if (HOLIDAYS[key]) svText("祝", M + cw*i + cw - 22, y + 18, 16, "center", "#b0451c", 700);
+      else if (BUSY[key]) svText("繁忙", M + cw*i + cw - 30, y + 18, 16, "center", "#a8781a", 700);
+      if (!v) continue;
+      if (v.mode === "all"){ svText("○", cx, y + rowH/2, 56, "center", "#16624f", 700); continue; }
+      if (v.mode === "off"){ svText("×", cx, y + rowH/2, 56, "center", "#b0451c", 700); continue; }
+      var rs = v.ranges, one = rs.length === 1, lh = one ? 0 : 36;
+      var y0 = y + rowH/2 - lh*(rs.length-1)/2;
+      for (var k=0;k<rs.length;k++){
+        svFit(rs[k].s + "-" + rs[k].e, cx, y0 + lh*k, cw - 14, (one ? 28 : 25), "center", "#111", 700);
+      }
+    }
+    y += rowH;
+  }
+  y += 12;
+
+  // 下段。1店舗のときはハイブリッド欄を出さず、備考を全幅にする
+  var gap = 24, leftW = IW * 0.46, rightX = M + leftW + gap, rightW = IW - leftW - gap;
+  if (SINGLE) { leftW = 0; rightX = M; rightW = IW; }
+  var y2 = y;
+  var bottomY = y + 26 + 32 * 5;   // 高さは従来と同じにして、下の帯の位置を揃える
+
+  if (!SINGLE) {
+    svRect(M, y, leftW, 26, "#eceae5");
+    svText("■ハイブリッド申請■　勤務可能・不可店舗", M + 10, y + 13, 16, "left", "#111", 700);
+    y += 26;
+    var hh = 32;
+    for (var i=0;i<STORES.length;i++){
+      svRect(M, y, leftW, hh);
+      svFit(STORES[i], M + 14, y + hh/2, leftW - 70, 18, "left", "#111", 500);
+      var mark = (o.hybrid && o.hybrid[STORES[i]]) || "―";
+      var col = mark === "○" ? "#16624f" : (mark === "▲" ? "#a8781a" : (mark === "×" ? "#b0451c" : "#bbb"));
+      svText(mark, M + leftW - 30, y + hh/2, 26, "center", col, 700);
+      y += hh;
+    }
+    bottomY = y;
+  }
+
+  svRect(rightX, y2, rightW, 26, "#eceae5");
+  svText("備考", rightX + 10, y2 + 13, 16, "left", "#111", 700);
+  var noteY = y2 + 26;
+  var noteH = bottomY - noteY;
+  svRect(rightX, noteY, rightW, noteH);
+  var note = (o.note || "").split("\n");
+  for (var i=0;i<note.length && i<5;i++){
+    svFit(note[i], rightX + 14, noteY + 24 + i*28, rightW - 28, 18, "left", "#111", 500);
+  }
+
+  svText("所属：" + (o.store || "―") + "　／　" + START.getFullYear() + "年" + CFG.label +
+         "（" + (START.getMonth()+1) + "/" + START.getDate() + "〜" +
+         (dateOf(NDAYS-1).getMonth()+1) + "/" + dateOf(NDAYS-1).getDate() + "）",
+         M, bottomY + 18, 15, "left", "#666", 500);
+}
+
+function openSheet(o){
+  var box = document.getElementById("sheetView");
+  box.hidden = false;
+  var go = function(){ drawSheet(o); };
+  // Webフォントの読み込み前に描くと別の字形になるため待つ
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(go, go);
+  else go();
+}
+document.getElementById("svClose").addEventListener("click", function(){
+  document.getElementById("sheetView").hidden = true;
+});
+document.getElementById("sheetView").addEventListener("click", function(e){
+  if (e.target === this) this.hidden = true;
+});
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape") document.getElementById("sheetView").hidden = true;
+});
+document.getElementById("svSave").addEventListener("click", function(){
+  var cv = document.getElementById("svCanvas");
+  var fn = "シフト申請_" + START.getFullYear() + "年" + CFG.label + "_" +
+           SV.name.replace(/[\\/:*?"<>|\s]/g, "") + ".png";
+  if (dl){                       // Artifact上ではダウンロード機能を使う
+    cv.toBlob(function(b){ offerSave(fn, b, "画像を保存しました"); }, "image/png");
+    return;
+  }
+  cv.toBlob(function(b){
+    var url = URL.createObjectURL(b);
+    var a = document.createElement("a");
+    a.href = url; a.download = fn;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    toast("画像を保存しました");
+  }, "image/png");
+});
+document.getElementById("svPrint").addEventListener("click", function(){
+  var cv = document.getElementById("svCanvas");
+  var wnd = window.open("", "_blank");
+  if (!wnd){ toast("印刷用の画面を開けませんでした"); return; }
+  wnd.document.write(
+    '<style>@page{size:A4 landscape;margin:8mm}' +
+    'html,body{margin:0;padding:0}img{width:100%;display:block}</style>' +
+    '<img src="' + cv.toDataURL("image/png") + '" onload="window.print()">');
+  wnd.document.close();
+});
+
+/* CSVは画面に出ている店舗のぶんだけ。店舗を切り替えて5回出せば全店ぶんになります */
+function csvText(){
+  function q(v){ var s = String(v==null?"":v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s; }
+  var lines = [COLS.map(q).join(",")];
+  subs.forEach(function(o){ if (inStore(o, aggStore)) lines.push(rowOf(o).map(q).join(",")); });
+  paper.forEach(function(p){ if (p.s === aggStore) lines.push(paperRow(p.n, p.s).map(q).join(",")); });
+  return "﻿" + lines.join("\r\n");
+}
+document.getElementById("csvBtn").addEventListener("click", function(){
+  if (!subs.length && !paper.length){ toast("先に申請を読み込んでください"); return; }
+  offerSave("シフト申請集計_" + START.getFullYear() + "年" + CFG.label + "_" + (SHORT[aggStore]||"") + ".csv",
+            csvText(), SHORT[aggStore] + " のCSVを保存しました");
+});
+document.getElementById("csvCopyBtn").addEventListener("click", function(){
+  if (!subs.length && !paper.length){ toast("先に申請を読み込んでください"); return; }
+  var t = csvText();
+  document.getElementById("csvText").value = t;
+  document.getElementById("csvOut").hidden = false;
+  copyText(t, "CSVをコピーしました", document.getElementById("csvText"));
+});
+
+/* ---------- go ---------- */
+loadRoster();
+load();
+loadAgg();
+/* 代理入力の途中で画面を閉じてしまったときは、その続きから出す */
+(function(){
+  if (!isKanri()) return;
+  try{
+    var raw = localStorage.getItem(LS+"_proxy");
+    if (!raw) return;
+    var po = JSON.parse(raw);
+    if (!po || po.v !== 1 || !po.name) return;
+    PROXY_BACK = JSON.parse(JSON.stringify(S));
+    S = migrate(po);
+    PROXY = { name: S.name, store: S.store };
+  }catch(e){}
+})();
+applyProxyUI();
+renderRoster();
+render();
+renderAgg();
+applyKanri();
+if (PROXY) toast(PROXY.name + " さんの代理入力の続きです");
+})();
+</script>
+
+</body>
+</html>
