@@ -2059,6 +2059,23 @@ document.getElementById("csvCopyBtn").addEventListener("click", function(){
   copyText(t, "CSVをコピーしました", document.getElementById("csvText"));
 });
 
+/* ---------- 古いページが残っていたら読み込み直す ----------
+   スマホは一度開いたページを覚えていることがあり、
+   先月の申請書がそのまま出てしまう。版番号を確かめて入れ替える。 */
+var BUILD = "2026-09-21-1";
+(function(){
+  var done = null;
+  try { done = sessionStorage.getItem("shift_build_checked"); } catch(e){}
+  if (done === BUILD) { return; }
+  fetch("version.json?cb=" + Date.now(), {cache:"no-store"})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (!d || !d.build || d.build === BUILD) { return; }
+      try { sessionStorage.setItem("shift_build_checked", BUILD); } catch(e){}
+      location.replace(location.pathname + "?v=" + encodeURIComponent(d.build) + location.hash);
+    }, function(){});
+})();
+
 /* ---------- go ---------- */
 loadRoster();
 load();
