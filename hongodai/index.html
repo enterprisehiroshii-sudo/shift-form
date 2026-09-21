@@ -692,9 +692,11 @@ tr:last-child td{border-bottom:0}
 var ROSTERS = {};        // { 店舗名: [氏名, …] }
 var ROSTER  = [];        // いま表示している店舗の名簿
 var aggStore = "";       // 集計画面で選んでいる店舗
-var LS_ROSTER   = "shift_roster_v1";   // 以前の1店舗ぶん
-var LS_ROSTER2  = "shift_roster_v2";
-var LS_AGGSTORE = "shift_aggstore_v1";
+/* 同じドメインに別のお店の申請書も置くため、保存場所に店の印を付けて分ける */
+var SITE = "hongodai_";
+var LS_ROSTER   = SITE + "shift_roster_v1";   // 以前の1店舗ぶん
+var LS_ROSTER2  = SITE + "shift_roster_v2";
+var LS_AGGSTORE = SITE + "shift_aggstore_v1";
 function rosterFor(st){ var a = ROSTERS[st]; return Array.isArray(a) ? a : []; }
 function loadRoster(){
   var ok = null;
@@ -762,7 +764,7 @@ var START = new Date(CFG.start[0], CFG.start[1]-1, CFG.start[2]);
 var NDAYS = CFG.days;
 var HOLIDAYS = CFG.holidays;
 var BUSY = CFG.busy;
-var LS = "shiftapply_" + CFG.ym.replace("-","_") + "_v1";
+var LS = SITE + "shiftapply_" + CFG.ym.replace("-","_") + "_v1";
 
 /* ---------- time options ---------- */
 var TIMES = [];
@@ -1566,7 +1568,7 @@ document.getElementById("loadBtn").addEventListener("click", function(){
 });
 /* ---- スプレッドシートから直接取り込む ----
    合言葉はこの端末にだけ残します。ページには書きません。 */
-var LS_READKEY = "shift_readkey_v1";
+var LS_READKEY = SITE + "shift_readkey_v1";
 (function(){
   var el = document.getElementById("readKey");
   try{ el.value = localStorage.getItem(LS_READKEY) || ""; }catch(e){}
@@ -2085,6 +2087,8 @@ document.getElementById("csvCopyBtn").addEventListener("click", function(){
 /* ---------- go ---------- */
 loadRoster();
 load();
+/* 1店舗のみのページなので、古い下書きが残っていても必ずこの店舗にする */
+if (SINGLE) { S.store = STORES[0]; }
 loadAgg();
 /* 代理入力の途中で画面を閉じてしまったときは、その続きから出す */
 (function(){

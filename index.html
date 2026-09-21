@@ -825,7 +825,9 @@ function blank(){
   DOW.forEach(function(d){ base[d] = {mode:"", ranges:[{s:"09:00", e:"17:00"}]}; });
   var hy = {};
   STORES.forEach(function(s){ hy[s] = ""; });
-  return {v:1, period:CFG.ym, name:"", store:CFG.store, base:base, wish:{days:"",hours:"",pay:""}, irr:{}, hybrid:hy, note:""};
+  // 店舗は選んでもらう。最初から入れておくと、選び忘れが他店の申請になってしまう
+  var st = (STORES.length === 1) ? STORES[0] : "";
+  return {v:1, period:CFG.ym, name:"", store:st, base:base, wish:{days:"",hours:"",pay:""}, irr:{}, hybrid:hy, note:""};
 }
 var S = blank();
 var subs = [];      // アプリで届いた申請
@@ -847,12 +849,12 @@ function pad2(n){ return (n<10?"0":"")+n; }
     "申請期間 " + START.getFullYear() + "." + pad2(START.getMonth()+1) + "." + pad2(START.getDate()) +
     " — " + pad2(end.getMonth()+1) + "." + pad2(end.getDate());
   document.getElementById("mDue").innerHTML = "提出期限 <b>" + CFG.deadline + "</b>";
-  document.getElementById("mStore").textContent = CFG.store;
   // 店舗を選んだら見出しもその店舗名に変える（5店舗共通で使うため）
   window.setMastStore = function(){
     var el = document.getElementById("mStore");
     if (el) el.textContent = (S && S.store) ? S.store : "店舗を選んでください";
   };
+  document.getElementById("mStore").textContent = "店舗を選んでください";
   document.title = CFG.label + "シフト申請書";
 })();
 
