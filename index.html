@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>11月度シフト申請書</title>
+<title>12月度シフト申請書</title>
 <!-- LINEなどのリンク表示はJavaScriptが動く前のここを読むため、対象月を書いておく -->
-<meta name="description" content="11月度のシフト申請書です。店舗を選び、勤務できる日と時間を入れて送信してください。提出期限は10月15日です。">
-<meta property="og:title" content="11月度シフト申請書">
-<meta property="og:description" content="店舗を選び、勤務できる日と時間を入れて送信してください。申請期間 2026.11.02〜12.06／提出期限 10月15日">
+<meta name="description" content="12月度のシフト申請書です。店舗を選び、勤務できる日と時間を入れて送信してください。提出期限は11月15日です。">
+<meta property="og:title" content="12月度シフト申請書">
+<meta property="og:description" content="店舗を選び、勤務できる日と時間を入れて送信してください。申請期間 2026.12.07〜2027.01.03／提出期限 11月15日">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -455,8 +455,8 @@ tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="mast">
     <div class="mast-bar">
-      <h1 id="mTitle">11月度シフト申請書</h1>
-      <span class="co" id="mYm">2026 / 11</span>
+      <h1 id="mTitle">12月度シフト申請書</h1>
+      <span class="co" id="mYm">2026 / 12</span>
     </div>
     <div class="meta">
       <span id="mStore">店舗を選んでください</span>
@@ -740,13 +740,13 @@ var DOW = ["月","火","水","木","金","土","日"];
 /* ===== 対象月の設定 — 翌月分を作るときはこのブロックだけ直せば全体が切り替わります =====
    期間の決め方: 月初の最初の月曜 〜 末日を含む週の日曜（統合設定シート 01_全体ルール より） */
 var CFG = {
-  label:    "11月度",
-  ym:       "2026-11",
-  start:    [2026, 11, 2],           // 2026/11/02(月)
-  days:     35,                       // .. 2026/12/06(日) 11月30日を含む週の日曜まで＝5週
-  deadline: "10月15日",
+  label:    "12月度",
+  ym:       "2026-12",
+  start:    [2026, 12, 7],           // 2026/12/07(月)
+  days:     28,                       // .. 2027/01/03(日) 12月31日を含む週の日曜まで＝4週
+  deadline: "11月15日",
   store:    "横須賀大矢部三丁目店",   // 試験運用はこの店舗のみ
-  holidays: {"11/3":"文化の日", "11/23":"勤労感謝の日"},
+  holidays: {"1/1":"元日"},
   busy:     {},                       // 祝日ではないが人手が要る日
   /* Googleスプレッドシートへ直接送る場合はGASのウェブアプリURLをここに入れます。
      空のままなら「送信」ボタンは出ず、LINE送信とコピーだけになります。 */
@@ -838,6 +838,14 @@ var PROXY_BACK = null; // 店長自身の下書きの控え
 
 function dateOf(i){ var d = new Date(START.getTime()); d.setDate(d.getDate()+i); return d; }
 function keyOf(d){ return (d.getMonth()+1)+"/"+d.getDate(); }
+/* 12月度のように年をまたぐ期間があるため、"12/7" "1/3" から実際の日付を年込みで求める */
+function dateOfKey(k){
+  var p = String(k).split("/"), y = START.getFullYear();
+  var d = new Date(y, +p[0]-1, +p[1]);
+  if (d < START) d = new Date(y+1, +p[0]-1, +p[1]);
+  return d;
+}
+function idxOfKey(k){ return Math.round((dateOfKey(k) - START) / 86400000); }
 function pad2(n){ return (n<10?"0":"")+n; }
 
 /* masthead reflects CFG so a new month needs no HTML edits */
@@ -912,9 +920,8 @@ function encodeState(o){
     return st.mode === "range" ? "R" + encRanges(st.ranges) : MODE_C[st.mode];
   }).join(",");
   var irr = Object.keys(o.irr).map(function(k){
-    var v = o.irr[k], p = k.split("/");
-    var dt = new Date(START.getFullYear(), +p[0]-1, +p[1]);
-    var idx = Math.round((dt - START) / 86400000);
+    var v = o.irr[k];
+    var idx = idxOfKey(k);
     if (idx < 0 || idx >= NDAYS) return "";
     return idx.toString(36) + (v.mode === "range" ? "R" + encRanges(v.ranges) : MODE_C[v.mode]);
   }).filter(Boolean).join(",");
@@ -1092,7 +1099,7 @@ function renderDayEdit(){
   box.hidden = false;
   var cur = S.irr[selDay] || {mode:"", ranges:[{s:"09:00", e:"17:00"}]};
   var tag = HOLIDAYS[selDay] ? "　" + HOLIDAYS[selDay] : (BUSY[selDay] ? "　" + BUSY[selDay] : "");
-  document.getElementById("deTitle").textContent = START.getFullYear() + "年 " + selDay + tag;
+  document.getElementById("deTitle").textContent = dateOfKey(selDay).getFullYear() + "年 " + selDay + tag;
   Array.prototype.forEach.call(document.getElementById("deSeg").querySelectorAll("button"), function(b){
     b.setAttribute("aria-pressed", String(b.dataset.v === cur.mode));
   });
@@ -1218,8 +1225,7 @@ function buildText(){
   var ks = Object.keys(S.irr);
   L.push("[イレギュラー] " + (ks.length ? ks.length + "件" : "なし"));
   ks.sort(function(a,b){
-    var pa = a.split("/"), pb = b.split("/");
-    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+    return idxOfKey(a) - idxOfKey(b);
   }).forEach(function(k){ L.push("  " + k + " " + irrLine(k)); });
   L.push("");
   L.push("[勤務可能店舗]");
@@ -1320,8 +1326,7 @@ var LINE_HARD_LIMIT = 1900;   // これを超えるとLINEが本文を捨てる�
 
 function sortedIrrKeys(){
   return Object.keys(S.irr).sort(function(a,b){
-    var pa = a.split("/"), pb = b.split("/");
-    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+    return idxOfKey(a) - idxOfKey(b);
   });
 }
 
@@ -1506,8 +1511,7 @@ function rowOf(o){
     return rt(st);
   }
   var ks = Object.keys(o.irr || {}).sort(function(a,b){
-    var pa=a.split("/"), pb=b.split("/");
-    return (+pa[0]*100 + +pa[1]) - (+pb[0]*100 + +pb[1]);
+    return idxOfKey(a) - idxOfKey(b);
   });
   var irr = ks.map(function(k){
     var v = o.irr[k];
@@ -2062,7 +2066,7 @@ document.getElementById("csvCopyBtn").addEventListener("click", function(){
 /* ---------- 古いページが残っていたら読み込み直す ----------
    スマホは一度開いたページを覚えていることがあり、
    先月の申請書がそのまま出てしまう。版番号を確かめて入れ替える。 */
-var BUILD = "2026-09-21-1";
+var BUILD = "2026-10-24-1";
 (function(){
   var done = null;
   try { done = sessionStorage.getItem("shift_build_checked"); } catch(e){}
