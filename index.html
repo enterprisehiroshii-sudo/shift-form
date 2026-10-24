@@ -7,7 +7,7 @@
 <!-- LINEなどのリンク表示はJavaScriptが動く前のここを読むため、対象月を書いておく -->
 <meta name="description" content="12月度のシフト申請書です。店舗を選び、勤務できる日と時間を入れて送信してください。提出期限は11月15日です。">
 <meta property="og:title" content="12月度シフト申請書">
-<meta property="og:description" content="店舗を選び、勤務できる日と時間を入れて送信してください。申請期間 2026.12.07〜2027.01.03／提出期限 11月15日">
+<meta property="og:description" content="店舗を選び、勤務できる日と時間を入れて送信してください。申請期間 2026.12.07〜2027.01.10／提出期限 11月15日">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -460,7 +460,7 @@ tr:last-child td{border-bottom:0}
     </div>
     <div class="meta">
       <span id="mStore">店舗を選んでください</span>
-      <span id="mRange">申請期間 2026.11.02 — 12.06</span>
+      <span id="mRange">申請期間 2026.12.07 — 2027.01.10</span>
       <span id="mDue">提出期限 <b>10月15日</b></span>
     </div>
     <!-- 店長専用。URLの末尾に #kanri が付いているときだけ表示する -->
@@ -743,7 +743,7 @@ var CFG = {
   label:    "12月度",
   ym:       "2026-12",
   start:    [2026, 12, 7],           // 2026/12/07(月)
-  days:     28,                       // .. 2027/01/03(日) 12月31日を含む週の日曜まで＝4週
+  days:     35,                       // .. 2027/01/10(日) 年始の週まで含める＝5週
   deadline: "11月15日",
   store:    "横須賀大矢部三丁目店",   // 試験運用はこの店舗のみ
   holidays: {"1/1":"元日"},
@@ -853,9 +853,11 @@ function pad2(n){ return (n<10?"0":"")+n; }
   var end = dateOf(NDAYS-1);
   document.getElementById("mTitle").textContent = CFG.label + "シフト申請書";
   document.getElementById("mYm").textContent = CFG.ym.replace("-", " / ");
+  // 年をまたぐ期間は、終わりにも年を付けて分かるようにする
   document.getElementById("mRange").textContent =
     "申請期間 " + START.getFullYear() + "." + pad2(START.getMonth()+1) + "." + pad2(START.getDate()) +
-    " — " + pad2(end.getMonth()+1) + "." + pad2(end.getDate());
+    " — " + (end.getFullYear() !== START.getFullYear() ? end.getFullYear() + "." : "") +
+    pad2(end.getMonth()+1) + "." + pad2(end.getDate());
   document.getElementById("mDue").innerHTML = "提出期限 <b>" + CFG.deadline + "</b>";
   // 店舗を選んだら見出しもその店舗名に変える（5店舗共通で使うため）
   window.setMastStore = function(){
@@ -2066,7 +2068,7 @@ document.getElementById("csvCopyBtn").addEventListener("click", function(){
 /* ---------- 古いページが残っていたら読み込み直す ----------
    スマホは一度開いたページを覚えていることがあり、
    先月の申請書がそのまま出てしまう。版番号を確かめて入れ替える。 */
-var BUILD = "2026-10-24-1";
+var BUILD = "2026-10-24-2";
 (function(){
   var done = null;
   try { done = sessionStorage.getItem("shift_build_checked"); } catch(e){}
